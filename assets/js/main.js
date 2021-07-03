@@ -15,6 +15,15 @@ window.onload = function() {
     pagination: {
       el:  ".swiper-pagination"
     },
-    loop: true
+    centeredSlides: true,
+    breakpoints: {
+      0: {
+        slidesPerView: 1
+      },
+      700: {
+        slidesPerView: 3
+      }
+    }
   });
+
 }
