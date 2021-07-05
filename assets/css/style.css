@@ -11,7 +11,7 @@
 body {
   font-family: "Open Sans", sans-serif;
   color: #444444; 
-  background-color: rgb(224, 164, 235);
+  background-color: rgb(209, 209, 209);
 }
 
 a {
@@ -459,7 +459,6 @@ section {
 --------------------------------------------------------------*/
 .breadcrumbs {
   padding: 20px 0 20px 0;
-  background: #f7f7f7;
   border-bottom: 1px solid #ededed;
   margin-bottom: 40px;
 }
@@ -1379,6 +1378,7 @@ section {
 --------------------------------------------------------------*/
 .blog {
   padding-bottom: 30px;
+  min-height: 650px;
 }
 
 .blog .entry {

@@ -1,34 +1,33 @@
+#hero-container {width: 100%;}
+#hero .swiper-wrapper .swiper-slide .Hbox {
+    transition: width .2s, height .2s, background-color .2s, opacity .2s;
+    background-color: rgb(223, 165, 165); opacity: .8;border-radius: 5px; 
+}
+#hero .swiper-wrapper .swiper-slide-active .Hbox {
+    width: 300px; height: 200px; z-index: 1000; background-color: #fff; opacity: 1;
+}
+ul, li {list-style: none; margin: 0; padding: 0;}
+.setting ul li {padding: 5px 10px;}
+.setting ul li.active {background-color: rgb(63, 63, 63);}
+.setting ul li.active a {color: #fff;}
 
 @media (min-width: 0px) {
     #hero-container {width: 100%;}
-    #hero .swiper-wrapper .swiper-slide .Hbox {
-        transition: width .2s, height .2s, background-color .2s, opacity .2s; width: 100px; height: 70px;
-        background-color: rgb(223, 165, 165); opacity: .8; border-radius: 10px;
-    }
-    #hero .swiper-wrapper .swiper-slide-active .Hbox {
-        width: 300px; height: 200px; z-index: 1000; background-color: #fff; opacity: 1;
-    }
+    #hero .swiper-wrapper .swiper-slide .Hbox { width: 100px; height: 70px;}
+    #hero .swiper-wrapper .swiper-slide-active .Hbox {width: 300px; height: 200px;}
+    .services .icon-box {width: 300px; margin: 0 auto;}
+    .featured .icon-box {max-width: 350px; margin: 0 auto;}
 }
 
 @media (min-width: 576px) {
     #hero-container {width: 85%;}
-    #hero .swiper-wrapper .swiper-slide .Hbox {
-        transition: width .2s, height .2s, background-color .2s, opacity .2s; width: 100px; height: 70px;
-        background-color: rgb(223, 165, 165); opacity: .8; border-radius: 20px;
-    }
-    #hero .swiper-wrapper .swiper-slide-active .Hbox {
-        width: 300px; height: 200px; z-index: 1000; background-color: #fff; opacity: 1;
-    }
+    #hero .swiper-wrapper .swiper-slide .Hbox {width: 100px; height: 70px;}
+    #hero .swiper-wrapper .swiper-slide-active .Hbox {width: 400px; height: 250px;}
 }
 
 
 @media (min-width: 992px) {
     #hero-container {width: 70%;}
-    #hero .swiper-wrapper .swiper-slide .Hbox {
-        transition: width .2s, height .2s, background-color .2s, opacity .2s; width: 150px; height: 100px;
-        background-color: rgb(223, 165, 165); opacity: .8; border-radius: 20px;
-    }
-    #hero .swiper-wrapper .swiper-slide-active .Hbox {
-        width: 300px; height: 200px; z-index: 1000; background-color: #fff; opacity: 1;
-    }
+    #hero .swiper-wrapper .swiper-slide .Hbox {width: 150px; height: 100px;}
+    #hero .swiper-wrapper .swiper-slide-active .Hbox {width: 400px; height: 250px;}
 }

@@ -32,7 +32,7 @@
   <!-- 뷰 작성을 위한 레이아웃 만들기 -->
 
   <!-- ======= Top Bar ======= -->
-  <section id="topbar" class="d-none d-lg-block">
+  <section id="topbar" class="d-lg-block">
     <div class="container d-flex">
       <div class="logo mr-auto">
         <h1 class="text-light"><a href="index.html" title="홈페이지의 메인 타이틀입니다."><span>TITLE</span></a></h1>
@@ -41,8 +41,16 @@
       </div>
       <div class="social-links">
         <a href="#" class="twitch"><i class="icofont-twitch" title="트위치 홈페이지로 이동하는 링크"></i></a>
-        <a href="#" class="login"><i class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>
-        <a href="#" class="alarm"><i class="icofont-alarm" title="사용자의 최근 알림사항 리스트를 표시해줌"></i></a>
+        
+        <div class="dropdown d-inline">
+          <a href="#" class="login dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <li><button class="dropdown-item" type="button">로그아웃</button></li>
+            <li><button class="dropdown-item" type="button" onclick="self.location='setting.html'">설정</button></li>
+            <li><button class="dropdown-item" type="button" onclick="self.location='follow.html'">팔로우 채널 관리 </button></li>
+            <li><button class="dropdown-item" type="button" onclick="self.location='myvideo.html'">다시보기 찜 관리</button></li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -185,6 +193,7 @@
   <script src="assets/swiper-bundle.min.js"></script>
 
   <!-- Template Main JS File -->
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/main.js"></script>
 
 </body>
