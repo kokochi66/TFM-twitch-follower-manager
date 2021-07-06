@@ -31,3 +31,23 @@ ul, li {list-style: none; margin: 0; padding: 0;}
     #hero .swiper-wrapper .swiper-slide .Hbox {width: 150px; height: 100px;}
     #hero .swiper-wrapper .swiper-slide-active .Hbox {width: 400px; height: 250px;}
 }
+
+.content .follow-box {
+    padding: 150px 20px; text-align: center; border: 1px solid #fff;
+    transition: all ease-in-out .3s;
+}
+
+.content .replay-box {
+    padding: 150px 20px; text-align: center; border: 1px solid #fff;
+    transition: all ease-in-out .3s;
+}
+
+.content .entry {
+    padding: 30px;
+    margin-bottom: 60px;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
+}
+
+#loginForm {
+    margin: 0 auto; width: 100%;
+}
