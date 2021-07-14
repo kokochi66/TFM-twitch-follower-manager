@@ -1,12 +1,6 @@
-/**
-* Template Name: Eterna - v2.2.1
-* Template URL: https://bootstrapmade.com/eterna-free-multipurpose-bootstrap-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
 
 window.onload = function() {
-  var swiper = new Swiper(".swiper-container", {
+  var swiper = new Swiper("#headslider-container", {
     slidesPerView: 3,
     navigation: {
       nextEl: ".swiper-button-next",
@@ -20,7 +14,7 @@ window.onload = function() {
       0: {
         slidesPerView: 1
       },
-      700: {
+      1200: {
         slidesPerView: 3
       }
     }

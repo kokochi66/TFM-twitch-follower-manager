@@ -60,7 +60,6 @@ h1, h2, h3, h4, h5, h6 {
 # Top Bar
 --------------------------------------------------------------*/
 #topbar {
-  background: #a2e2ff;
   padding: 10px 0;
   font-size: 14px;
 }
@@ -106,15 +105,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #topbar .social-links a {
-  color: rgb(160, 0, 0);
+  color: rgb(0, 0, 0);
   padding: 4px 0 4px 16px;
   display: inline-block;
   line-height: 1px;
-  transition: 0.3s;
+  transition: .2s;
 }
 
 #topbar .social-links a:hover {
-  color: #e96b56;
+  color: #a5a5a5;
 }
 
 #topbar .social-links a:first-child {
@@ -356,12 +355,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*--------------------------------------------------------------
-# Hero Section
+# HeadSlider Section
 --------------------------------------------------------------*/
-#hero {
+#headslider {
   width: 100%;
   height: 70vh;
-  background-color: rgb(171, 207, 103);
+  background-color: rgba(22, 22, 22, 0.15);
   overflow: hidden;
   padding: 0;
   margin-bottom: -120px;
@@ -369,47 +368,43 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-#hero .Hbox {
+#headslider .Hbox {
   width: 300px; height: 200px; border: 1px solid #fff;
   display: block; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
 }
 
 
-#hero-container {
+#headslider-container {
   width: 100%; height: 100%;
-}
-
-#hero-pagination {
-  bottom: 150px;
 }
 
 
 @media (max-height: 768px), (max-width: 1200px) {
-  #hero {
+  #headslider {
     margin-bottom: 60px;
   }
-  #hero .carousel-container {
+  #headslider .carousel-container {
     padding-bottom: 0;
   }
-  #hero .carousel-indicators li {
+  #headslider .carousel-indicators li {
     margin-bottom: 0;
   }
 }
 
 @media (max-width: 768px) {
-  #hero {
+  #headslider {
     height: 90vh;
   }
-  #hero .carousel-item {
+  #headslider .carousel-item {
     height: 90vh;
   }
 }
 
 @media (min-width: 1024px) {
-  #hero p {
+  #headslider p {
     width: 50%;
   }
-  #hero .carousel-control-prev, #hero .carousel-control-next {
+  #headslider .carousel-control-prev, #headslider .carousel-control-next {
     width: 5%;
   }
 }
@@ -502,12 +497,12 @@ section {
   padding: 40px 30px;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
-  background: rgb(233, 243, 96);
+  background: rgb(255, 255, 255);
   transition: all ease-in-out 0.3s;
 }
 
 .featured .icon-box i {
-  color: rgb(67, 70, 27);
+  color: rgb(65, 65, 65);
   font-size: 42px;
   margin-bottom: 15px;
   display: block;
@@ -532,7 +527,7 @@ section {
 }
 
 .featured .icon-box:hover {
-  background: rgb(144, 148, 92);
+  background: rgb(138, 138, 138);
 }
 
 .featured .icon-box:hover i, .featured .icon-box:hover h3 a, .featured .icon-box:hover p {
