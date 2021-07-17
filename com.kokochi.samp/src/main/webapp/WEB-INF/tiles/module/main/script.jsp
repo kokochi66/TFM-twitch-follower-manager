@@ -6,3 +6,6 @@
 
 <!-- Template Main JS File -->
 <script src="${path}/assets/js/main.js"></script>
+
+<!-- Bootstrap JS File -->
+<script src="${path}/assets/js/bootstrap.bundle.min.js"></script>
