@@ -8,19 +8,19 @@
   <div id="headslider-container" class="swiper-container">
     <div class="swiper-wrapper">
       <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?nature') center center no-repeat;" width="100%">1</div>
+        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?nature') center center no-repeat;background-size: cover;" width="100%">1</div>
       </div>
       <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?building') center center no-repeat;" width="100%">2</div>
+        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?building') center center no-repeat;background-size: cover;" width="100%">2</div>
       </div>
       <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?smart') center center no-repeat;" width="100%">3</div>
+        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?smart') center center no-repeat;background-size: cover;" width="100%">3</div>
       </div>
       <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?japan') center center no-repeat;" width="100%">4</div>
+        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?japan') center center no-repeat;background-size: cover;" width="100%">4</div>
       </div>
       <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?korea') center center no-repeat;" width="100%">5</div>
+        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?korea') center center no-repeat;background-size: cover;" width="100%">5</div>
       </div>
     </div>
     <div id="hero-pagination" class="swiper-pagination"></div>

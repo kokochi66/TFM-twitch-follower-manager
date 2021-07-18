@@ -14,8 +14,39 @@
 		<property name="basenames">
 			<list>
 				<value>ApplicationMessage</value>
-				<value>Secret</value>
 			</list>
 		</property>
 	</bean>
+	
+	<!-- 데이터 소스의 빈을 hikariConfig로 정의한다. -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3307/tfm?characterEncoding=UTF-8&amp;" />
+		<property name="username" value="kkalchang" />
+		<property name="password" value="QeqE2$#5" />
+	</bean>
+ 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	
+	<!-- SqlSessionFactoryBean, sSqlSessioNTemplate, 트랜잭션 관리자 빈을 정의한다. -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:/mybatis-config.xml" />
+	</bean>
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- 어노테이션 기반 트랜잭션 제어를 활성화한다. -->
+	<tx:annotation-driven/>
+	
+	<!-- Mapper 인터페이스의 스캔을 활성화한다 -->
+	<mybatis-spring:scan base-package="com.kokochi.samp.mapper"/>
+	
+	<!-- Service 패키지를 컴포넌트 스캔 대상으로 한다. -->
+	
 </beans>
