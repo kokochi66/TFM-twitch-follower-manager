@@ -16,13 +16,8 @@ import com.kokochi.samp.service.TwitchKeyService;
 public class GetToken {
 	
 	private JSONParser parser = new JSONParser();
-	@Autowired
-	private TwitchKeyService key;
 	
-	public JSONObject GetAppAccessToken() throws Exception {
-		
-		String client_id = key.read("client_id").getKey_value();
-		String client_secret = key.read("client_secret").getKey_value();
+	public JSONObject GetAppAccessToken(String client_id, String client_secret) throws Exception {
 		
 		MultiValueMap<String, String> params  = new LinkedMultiValueMap<>();
 		HttpHeaders headers = new HttpHeaders();
@@ -38,7 +33,6 @@ public class GetToken {
 				entity, String.class);
 		
 		JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
-		System.out.println(jsonfile.get("access_token"));
 		
 		return jsonfile;
 	}

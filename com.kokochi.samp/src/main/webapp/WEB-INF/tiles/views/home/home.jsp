@@ -1,27 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><c:set var="path" value="/resources"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<c:set var="path" value="/resources"/>
 
 <!-- HeadSlider -->
 <section id="headslider">
   <div id="headslider-container" class="swiper-container">
     <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?nature') center center no-repeat;background-size: cover;" width="100%">1</div>
-      </div>
-      <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?building') center center no-repeat;background-size: cover;" width="100%">2</div>
-      </div>
-      <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?smart') center center no-repeat;background-size: cover;" width="100%">3</div>
-      </div>
-      <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?japan') center center no-repeat;background-size: cover;" width="100%">4</div>
-      </div>
-      <div class="swiper-slide">
-        <div class="Hbox" style="background: url('https://source.unsplash.com/400x250/?korea') center center no-repeat;background-size: cover;" width="100%">5</div>
-      </div>
+    	<c:forEach items="${headslide_list}" var="stream">
+		  <div class="swiper-slide">
+		  	<div class="Hbox" style="background: url('${stream.thumbnail_url}') center center no-repeat;
+		  			background-size: cover;" width="100%">1</div>
+	      </div>
+    	</c:forEach>
+    	
     </div>
     <div id="hero-pagination" class="swiper-pagination"></div>
     <div class="swiper-button-prev"></div>

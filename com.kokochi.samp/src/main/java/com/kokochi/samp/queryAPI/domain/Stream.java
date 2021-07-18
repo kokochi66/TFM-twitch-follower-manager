@@ -14,19 +14,16 @@ public class Stream {
 	private String started_at;
 	private String language;
 	private String thumbnail_url;
-	private String tag_ids;
+	private String[] tag_ids;
 	private boolean is_mature;
 	private String pagination;
-	
-	
-	
 	
 	public Stream() {
 	}
 
 	public Stream(String id, String user_id, String user_login, String user_name, String game_id, String game_name,
 			String type, String title, int viewer_count, String started_at, String language, String thumbnail_url,
-			String tag_ids, boolean is_mature, String pagination) {
+			String[] tag_ids, boolean is_mature, String pagination) {
 		this.id = id;
 		this.user_id = user_id;
 		this.user_login = user_login;
@@ -116,10 +113,10 @@ public class Stream {
 	public void setThumbnail_url(String thumbnail_url) {
 		this.thumbnail_url = thumbnail_url;
 	}
-	public String getTag_ids() {
+	public String[] getTag_ids() {
 		return tag_ids;
 	}
-	public void setTag_ids(String tag_ids) {
+	public void setTag_ids(String[] tag_ids) {
 		this.tag_ids = tag_ids;
 	}
 	public boolean isIs_mature() {
@@ -134,6 +131,17 @@ public class Stream {
 	public void setPagination(String pagination) {
 		this.pagination = pagination;
 	}
+
+	@Override
+	public String toString() {
+		return "Stream [id=" + id + ", user_id=" + user_id + ", user_login=" + user_login + ", user_name=" + user_name
+				+ ", game_id=" + game_id + ", game_name=" + game_name + ", type=" + type + ", title=" + title
+				+ ", viewer_count=" + viewer_count + ", started_at=" + started_at + ", language=" + language
+				+ ", thumbnail_url=" + thumbnail_url + ", tag_ids=" + tag_ids + ", is_mature=" + is_mature
+				+ ", pagination=" + pagination + "]";
+	}
+	
+	
 	
 	
 

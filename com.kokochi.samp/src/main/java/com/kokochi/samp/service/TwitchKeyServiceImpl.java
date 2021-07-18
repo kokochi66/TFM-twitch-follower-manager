@@ -24,23 +24,14 @@ public class TwitchKeyServiceImpl implements TwitchKeyService {
 	public TwitchKey read(String key_name) throws Exception {
 		// TODO Auto-generated method stub
 		
-		System.out.println("key 가져오기 = " + key_name );
-		
 		TwitchKey key = mapper.read(key_name);
 		
 		if(key == null) {
-			System.out.println("key가 널값임");
-			
 			key = new TwitchKey();
 			key.setKey_name(key_name);
-			
 			key.setKey_value("");	// 해당하는 키의 값을 받아올 수 있도록 하는 로직이 필요함.
-			
 			register(key);
 		}
-		
-		System.out.println(key);
-		
 		return key;
 	}
 
