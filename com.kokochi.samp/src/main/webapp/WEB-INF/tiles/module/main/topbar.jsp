@@ -8,7 +8,7 @@
       <h1 class="text-light"><a href="/" title="홈페이지의 메인 타이틀입니다."><span>TFM</span></a></h1>
     </div>
     <div class="social-links">
-      <a href="#" class="twitch"><i class="icofont-twitch" title="트위치 홈페이지로 이동하는 링크"></i></a>
+      <a href="https://www.twitch.tv/" class="twitch" target="_blank"><i class="icofont-twitch" title="트위치 홈페이지로 이동하는 링크"></i></a>
       
       <div class="dropdown d-inline">
         <a href="#" class="login dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>

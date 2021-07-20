@@ -14,33 +14,62 @@ ul, li {list-style: none; margin: 0; padding: 0;}
 #headslider-container {width: 100%;}
 #headslider .swiper-wrapper .swiper-slide .imageBox {
     transition: width .2s, height .2s, background-color .2s, opacity .2s;
-    background-color: rgb(255, 255, 255); border: 1px solid #000;
-    width: 600px; height: 200px;
-  	position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+    background-color: rgb(255, 255, 255); border: 1px solid #000; box-sizing: unset;
+  	position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); overflow: hidden;
 }
-#headslider .swiper-wrapper .swiper-slide-active .imageBox {
-    width: 600px; height: 200px; z-index: 1000; background-color: #fff; opacity: 1;
+#headslider .swiper-wrapper .swiper-slide-active .imageBox {z-index: 1000;}
+#headslider .swiper-wrapper .swiper-slide .imageBox > div {
+    height: 100%; transition: all .2s; position: absolute; top: 0;
+}
+#headslider .swiper-wrapper .swiper-slide .imageBox .img {left: 0; height: 100%; transition: all .2s;}
+#headslider .swiper-wrapper .swiper-slide .imageBox .info {
+    background-color: #404040;  right: 0;
+    display: block; padding: 10px; display: none;
+}
+#headslider .swiper-wrapper .swiper-slide-active .imageBox .info {display: block;}
+#headslider .swiper-wrapper .swiper-slide .imageBox .info > div {
+    text-align: center; margin: 8px 0; width: 100%; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px;
+}
+#headslider .swiper-wrapper .swiper-slide .imageBox .info .profile_img {
+    width: 50px; height: 50px; border: 1px solid #000; border-radius: 50%;
+    margin: 10px 40px; overflow: hidden;
+}
+#headslider .swiper-wrapper .swiper-slide .imageBox .info .user_name , 
+#headslider .swiper-wrapper .swiper-slide .imageBox .info .stream_game {
+    font-weight: bold; color: #a970ff; cursor: pointer;
+}
+#headslider .swiper-wrapper .swiper-slide .imageBox .info .user_name:hover , 
+#headslider .swiper-wrapper .swiper-slide .imageBox .info .stream_game:hover {
+    text-decoration: underline;
 }
 
 @media (min-width: 0px) {
     #headslider-container {width: 100%;}
-    #headslider .swiper-wrapper .swiper-slide .imageBox { width: 100px; height: 70px;}
-    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 300px; height: 200px;}
+    #headslider .swiper-wrapper .swiper-slide .imageBox { width: 80px; height: 50px;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 300px; height: 150px;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox .img {width: 240px;}
+    #headslider .swiper-wrapper .swiper-slide .imageBox .info {width: 60px;}
     .services .icon-box {width: 300px; margin: 0 auto;}
     .featured .icon-box {max-width: 350px; margin: 0 auto;}
 }
 
 @media (min-width: 576px) {
     #headslider-container {width: 85%;}
-    #headslider .swiper-wrapper .swiper-slide .imageBox {width: 100px; height: 70px;}
-    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 400px; height: 250px;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 400px; height: 200px;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox .img {width: 320px;}
+    #headslider .swiper-wrapper .swiper-slide .imageBox .info {width: 80px;}
 }
 
 
 @media (min-width: 992px) {
     #headslider-container {width: 70%;}
-    #headslider .swiper-wrapper .swiper-slide .imageBox {width: 150px; height: 100px;}
-    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 400px; height: 250px;}
+    #headslider .swiper-wrapper .swiper-slide .imageBox {width: 120px; height: 75px;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 550px; height: 250px;}
+    
+    #headslider .swiper-wrapper .swiper-slide .imageBox .img {width: 100%;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox .img {width: 400px;}
+    #headslider .swiper-wrapper .swiper-slide .imageBox .info {width: 150px;}
 }
 
 

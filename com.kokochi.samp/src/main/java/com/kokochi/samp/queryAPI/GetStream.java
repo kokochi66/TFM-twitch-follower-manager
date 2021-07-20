@@ -1,8 +1,6 @@
 package com.kokochi.samp.queryAPI;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -11,14 +9,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.GsonBuilderUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.kokochi.samp.queryAPI.domain.Stream;
+import com.kokochi.samp.queryAPI.domain.TwitchUser;
 
 public class GetStream {
 	
@@ -44,6 +40,9 @@ public class GetStream {
 				JSONObject cJson = (JSONObject) parser.parse(jsonArray.get(i).toString());
 				
 				Stream stream = new Gson().fromJson(cJson.toString(), Stream.class);
+				TwitchUser cUser = getUser(client_id, app_access_token, stream.getUser_id());
+				
+				stream.setProfile_image_url(cUser.getProfile_image_url());
 				list.add(stream);
 			}
 			
@@ -54,6 +53,37 @@ public class GetStream {
 		}
 		
 		return list;
+	}
+	
+	public TwitchUser getUser(String client_id, String app_access_token, String user_id) throws Exception {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", app_access_token);
+		headers.add("Client-id", client_id);
+		
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+		
+		ArrayList<Stream> list = new ArrayList<>();
+		try {
+			ResponseEntity<String> response = rt.exchange(
+					"https://api.twitch.tv/helix/users?id={id}", HttpMethod.GET,
+					entity, String.class, user_id);
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+			JSONArray jsonArray = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			JSONObject cJson = (JSONObject) parser.parse(jsonArray.get(0).toString());
+			
+			TwitchUser twitchUser = new Gson().fromJson(cJson.toString(), TwitchUser.class);
+			
+			return twitchUser;
+			
+			
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+			
+			if(exceptionMessage.get("status").toString().equals("401")) return null;
+		}
+		
+		return null;
 	}
 
 }

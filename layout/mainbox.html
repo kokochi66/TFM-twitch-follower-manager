@@ -22,13 +22,27 @@
 </head>
 <body>
 
-    <!-- HeadSlider -->
+<!-- HeadSlider -->
 <section id="headslider">
     <div id="headslider-container" class="swiper-container">
       <div class="swiper-wrapper">
-        <div class="swiper-slide">
-            <div class="imageBox" style="background: url('https://static-cdn.jtvnw.net/previews-ttv/live_user_kimdoe-400x250.jpg') center center no-repeat;
-                    background-size: cover;" width="100%">1</div>
+        <div class="swiper-slide swiper-slide-active">
+            <div class="imageBox">
+              <div class="img">
+                <img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_kimdoe-400x250.jpg"
+                 alt="방송이미지" width="100%">
+              </div>
+              <div class="info">
+                <div class="profile_img">
+                  <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/59b10cc7-772e-48a9-92df-066e9a35862b-profile_image-300x300.jpg" alt=""
+                    width="100%">
+                </div>
+                <div class="user_name">나나양(nanayang)</div>
+                <div class="stream_game">PUBG:BATTLEGROUNDS</div>
+                <div class="viewer_count">시청자 500000명</div>
+                <div class="started_date">2시간전</div>
+              </div>          
+            </div>
         </div>
       </div>
       <div id="hero-pagination" class="swiper-pagination"></div>
@@ -36,7 +50,15 @@
       <div class="swiper-button-next"></div>
     </div>
   
-</section><!-- End Hero -->
+</section><!-- End HeadSlider -->
     
+<!-- Vendor JS Files -->
+<script src="${path}/assets/js/swiper-bundle.min.js"></script>
+
+<!-- Template Main JS File -->
+<script src="${path}/assets/js/main.js"></script>
+
+<!-- Bootstrap JS File -->
+<script src="${path}/assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

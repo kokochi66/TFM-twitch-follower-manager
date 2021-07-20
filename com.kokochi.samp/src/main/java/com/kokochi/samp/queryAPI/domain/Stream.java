@@ -14,6 +14,7 @@ public class Stream {
 	private String started_at;
 	private String language;
 	private String thumbnail_url;
+	private String profile_image_url;
 	private String[] tag_ids;
 	private boolean is_mature;
 	private String pagination;
@@ -130,6 +131,16 @@ public class Stream {
 	}
 	public void setPagination(String pagination) {
 		this.pagination = pagination;
+	}
+	
+	
+
+	public String getProfile_image_url() {
+		return profile_image_url;
+	}
+
+	public void setProfile_image_url(String profile_image_url) {
+		this.profile_image_url = profile_image_url;
 	}
 
 	@Override
