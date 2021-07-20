@@ -10,7 +10,7 @@
     <div class="swiper-wrapper">
     	<c:forEach items="${headslide_list}" var="stream">
 		  <div class="swiper-slide">
-		  	<div class="Hbox" style="background: url('${stream.thumbnail_url}') center center no-repeat;
+		  	<div class="imageBox" style="background: url('${stream.thumbnail_url}') center center no-repeat;
 		  			background-size: cover;" width="100%">1</div>
 	      </div>
     	</c:forEach>

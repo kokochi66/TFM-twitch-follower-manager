@@ -12,33 +12,35 @@ ul, li {list-style: none; margin: 0; padding: 0;}
 
 /* # headslider */
 #headslider-container {width: 100%;}
-#headslider .swiper-wrapper .swiper-slide .Hbox {
+#headslider .swiper-wrapper .swiper-slide .imageBox {
     transition: width .2s, height .2s, background-color .2s, opacity .2s;
     background-color: rgb(255, 255, 255); border: 1px solid #000;
+    width: 600px; height: 200px;
+  	position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
 }
-#headslider .swiper-wrapper .swiper-slide-active .Hbox {
-    width: 300px; height: 200px; z-index: 1000; background-color: #fff; opacity: 1;
+#headslider .swiper-wrapper .swiper-slide-active .imageBox {
+    width: 600px; height: 200px; z-index: 1000; background-color: #fff; opacity: 1;
 }
 
 @media (min-width: 0px) {
     #headslider-container {width: 100%;}
-    #headslider .swiper-wrapper .swiper-slide .Hbox { width: 100px; height: 70px;}
-    #headslider .swiper-wrapper .swiper-slide-active .Hbox {width: 300px; height: 200px;}
+    #headslider .swiper-wrapper .swiper-slide .imageBox { width: 100px; height: 70px;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 300px; height: 200px;}
     .services .icon-box {width: 300px; margin: 0 auto;}
     .featured .icon-box {max-width: 350px; margin: 0 auto;}
 }
 
 @media (min-width: 576px) {
     #headslider-container {width: 85%;}
-    #headslider .swiper-wrapper .swiper-slide .Hbox {width: 100px; height: 70px;}
-    #headslider .swiper-wrapper .swiper-slide-active .Hbox {width: 400px; height: 250px;}
+    #headslider .swiper-wrapper .swiper-slide .imageBox {width: 100px; height: 70px;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 400px; height: 250px;}
 }
 
 
 @media (min-width: 992px) {
     #headslider-container {width: 70%;}
-    #headslider .swiper-wrapper .swiper-slide .Hbox {width: 150px; height: 100px;}
-    #headslider .swiper-wrapper .swiper-slide-active .Hbox {width: 400px; height: 250px;}
+    #headslider .swiper-wrapper .swiper-slide .imageBox {width: 150px; height: 100px;}
+    #headslider .swiper-wrapper .swiper-slide-active .imageBox {width: 400px; height: 250px;}
 }
 
 
