@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<sec:authentication-manager
+		alias="authenticationManager">
+		<sec:authentication-provider>
+			<sec:jdbc-user-service
+				data-source-ref="dataSource" />
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+	
+	<!-- 스프링 시큐리티 설정파일 -->
+	<sec:http use-expressions="true">
+		<sec:intercept-url pattern="/menu/**" access="hasAuthority('ROLE_MEMEBER')"/>
+		<sec:intercept-url pattern="/**" access="permitAll" />
+		
+		<sec:form-login  />
+		<sec:logout /> 
+	</sec:http>
+</beans>

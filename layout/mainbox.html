@@ -21,44 +21,209 @@
     <link href="assets/css/main.css" rel="stylesheet">
 </head>
 <body>
+<!-- ======= Top Bar ======= -->
+<section id="topbar" class="d-lg-block">
+  <div class="container d-flex">
+    <div class="logo mr-auto">
+      <h1 class="text-light"><a href="/" title="홈페이지의 메인 타이틀입니다."><span>TFM</span></a></h1>
+    </div>
+    <div class="social-links">
+      <a href="https://www.twitch.tv/" class="twitch" target="_blank"><i class="icofont-twitch" title="트위치 홈페이지로 이동하는 링크"></i></a>
+      
+      <div class="dropdown d-inline">
+        <a href="#" class="login dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          <li><button class="dropdown-item" type="button" onclick="location.href='/auth/login'">로그아웃</button></li>
+          <li><button class="dropdown-item" type="button" onclick="location.href='/menu/setting'">설정</button></li>
+          <li><button class="dropdown-item" type="button" onclick="location.href='/menu/managefollow'">팔로우 채널 관리</button></li>
+          <li><button class="dropdown-item" type="button" onclick="location.href='/menu/replayvideo'">다시보기 찜 관리</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- HeadSlider -->
 <section id="headslider">
-    <div id="headslider-container" class="swiper-container">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide swiper-slide-active">
-            <div class="imageBox">
-              <div class="img">
-                <img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_kimdoe-400x250.jpg"
-                 alt="방송이미지" width="100%">
+	<div id="headslider-container" class="swiper-container">
+		<div class="swiper-wrapper">
+			
+				<div class="swiper-slide">
+					<div class="imageBox">
+						<a href="https://www.twitch.tv/zilioner"
+							class="linkBox" target="_blank">
+							<div class="img">
+								<img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_zilioner-400x250.jpg" alt="방송이미지" width="100%">
+							</div>
+						</a>
+						<div class="info">
+							<div class="profile_img">
+								<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/89e29e2e-f165-40e6-bc0c-d42205935216-profile_image-300x300.png" alt="" width="100%">
+							</div>
+							<div class="user_name">침착맨(zilioner)</div>
+							<div class="stream_game">Just Chatting</div>
+							<div class="viewer_count">시청자 13088명</div>
+							<div class="started_date">2021-07-21T02:31:57Z</div>
+						</div>
+					</div>
+				</div>
+			
+				<div class="swiper-slide">
+					<div class="imageBox">
+						<a href="https://www.twitch.tv/dopa24"
+							class="linkBox" target="_blank">
+							<div class="img">
+								<img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_dopa24-400x250.jpg" alt="방송이미지" width="100%">
+							</div>
+						</a>
+						<div class="info">
+							<div class="profile_img">
+								<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/4a35691a-b2af-40f8-af90-72cc31d295d6-profile_image-300x300.png" alt="" width="100%">
+							</div>
+							<div class="user_name">dopa24(dopa24)</div>
+							<div class="stream_game">Just Chatting</div>
+							<div class="viewer_count">시청자 5869명</div>
+							<div class="started_date">2021-07-21T00:32:19Z</div>
+						</div>
+					</div>
+				</div>
+			
+				<div class="swiper-slide">
+					<div class="imageBox">
+						<a href="https://www.twitch.tv/runner0608"
+							class="linkBox" target="_blank">
+							<div class="img">
+								<img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_runner0608-400x250.jpg" alt="방송이미지" width="100%">
+							</div>
+						</a>
+						<div class="info">
+							<div class="profile_img">
+								<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/e5da145b-14f7-4555-a550-5d5c9a1d96cf-profile_image-300x300.png" alt="" width="100%">
+							</div>
+							<div class="user_name">러너교(runner0608)</div>
+							<div class="stream_game">LOST ARK</div>
+							<div class="viewer_count">시청자 3904명</div>
+							<div class="started_date">2021-07-21T00:47:29Z</div>
+						</div>
+					</div>
+				</div>
+			
+				<div class="swiper-slide">
+					<div class="imageBox">
+						<a href="https://www.twitch.tv/xkwhd"
+							class="linkBox" target="_blank">
+							<div class="img">
+								<img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_xkwhd-400x250.jpg" alt="방송이미지" width="100%">
+							</div>
+						</a>
+						<div class="info">
+							<div class="profile_img">
+								<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/00d773d6-0c5c-443a-947a-f3d765b95b4e-profile_image-300x300.jpg" alt="" width="100%">
+							</div>
+							<div class="user_name">피닉스박1(xkwhd)</div>
+							<div class="stream_game">Eternal Return</div>
+							<div class="viewer_count">시청자 2757명</div>
+							<div class="started_date">2021-07-21T04:28:15Z</div>
+						</div>
+					</div>
+				</div>
+			
+				<div class="swiper-slide">
+					<div class="imageBox">
+						<a href="https://www.twitch.tv/naseongkim"
+							class="linkBox" target="_blank">
+							<div class="img">
+								<img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_naseongkim-400x250.jpg" alt="방송이미지" width="100%">
+							</div>
+						</a>
+						<div class="info">
+							<div class="profile_img">
+								<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/ea777be2-7415-4ef2-8512-20083e08e9db-profile_image-300x300.png" alt="" width="100%">
+							</div>
+							<div class="user_name">김나성(naseongkim)</div>
+							<div class="stream_game">LOST ARK</div>
+							<div class="viewer_count">시청자 2535명</div>
+							<div class="started_date">2021-07-20T16:10:34Z</div>
+						</div>
+					</div>
+				</div>
+			
+
+		</div>
+		<div id="hero-pagination" class="swiper-pagination"></div>
+		<div class="swiper-button-prev"></div>
+		<div class="swiper-button-next"></div>
+	</div>
+
+</section>
+<!-- End HeadSlider -->
+
+
+<!-- Main -->
+<main id="main">
+
+	<!-- SearchBar  -->
+	<section id="searchbar" class="searchbar">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 container">
+					<div class="input-group mb-3 mt-3">
+						<input type="text" class="form-control" id="searchBar_text"
+							placeholder="스트리머 찾기">
+						<button class="searchBar_btn" id="searchBar_btn">
+							<i class="icofont-ui-search icon"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+  <section id="mainNotice" class="mainNotice">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 container">
+          <div class="notice_box">
+            <div class="title pt-5 pb-3">팔로우 목록 관리하기</div>
+            <div class="cont pt-2 pb-2 ml-5 mr-5">지금 바로 트위치 계정을 사이트와 연동하여 여러분의 스트리머 목록을 관리하고, 서비스를 이용하세요!</div>
+            <div class="row">
+              <div class="btn-group col-6 container pt-4 pb-5">
+                <button type="button" class="btn btn-outline-primary">회원가입</button>
+                <button type="button" class="btn btn-outline-secondary">로그인</button>
               </div>
-              <div class="info">
-                <div class="profile_img">
-                  <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/59b10cc7-772e-48a9-92df-066e9a35862b-profile_image-300x300.jpg" alt=""
-                    width="100%">
-                </div>
-                <div class="user_name">나나양(nanayang)</div>
-                <div class="stream_game">PUBG:BATTLEGROUNDS</div>
-                <div class="viewer_count">시청자 500000명</div>
-                <div class="started_date">2시간전</div>
-              </div>          
             </div>
+          </div>
         </div>
       </div>
-      <div id="hero-pagination" class="swiper-pagination"></div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
     </div>
-  
-</section><!-- End HeadSlider -->
-    
+  </section>
+</main>
+<!-- End #main -->
+
+	
+	
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+  <div class="container">
+    <div class="copyright">
+      &copy; Copyright <strong><span>kokochikochi</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+    </div>
+  </div>
+</footer><!-- End Footer -->
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+	
+
 <!-- Vendor JS Files -->
-<script src="${path}/assets/js/swiper-bundle.min.js"></script>
+<script src="assets/js/swiper-bundle.min.js"></script>
 
 <!-- Template Main JS File -->
-<script src="${path}/assets/js/main.js"></script>
+<script src="assets/js/main.js"></script>
 
 <!-- Bootstrap JS File -->
-<script src="${path}/assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

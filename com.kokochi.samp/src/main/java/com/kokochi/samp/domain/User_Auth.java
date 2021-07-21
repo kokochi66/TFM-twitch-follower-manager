@@ -15,24 +15,18 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user")
-public class User {
+@Table(name = "user_auth")
+public class User_Auth {
 	
 	@Id
 	@Column(name = "user_id")
 	private String user_id;
 	
-	@Column(name = "user_pwd")
-	private String user_pwd;
+	@Column(name = "authority")
+	private String authority;
 	
-	@Column(name = "user_email")
-	private String user_email;
-	
-	@Column(name = "user_nickname")
-	private String user_nickname;
-	
-	@Column(name = "twitch_user_id")
-	private String twitch_user_id;
-	
+	public User_Auth(String user_id2, String authority2) {
+		// TODO Auto-generated constructor stub
+	}
 	
 }
