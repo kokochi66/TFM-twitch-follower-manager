@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.kokochi.samp.domain.Member;
-import com.kokochi.samp.domain.User;
 
 @Controller
 @RequestMapping(value="/auth")
@@ -29,8 +28,7 @@ public class LoginController {
 		return "posttest";
 	}
 	@RequestMapping(value="/logout", method = RequestMethod.POST)
-	public String postPOST(Locale locale, User user) { // 메인 home 화면 매핑
-		logger.info("/post - POST TEST MEMBER = " + user.toString());
+	public String postPOST(Locale locale) { // 메인 home 화면 매핑
 		return "GOOD";
 	}
 }

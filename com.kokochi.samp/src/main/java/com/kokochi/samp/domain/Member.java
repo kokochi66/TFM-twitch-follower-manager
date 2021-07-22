@@ -1,27 +1,28 @@
 package com.kokochi.samp.domain;
 
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Member {
-	private String id;
-	private String password;
+	private String user_id;
+	private String user_pwd;
+	private String user_email;
+	private String user_nickname;
+	private String twitch_user_id;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	@Override
-	public String toString() {
-		return "Member [id=" + id + ", password=" + password + "]";
-	}
 	
 	
 }

@@ -11,11 +11,12 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
-	<sec:authentication-manager
-		alias="authenticationManager">
-		<sec:authentication-provider>
-			<sec:jdbc-user-service
-				data-source-ref="dataSource" />
+	<bean id="bcrptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	<bean id="customUserDetailsService" class="com.kokochi.samp.security.repository.CustomUserDetailsService" />
+	
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="customUserDetailsService">
+			<sec:password-encoder ref="bcrptPasswordEncoder" />
 		</sec:authentication-provider>
 	</sec:authentication-manager>
 	
@@ -23,8 +24,11 @@
 	<sec:http use-expressions="true">
 		<sec:intercept-url pattern="/menu/**" access="hasAuthority('ROLE_MEMEBER')"/>
 		<sec:intercept-url pattern="/**" access="permitAll" />
+		<sec:remember-me data-source-ref="dataSource"/>
 		
 		<sec:form-login  />
 		<sec:logout /> 
 	</sec:http>
+	
+	
 </beans>

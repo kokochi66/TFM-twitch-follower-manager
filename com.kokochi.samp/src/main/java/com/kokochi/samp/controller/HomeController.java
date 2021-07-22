@@ -12,8 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.kokochi.samp.domain.Member;
 import com.kokochi.samp.domain.TwitchKey;
-import com.kokochi.samp.domain.User;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.GetToken;
 import com.kokochi.samp.queryAPI.domain.Stream;
@@ -72,8 +72,7 @@ public class HomeController {
 		return "posttest";
 	}
 	@RequestMapping(value="/post", method = RequestMethod.POST)
-	public String postPOST(Locale locale, User user) { // 메인 home 화면 매핑
-		logger.info("/post - POST TEST MEMBER = " + user.toString());
+	public String postPOST(Locale locale) { // 메인 home 화면 매핑
 		return "GOOD";
 	}
 }

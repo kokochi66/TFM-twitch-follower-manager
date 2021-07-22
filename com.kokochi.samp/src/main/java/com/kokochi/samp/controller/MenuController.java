@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.kokochi.samp.domain.Member;
-import com.kokochi.samp.domain.User;
 
 @Controller
 @RequestMapping(value="/menu")
@@ -27,7 +26,7 @@ public class MenuController {
 		logger.info("/menu/managefollow - ManagaFollow Mapping :: Locale = "+ locale);
 	}
 	@RequestMapping(value="/replayvideo", method = RequestMethod.GET)
-	public void postPOST(Locale locale, User user) { // 메인 home 화면 매핑
+	public void postPOST(Locale locale) { // 메인 home 화면 매핑
 		logger.info("/menu/replayvideo - ReplayVideo Mapping :: Locale = "+ locale);
 	}
 }
