@@ -22,12 +22,16 @@
 	
 	<!-- 스프링 시큐리티 설정파일 -->
 	<sec:http use-expressions="true">
-		<sec:intercept-url pattern="/menu/**" access="hasAuthority('ROLE_MEMEBER')"/>
+		<!-- ACL(Access Control List) 접근 제어목록 설정 -->
+		<sec:intercept-url pattern="/menu/**" access="hasAuthority('MEMBER')"/>
 		<sec:intercept-url pattern="/**" access="permitAll" />
 		<sec:remember-me data-source-ref="dataSource"/>
 		
-		<sec:form-login  />
-		<sec:logout /> 
+		<!-- 로그인 페이지 설정 => 로그인 페이지, 로그인 실패와 성공시, 로그인 id용 파라미터와 패스워드용 파라미터를 지정함 -->
+		<sec:form-login login-page="/auth/login" login-processing-url="/auth/login"
+			authentication-failure-forward-url="/" authentication-success-forward-url="/"
+			username-parameter="user_id" password-parameter="user_pwd"  />
+		<sec:logout logout-url="/auth/logout" logout-success-url="/" invalidate-session="true" /> 
 	</sec:http>
 	
 	

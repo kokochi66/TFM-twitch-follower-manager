@@ -12,10 +12,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 
 import com.kokochi.samp.domain.Member;
 import com.kokochi.samp.domain.MemberAuth;
 
+@Component
 public class CustomUserDetailsService implements UserDetailsService {
 	
 	private Map<String, Member> userMap = new HashMap<>();

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kokochi.samp.mapper.UserDataMapper">
+	
+	<insert id="create">
+		INSERT INTO TwitchKey(key_name, key_value)
+		VALUES(#{key_name}, #{key_value})
+	</insert>
+	
+	<select id="read" resultType="Member">
+		SELECT key_name, key_value
+		FROM TwitchKey
+		WHERE key_name = #{key_name}
+	</select>
+	
+	<update id="update">
+		UPDATE TwitchKey
+		SET key_value = #{key_value}
+		WHERE key_name = #{key_name}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM TwitchKey
+		WHERE key_name = #{key_name}
+	</delete>
+	
+	<select id="list" resultType="Member">
+		SELECT key_name, key_value
+		FROM TwitchKey
+	</select>
+	
+</mapper>

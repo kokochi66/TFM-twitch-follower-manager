@@ -12,11 +12,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Data
 public class CustomUserDetails implements UserDetails {
 
-	private String userName;
-	private String userPwd;
+	private String user_id;
+	private String user_pwd;
 	private String auth;
 	private boolean isEnabled;
 	private boolean isAccountNonExpired;
@@ -36,7 +35,7 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return userPwd;
+		return user_pwd;
 	}
 
 
@@ -44,7 +43,7 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return userName;
+		return user_id;
 	}
 
 
