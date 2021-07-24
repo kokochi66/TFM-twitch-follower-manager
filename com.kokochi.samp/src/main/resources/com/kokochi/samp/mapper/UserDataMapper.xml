@@ -1,33 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kokochi.samp.mapper.UserDataMapper">
+<mapper namespace="com.kokochi.samp.mapper.UserMapper">
 	
-	<insert id="create">
-		INSERT INTO TwitchKey(key_name, key_value)
-		VALUES(#{key_name}, #{key_value})
-	</insert>
+	<resultMap type="com.kokochi.samp.domain.Member" id="memberMap">
+		<id property="user_id" column="user_id "/>
+		<result property="user_pwd" column="user_pwd "/>
+		<result property="user_email" column="user_email "/>
+		<result property="user_nickname" column="user_nickname "/>
+		<result property="twitch_user_id" column="twitch_user_id "/>
+	</resultMap>
 	
-	<select id="read" resultType="Member">
-		SELECT key_name, key_value
-		FROM TwitchKey
-		WHERE key_name = #{key_name}
+	<resultMap type="com.kokochi.samp.domain.MemberAuth" id="authMap">
+		<result property="user_id" column="user_id"/>
+		<result property="authority" column="authority"/>
+	</resultMap>
+	
+	<select id="readUser" resultType="Member">
+		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id
+		FROM user
+		WHERE user_id = #{user_id}
 	</select>
 	
+	<select id="readAuth" resultType="MemberAuth">
+		SELECT user_id, authority
+		FROM user_auth
+		WHERE user_id = #{user_id}
+	</select>
+	
+<!-- 	
 	<update id="update">
-		UPDATE TwitchKey
-		SET key_value = #{key_value}
-		WHERE key_name = #{key_name}
+		UPDATE user
+		SET user_pwd = #{user_pwd}, user_email = #{user_email}, user_nickname = #{user_nickname}, twitch_user_id = #{twitch_user_id}
+		WHERE user_id = #{user_id}
 	</update>
 	
 	<delete id="delete">
-		DELETE FROM TwitchKey
-		WHERE key_name = #{key_name}
+		DELETE FROM user
+		WHERE user_id = #{user_id}
 	</delete>
 	
 	<select id="list" resultType="Member">
-		SELECT key_name, key_value
-		FROM TwitchKey
+		SELECT user_id, user_pwd, user_email, user_nickname, twitch_user_id
+		FROM user
 	</select>
+	
+	
+	<insert id="createAuth">
+		INSERT INTO user_auth(user_id, authority)
+		VALUES(#{user_id}, #{authority})
+	</insert>
+	
+	<delete id="deleteAuth">
+		DELETE FROM user_auth
+		WHERE user_id = #{user_id}
+	</delete>
+	
+	<select id="getAuthAll" resultType="MemberAuth">
+		SELECT user_id, authority
+		FROM user_auth
+	</select> -->
 	
 </mapper>

@@ -34,10 +34,13 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:/mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath:/com/**/*.xml"></property>
 	</bean>
+	
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
 		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
+	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
@@ -47,6 +50,7 @@
 	
 	<!-- Mapper 인터페이스의 스캔을 활성화한다 -->
 	<mybatis-spring:scan base-package="com.kokochi.samp.mapper"/>
-	<mybatis-spring:scan base-package="com.kokochi.samp.security.mapper" />
+	
+	
 	
 </beans>

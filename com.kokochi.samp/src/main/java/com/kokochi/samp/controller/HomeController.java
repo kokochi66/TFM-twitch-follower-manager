@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.kokochi.samp.domain.Member;
+import com.kokochi.samp.domain.MemberAuth;
 import com.kokochi.samp.domain.TwitchKey;
+import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.GetToken;
 import com.kokochi.samp.queryAPI.domain.Stream;
@@ -25,6 +27,9 @@ public class HomeController {
 	
 	@Autowired
 	TwitchKeyService key;
+	
+	@Autowired
+	UserMapper mapper;
 	
 	@RequestMapping(value="/")
 	public String home(Locale locale, Model model) throws Exception { // 메인 home 화면 매핑
@@ -60,7 +65,7 @@ public class HomeController {
 			String thumb_url = headslide_list.get(i).getThumbnail_url().replace("{width}", "400").replace("{height}", "250");
 			headslide_list.get(i).setThumbnail_url(thumb_url);
 		}
-		
+
 		model.addAttribute("headslide_list", headslide_list);
 		
 		return "homes";

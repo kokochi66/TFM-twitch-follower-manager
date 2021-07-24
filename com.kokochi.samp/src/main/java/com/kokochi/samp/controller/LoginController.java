@@ -21,14 +21,5 @@ public class LoginController {
 	public void login(Locale locale, Model model) { // 메인 home 화면 매핑
 		logger.info("/auth/login - Login Mapping :: Locale = "+ locale);
 	}
-	
-	@RequestMapping(value="/login", method = RequestMethod.POST)
-	public String postGET(Locale locale, Model model) { // 메인 home 화면 매핑
-		logger.info("/post - POST TEST");
-		return "posttest";
-	}
-	@RequestMapping(value="/logout", method = RequestMethod.POST)
-	public String postPOST(Locale locale) { // 메인 home 화면 매핑
-		return "GOOD";
-	}
+
 }
