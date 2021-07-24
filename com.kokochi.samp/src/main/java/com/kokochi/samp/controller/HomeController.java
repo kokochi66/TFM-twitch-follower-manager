@@ -7,13 +7,13 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.kokochi.samp.domain.Member;
-import com.kokochi.samp.domain.MemberAuth;
+import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.domain.TwitchKey;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetStream;
@@ -21,9 +21,11 @@ import com.kokochi.samp.queryAPI.GetToken;
 import com.kokochi.samp.queryAPI.domain.Stream;
 import com.kokochi.samp.service.TwitchKeyService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 public class HomeController {
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	@Autowired
 	TwitchKeyService key;
@@ -33,7 +35,7 @@ public class HomeController {
 	
 	@RequestMapping(value="/")
 	public String home(Locale locale, Model model) throws Exception { // 메인 home 화면 매핑
-		logger.info("/ - Home Mapping :: Locale = "+ locale);
+		log.info("/ - Home Mapping :: Locale = "+ locale);
 		// 1. client_id를 가져오고, 인증토큰을 가져와서 라이브중인 스트림을 먼저 가져온다. 성공하면 그대로 뷰로 넘김
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
@@ -67,13 +69,24 @@ public class HomeController {
 		}
 
 		model.addAttribute("headslide_list", headslide_list);
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(principal.toString().equals("anonymousUser")) {
+			model.addAttribute("user_nickname", "null");
+
+		} else {
+			UserDTO user = (UserDTO) principal;
+			String user_nickname = user.getUser_nickname();
+			log.info("로그인 된 사용자 정보 가져오기 = " + user_nickname);
+			model.addAttribute("user_nickname", user_nickname);
+		}
+		
 		
 		return "homes";
 	}
 	
 	@RequestMapping(value="/post", method = RequestMethod.GET)
 	public String postGET(Locale locale, Model model) { // 메인 home 화면 매핑
-		logger.info("/post - POST TEST");
+		log.info("/post - POST TEST");
 		return "posttest";
 	}
 	@RequestMapping(value="/post", method = RequestMethod.POST)

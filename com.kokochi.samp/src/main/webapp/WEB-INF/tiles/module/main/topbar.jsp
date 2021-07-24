@@ -3,12 +3,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><c:set var="path" value="/resources"/>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%
-	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	Object principal = auth.getPrincipal();
-	String user = "null";
-	if(principal != null) user = auth.getName();
-%>
 <!-- ======= Top Bar ======= -->
 <section id="topbar" class="d-lg-block">
 	<div class="container d-flex">
@@ -26,8 +20,8 @@
 					data-bs-toggle="dropdown" aria-expanded="false"><i
 					class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>
 				<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-<%-- 					<sec:authorize access="isAuthenticated()">
-						<li><button class="dropdown-item" type="button">${user}님</button></li>
+					<sec:authorize access="isAuthenticated()">
+						<li><button class="dropdown-item" type="button">${user_nickname}님</button></li>
 						<li>
 							<form action="/auth/logout" method="post">
 								<input type="submit" class="dropdown-item" value="로그아웃" />
@@ -36,12 +30,8 @@
 					</sec:authorize>
 					
 					<sec:authorize access="isAnonymous()">
-						<li><button class="dropdown-item" type="button" onclick="location.href='/login'">로그인</button></li>
-					</sec:authorize> --%>
-					
-					<sec:authorize access="!isAnonymous()">로그인 되지 않았습니다.</sec:authorize>
-					<sec:authorize access="!isAuthenticated()">로그인 되어있습니다.</sec:authorize>
-					
+						<li><button class="dropdown-item" type="button" onclick="location.href='/auth/login'">로그인</button></li>
+					</sec:authorize>
 					<li><button class="dropdown-item" type="button"
 							onclick="location.href='/menu/setting'">설정</button></li>
 					<li><button class="dropdown-item" type="button"
