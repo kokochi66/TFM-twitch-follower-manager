@@ -17,7 +17,7 @@
 	</resultMap>
 	
 	<select id="readUser" resultType="Member">
-		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id
+		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, enable
 		FROM user
 		WHERE user_id = #{user_id}
 	</select>
@@ -27,5 +27,36 @@
 		FROM user_auth
 		WHERE user_id = #{user_id}
 	</select>
+	
+	<insert id="create">
+		INSERT INTO user(user_id, user_pwd, user_email, user_nickname)
+		VALUES(#{user_id}, #{user_pwd}, #{user_email}, #{user_nickname})
+	</insert>
+	
+	<delete id="delete">
+		DELETE FROM user
+		WHERE user_id = #{user_id}
+	</delete>
+	
+	<update id="update">
+		UPDATE user
+		SET user_pwd = #{user_pwd}, user_email = #{user_email}, user_nickname = #{user_nickname}, twitch_user_id = #{twitch_user_id}, enable = #{enable}
+		WHERE user_id = #{user_id}
+	</update>
+	
+	<select id="userList" resultType="Member">
+		SELECT user_id, user_pwd, user_email, user_nickname, twitch_user_id, enable
+		FROM user
+	</select>
+	
+	<insert id="addAuth">
+		INSERT INTO user_auth(user_id, authority)
+		VALUES(#{user_id}, #{authority})
+	</insert>
+	
+	<delete id="delAuth">
+		DELETE FROM user_auth
+		WHERE user_id = #{user_id} AND authority = #{authority}
+	</delete>
 	
 </mapper>

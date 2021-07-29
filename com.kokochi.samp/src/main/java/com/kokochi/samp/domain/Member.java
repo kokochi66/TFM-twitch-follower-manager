@@ -20,4 +20,5 @@ public class Member {
 	private String user_email;
 	private String user_nickname;
 	private String twitch_user_id;
+	private boolean enable;
 }

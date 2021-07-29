@@ -14,7 +14,7 @@
 	
 	<sec:authentication-manager alias="authenticationManager">
 		<sec:authentication-provider user-service-ref="userService">
-			<!-- <sec:password-encoder ref="bcrptPasswordEncoder" /> -->
+			<sec:password-encoder ref="bcrptPasswordEncoder" />
 		</sec:authentication-provider>
 	</sec:authentication-manager>
 	

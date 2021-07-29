@@ -9,4 +9,16 @@ public interface UserMapper {
 	public Member readUser(String user_id) throws Exception;
 	
 	public List<MemberAuth> readAuth(String user_id) throws Exception;
+	
+	public void create(Member member) throws Exception;
+	
+	public void delete(String user_id) throws Exception;
+	
+	public void update(Member member) throws Exception;
+	
+	public List<Member> userList() throws Exception;
+	
+	public void addAuth(MemberAuth auth) throws Exception;
+	
+	public void delAuth(MemberAuth auth) throws Exception;
 }
