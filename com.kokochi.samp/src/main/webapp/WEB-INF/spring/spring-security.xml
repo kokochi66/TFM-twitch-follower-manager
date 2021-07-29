@@ -10,9 +10,6 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
-
-	<bean id="bcrptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
-	<bean id="userService" class="com.kokochi.samp.service.UserService" />
 	
 	
 	<sec:authentication-manager alias="authenticationManager">
@@ -22,7 +19,7 @@
 	</sec:authentication-manager>
 	
 	<!-- 스프링 시큐리티 설정파일 -->
-	<sec:http auto-config="true" use-expressions="true">
+	<sec:http use-expressions="true">
 		<!-- ACL(Access Control List) 접근 제어목록 설정 -->
 		<sec:intercept-url pattern="/menu/**" access="hasAuthority('MEMBER')"/>
 		<sec:intercept-url pattern="/**" access="permitAll" />
@@ -30,11 +27,24 @@
 		
 		<!-- 로그인 페이지 설정 => 로그인 페이지, 로그인 실패와 성공시, 로그인 id용 파라미터와 패스워드용 파라미터를 지정함 -->
 		<sec:form-login login-processing-url="/auth/login" username-parameter="user_id" password-parameter="user_pwd"
-		authentication-success-forward-url="/" authentication-failure-forward-url="/" login-page="/auth/login" /> 
+		authentication-success-forward-url="/" login-page="/auth/login"
+		 default-target-url="/" authentication-failure-handler-ref="loginFailureHandler"
+		 authentication-success-handler-ref="LoginSuccessHandler"
+		/> 
 			
 		<sec:logout logout-url="/auth/logout" logout-success-url="/" invalidate-session="true" /> 
-		<sec:csrf disabled="true"/>
+		<sec:csrf disabled="true" />
 	</sec:http>
+	
+	<bean id="bcrptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	<bean id="userService" class="com.kokochi.samp.security.UserDetailService" />
+	<bean id="loginFailureHandler" class="com.kokochi.samp.security.LoginFailureHandler">
+		<property name="user_id" value="user_id" />
+		<property name="user_pwd" value="user_pwd" />
+		<property name="error_name" value="error_name" />
+		<property name="defaultFailureUrl" value="/auth/login" />
+	</bean>
+	<bean id="LoginSuccessHandler" class="com.kokochi.samp.security.LoginSuccessHandler" />
 	
 	
 </beans>

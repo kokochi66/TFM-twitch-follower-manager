@@ -11,15 +11,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.kokochi.samp.domain.Member;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
 @RequestMapping(value="/auth")
+@Slf4j
 public class LoginController {
-	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
 	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public void login(Locale locale, Model model) { // 메인 home 화면 매핑
-		logger.info("/auth/login - Login Mapping :: Locale = "+ locale);
+		log.info("/auth/login - Login Mapping :: Locale = "+ locale);
+	}
+	
+	@RequestMapping(value="/login", method=RequestMethod.POST)
+	public void loginPage(Model model) {
+		log.info("login POST Mapping");
 	}
 
 }

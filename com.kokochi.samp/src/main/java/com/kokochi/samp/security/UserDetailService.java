@@ -1,4 +1,4 @@
-package com.kokochi.samp.service;
+package com.kokochi.samp.security;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import com.kokochi.samp.domain.MemberAuth;
 import com.kokochi.samp.mapper.UserMapper;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserDetailService implements UserDetailsService {
 	
 	@Autowired
 	private UserMapper mapper;

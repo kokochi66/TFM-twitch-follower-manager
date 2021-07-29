@@ -76,7 +76,6 @@ public class HomeController {
 		} else {
 			UserDTO user = (UserDTO) principal;
 			String user_nickname = user.getUser_nickname();
-			log.info("로그인 된 사용자 정보 가져오기 = " + user_nickname);
 			model.addAttribute("user_nickname", user_nickname);
 		}
 		

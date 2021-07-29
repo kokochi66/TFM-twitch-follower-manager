@@ -1,5 +1,4 @@
-<%@page import="org.springframework.security.core.Authentication"%>
-<%@page import="org.springframework.security.core.context.SecurityContextHolder"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><c:set var="path" value="/resources"/>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>

@@ -23,6 +23,7 @@
         <label class="form-label">비밀번호</label>
         <input type="password" class="form-control" name="user_pwd">
       </div>
+      <p style="color:red;">${errMsg}</p>
       <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input">
         <label class="form-check-label">Check me out</label>
