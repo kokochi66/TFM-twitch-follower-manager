@@ -15,6 +15,11 @@
   <div class="container">
 
     <form action="/auth/register" method="post" class="entry col-lg-6 col-md-8 col-sm-12" id="loginForm">
+    	<input type="hidden" value="${OAuthToken}" name="authtoken">
+      <div class="mb-3">
+        <label class="form-label">트위치 아이디</label>
+        <input type="text" class="form-control" value="${AuthenticatedUser}" disabled="disabled">
+      </div>
       <div class="mb-3">
         <label class="form-label">아이디</label>
         <input type="text" class="form-control" name="user_id">
@@ -31,8 +36,7 @@
         <label class="form-label">이메일</label>
         <input type="text" class="form-control" name="user_email">
       </div>
-      <button class="btn btn-success">트위치 연동하기</button>
-      <button type="submit" class="btn btn-primary">로그인</button>
+      <button type="submit" class="btn btn-primary">회원가입</button>
     </form>
 
   </div>

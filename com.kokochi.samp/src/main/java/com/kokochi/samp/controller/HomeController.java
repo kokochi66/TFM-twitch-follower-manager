@@ -31,11 +31,11 @@ public class HomeController {
 	TwitchKeyService key;
 	
 	@Autowired
-	UserMapper mapper;
+	UserMapper usermapper;
 	
 	@RequestMapping(value="/")
 	public String home(Locale locale, Model model) throws Exception { // 메인 home 화면 매핑
-		log.info("/ - Home Mapping :: Locale = "+ locale);
+		log.info("/ - 메인경로 이동= ");
 		// 1. client_id를 가져오고, 인증토큰을 가져와서 라이브중인 스트림을 먼저 가져온다. 성공하면 그대로 뷰로 넘김
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
@@ -81,15 +81,5 @@ public class HomeController {
 		
 		
 		return "homes";
-	}
-	
-	@RequestMapping(value="/post", method = RequestMethod.GET)
-	public String postGET(Locale locale, Model model) { // 메인 home 화면 매핑
-		log.info("/post - POST TEST");
-		return "posttest";
-	}
-	@RequestMapping(value="/post", method = RequestMethod.POST)
-	public String postPOST(Locale locale) { // 메인 home 화면 매핑
-		return "GOOD";
 	}
 }

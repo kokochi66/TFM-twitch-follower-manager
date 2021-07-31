@@ -37,6 +37,8 @@
 							onclick="location.href='/menu/managefollow'">팔로우 채널 관리</button></li>
 					<li><button class="dropdown-item" type="button"
 							onclick="location.href='/menu/replayvideo'">다시보기 찜 관리</button></li>
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/test/form'">폼 테스트</button></li>
 				</ul>
 			</div>
 		</div>

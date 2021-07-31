@@ -36,5 +36,26 @@ public class GetToken {
 		
 		return jsonfile;
 	}
+	
+	public JSONObject GetOauth2AuthorizeToken(String client_id, String client_secret, String code) throws Exception {
+		MultiValueMap<String, String> params  = new LinkedMultiValueMap<>();
+		HttpHeaders headers = new HttpHeaders();
+		params.add("client_id", client_id);
+		params.add("client_secret", client_secret);
+		params.add("code", code);
+		params.add("grant_type", "authorization_code");
+		params.add("redirect_uri", "http://localhost:8080/auth/login/oauth2/code/twitch");
+		
+		
+		HttpEntity<MultiValueMap<String,String>> entity = new HttpEntity<>(params, headers);
+		
+		RestTemplate rt = new RestTemplate();
+		ResponseEntity<String> response = rt.exchange(
+				"https://id.twitch.tv/oauth2/token", HttpMethod.POST, entity, String.class);
+		
+		JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+		
+		return jsonfile;
+	}
 
 }

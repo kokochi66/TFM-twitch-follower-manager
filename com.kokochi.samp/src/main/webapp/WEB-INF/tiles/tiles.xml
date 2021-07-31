@@ -25,5 +25,9 @@
 		<put-attribute name="content" value="/WEB-INF/tiles/views/menu/{1}.jsp" />
 	</definition>
 	
+	<definition name="test/*" extends="main-template">
+		<put-attribute name="title" value=": 테스트" />
+		<put-attribute name="content" value="/WEB-INF/tiles/views/test/{1}.jsp" />
+	</definition>
 	
 </tiles-definitions>

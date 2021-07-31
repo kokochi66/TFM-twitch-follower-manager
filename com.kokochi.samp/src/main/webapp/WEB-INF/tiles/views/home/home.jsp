@@ -74,7 +74,7 @@
 								연동하여 여러분의 스트리머 목록을 관리하고, 서비스를 이용하세요!</div>
 							<div class="row">
 								<div class="btn-group col-6 container pt-4 pb-5">
-									<button type="button" class="btn btn-outline-primary" onclick="location.href='/auth/register'">회원가입</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/auth/register/gettoken'">회원가입</button>
 									<button type="button" class="btn btn-outline-secondary" onclick="location.href='/auth/login'">로그인</button>
 								</div>
 							</div>

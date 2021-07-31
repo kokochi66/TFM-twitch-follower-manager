@@ -21,7 +21,7 @@
 	<!-- 스프링 시큐리티 설정파일 -->
 	<sec:http use-expressions="true">
 		<!-- ACL(Access Control List) 접근 제어목록 설정 -->
-		<sec:intercept-url pattern="/menu/**" access="hasAuthority('MEMBER')"/>
+		<sec:intercept-url pattern="/menu/**" access="hasAuthority('ROLE_MEMBER')"/>
 		<sec:intercept-url pattern="/**" access="permitAll" />
 		<sec:remember-me data-source-ref="dataSource" />
 		

@@ -45,7 +45,7 @@ public class UserDetailService implements UserDetailsService {
 		
 		MemberAuth auth = new MemberAuth();
 		auth.setUser_id(member.getUser_id());
-		auth.setAuthority("MEMBER");
+		auth.setAuthority("ROLE_MEMBER");
 		addAuth(auth);
 	}
 	

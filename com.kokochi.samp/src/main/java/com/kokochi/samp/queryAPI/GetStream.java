@@ -40,7 +40,7 @@ public class GetStream {
 				JSONObject cJson = (JSONObject) parser.parse(jsonArray.get(i).toString());
 				
 				Stream stream = new Gson().fromJson(cJson.toString(), Stream.class);
-				TwitchUser cUser = getUser(client_id, app_access_token, stream.getUser_id());
+				TwitchUser cUser = getUser(client_id, app_access_token, "id="+stream.getUser_id()+"&");
 				
 				stream.setProfile_image_url(cUser.getProfile_image_url());
 				list.add(stream);
@@ -66,8 +66,8 @@ public class GetStream {
 		ArrayList<Stream> list = new ArrayList<>();
 		try {
 			ResponseEntity<String> response = rt.exchange(
-					"https://api.twitch.tv/helix/users?id={id}", HttpMethod.GET,
-					entity, String.class, user_id);
+					"https://api.twitch.tv/helix/users?"+user_id, HttpMethod.GET,
+					entity, String.class);
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray jsonArray = (JSONArray) parser.parse(jsonfile.get("data").toString());
 			JSONObject cJson = (JSONObject) parser.parse(jsonArray.get(0).toString());
