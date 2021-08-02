@@ -21,6 +21,9 @@ public class UserDTO implements UserDetails {
 	private String user_id;
 	private String user_pwd;
 	private String user_nickname;
+	private String user_email;
+	private String twitch_user_id;
+	private boolean enable;
 	private List<String> authority;
 	
 	public UserDTO(Member member, List<MemberAuth> authList) {
@@ -28,7 +31,11 @@ public class UserDTO implements UserDetails {
 		this.user_id = member.getUser_id();
 		this.user_pwd = member.getUser_pwd();
 		this.user_nickname = member.getUser_nickname();
+		this.user_email = member.getUser_email();
+		this.twitch_user_id = member.getTwitch_user_id();
+		
 		this.authority = new ArrayList<String>();
+		
 		for(int i=0;i<authList.size();i++)	authority.add(authList.get(i).getAuthority());
 	}
 	
@@ -74,7 +81,7 @@ public class UserDTO implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return true;
+		return !this.enable;
 	}
 
 }

@@ -20,7 +20,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 			Authentication authentication) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		WebAuthenticationDetails web = (WebAuthenticationDetails) authentication.getDetails();
-		System.out.println("onAuthenticationSUccess 메소드 실행됨 !!");
 		response.sendRedirect("/");
 	}
 

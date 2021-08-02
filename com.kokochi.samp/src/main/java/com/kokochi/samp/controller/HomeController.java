@@ -35,7 +35,7 @@ public class HomeController {
 	
 	@RequestMapping(value="/")
 	public String home(Locale locale, Model model) throws Exception { // 메인 home 화면 매핑
-		log.info("/ - 메인경로 이동= ");
+		log.info("/ - 메인경로 이동");
 		// 1. client_id를 가져오고, 인증토큰을 가져와서 라이브중인 스트림을 먼저 가져온다. 성공하면 그대로 뷰로 넘김
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
@@ -69,16 +69,6 @@ public class HomeController {
 		}
 
 		model.addAttribute("headslide_list", headslide_list);
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(principal.toString().equals("anonymousUser")) {
-			model.addAttribute("user_nickname", "null");
-
-		} else {
-			UserDTO user = (UserDTO) principal;
-			String user_nickname = user.getUser_nickname();
-			model.addAttribute("user_nickname", user_nickname);
-		}
-		
 		
 		return "homes";
 	}

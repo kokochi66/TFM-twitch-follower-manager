@@ -40,6 +40,16 @@
 		</beans:property>
 	</beans:bean>
 	
+	<beans:bean id="authenticationInterceptor" class="com.kokochi.samp.controller.Interceptor.AuthenticationInterceptor" />
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<!-- <exclude-mapping path=""/> -->
+			<!-- 제외 url은 exclude-mapping으로 지정해주면 된다. -->
+			<beans:ref bean="authenticationInterceptor"/>
+		</interceptor>
+	</interceptors>
+	
 	<context:component-scan base-package="com.kokochi.samp.controller" />
 	<context:component-scan base-package="com.kokochi.samp.service" />
 	<context:component-scan base-package="com.kokochi.samp.mapper" />

@@ -29,8 +29,8 @@
 	</select>
 	
 	<insert id="create">
-		INSERT INTO user(user_id, user_pwd, user_email, user_nickname)
-		VALUES(#{user_id}, #{user_pwd}, #{user_email}, #{user_nickname})
+		INSERT INTO user(user_id, user_pwd, user_email, user_nickname, twitch_user_id)
+		VALUES(#{user_id}, #{user_pwd}, #{user_email}, #{user_nickname}, #{twitch_user_id})
 	</insert>
 	
 	<delete id="delete">

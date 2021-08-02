@@ -89,7 +89,15 @@ public class AuthController {
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
 	public String registerPro(Model model, Member member, String authtoken) throws Exception {
-		log.info("/auth/register POST - 회원가입 처리 => " + member.toString() +" "+ authtoken);
+		log.info("/auth/register POST - 회원가입 처리");
+		
+		String client_id = key.read("client_id").getKey_value();
+		GetStream streamGenereator = new GetStream();
+		TwitchUser user = streamGenereator.getUser(client_id, authtoken, "");
+		member.setTwitch_user_id(user.getLogin());
+		
+		log.info("회원가입 사용자 - " + member.toString());
+		
 		detail.userRegister(member);
 		return "redirect:/auth/login";
 	}

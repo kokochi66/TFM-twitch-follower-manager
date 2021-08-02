@@ -23,7 +23,6 @@ public class UserDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String user_id) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		System.out.println("UserDetailService - loadUserByUsername 메소드 실행 " + user_id );
 		try {
 			Member member = mapper.readUser(user_id);
 			List<MemberAuth> auth = mapper.readAuth(user_id);

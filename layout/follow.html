@@ -1,144 +1,181 @@
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-  <title>Eterna Bootstrap Template - Index</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/swiper-bundle.min.css" rel="stylesheet">
-  <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <title>TFM - 트위치 팔로우 관리자 : 메뉴</title>
   
 
-  <!-- Template Main CSS File -->
-  <link href="assets/css/style.css" rel="stylesheet">
-  <link href="assets/css/main.css" rel="stylesheet">
 
-</head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<!-- Favicons -->
+<!-- <link href="assets/img/favicon.png" rel="icon"> -->
+<!-- <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon"> -->
 
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+<!-- Vendor CSS Files -->
+<link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/swiper-bundle.min.css" rel="stylesheet">
+<link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+
+
+<!-- Template Main CSS File -->
+<link href="assets/css/style.css" rel="stylesheet">
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/main.css" rel="stylesheet">
+</head> 
 <body>
-  <!-- 뷰 작성을 위한 레이아웃 만들기 -->
+	
 
-  <!-- ======= Top Bar ======= -->
-  <section id="topbar" class="d-lg-block">
-    <div class="container d-flex">
-      <div class="logo mr-auto">
-        <h1 class="text-light"><a href="index.html" title="홈페이지의 메인 타이틀입니다."><span>TITLE</span></a></h1>
-        <!-- Uncomment below if you prefer to use an image logo -->
-        <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+
+
+<!-- ======= Top Bar ======= -->
+<section id="topbar" class="d-lg-block">
+	<div class="container d-flex">
+		<div class="logo mr-auto">
+			<h1 class="text-light">
+				<a href="/" title="홈페이지의 메인 타이틀입니다."><span>TFM</span></a>
+			</h1>
+		</div>
+		<div class="social-links">
+			<a href="https://www.twitch.tv/" class="twitch" target="_blank"><i
+				class="icofont-twitch" title="트위치 홈페이지로 이동하는 링크"></i></a>
+
+			<div class="dropdown d-inline">
+				<a href="#" class="login dropdown-toggle" id="dropdownMenu2"
+					data-bs-toggle="dropdown" aria-expanded="false"><i
+					class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					
+						<li><button class="dropdown-item" type="button">꼬꼬치꼬치님</button></li>
+						<li>
+							<form action="/auth/logout" method="post">
+								<input type="submit" class="dropdown-item" value="로그아웃" />
+							</form>
+						</li>
+					
+					
+					
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/menu/setting'">설정</button></li>
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/menu/managefollow'">팔로우 채널 관리</button></li>
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/menu/replayvideo'">다시보기 찜 관리</button></li>
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/test/form'">폼 테스트</button></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+	
+	
+
+
+
+
+
+<!-- ======= Breadcrumbs ======= -->
+<section id="breadcrumbs" class="breadcrumbs">
+  <div class="container">
+    <h2>팔로우 채널 관리</h2>
+  </div>
+</section><!-- End Breadcrumbs -->
+
+<!-- ======= Hero Section ======= -->
+<section id="content" class="content">
+  <div class="container">
+
+    <div class="entry row">
+      <div class="col-6 mb-5">
+        <select class="form-select" aria-label="Default select example">
+          <option selected>나의 팔로우 순</option>
+          <option value="1">라이브 중</option>
+          <option value="2">총 팔로워 순</option>
+          <option value="3">팔로우 한 날짜 순</option>
+        </select>
       </div>
-      <div class="social-links">
-        <a href="#" class="twitch"><i class="icofont-twitch" title="트위치 홈페이지로 이동하는 링크"></i></a>
-        
-        <div class="dropdown d-inline">
-          <a href="#" class="login dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-            <li><button class="dropdown-item" type="button" onclick="self.location='login.html'">로그아웃</button></li>
-            <li><button class="dropdown-item" type="button" onclick="self.location='setting.html'">설정</button></li>
-            <li><button class="dropdown-item" type="button" onclick="self.location='follow.html'">팔로우 채널 관리 </button></li>
-            <li><button class="dropdown-item" type="button" onclick="self.location='myreplay.html'">다시보기 찜 관리</button></li>
-          </ul>
+      <div class="col-6 mb-5">
+        <div class="btn-group float-right">
+          <a href="#" class="btn btn-primary active" aria-current="page">스트리머 추가</a>
+          <a href="#" class="btn btn-primary">내 스트리머 검색</a>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ======= Breadcrumbs ======= -->
-  <section id="breadcrumbs" class="breadcrumbs">
-    <div class="container">
-      <h2>팔로우 채널 관리</h2>
-    </div>
-  </section><!-- End Breadcrumbs -->
 
-  <!-- ======= Hero Section ======= -->
-  <section id="content" class="content">
-    <div class="container">
-
-      <div class="entry row">
-        <div class="col-6 mb-5">
-          <select class="form-select" aria-label="Default select example">
-            <option selected>나의 팔로우 순</option>
-            <option value="1">라이브 중</option>
-            <option value="2">총 팔로워 순</option>
-            <option value="3">팔로우 한 날짜 순</option>
-          </select>
-        </div>
-        <div class="col-6 mb-5">
-          <div class="btn-group float-right">
-            <a href="#" class="btn btn-primary active" aria-current="page">스트리머 추가</a>
-            <a href="#" class="btn btn-primary">내 스트리머 검색</a>
+      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+        <div class="follow-box">
+          <div class="profile_img" style="background-image: url('https://static-cdn.jtvnw.net/jtv_user_pictures/1885f8ff-2f1e-4b5b-8e21-dfe56698640f-profile_image-300x300.png');"></div>
+          <div class="info">
+            <div class="name">뿡이</div>
+            <div class="desc">그냥 뿡이ㅁㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄹㄴㅇㄻㄴㄹㄶ츝ㅊ</div>
           </div>
         </div>
-
-
-        <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-          <div class="follow-box"></div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-          <div class="follow-box"></div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-          <div class="follow-box"></div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-          <div class="follow-box"></div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-          <div class="follow-box"></div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-          <div class="follow-box"></div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-          <div class="follow-box"></div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-          <div class="follow-box"></div>
-        </div>
-
-
       </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+        <div class="follow-box"></div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+        <div class="follow-box"></div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+        <div class="follow-box"></div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+        <div class="follow-box"></div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+        <div class="follow-box"></div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+        <div class="follow-box"></div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+        <div class="follow-box"></div>
+      </div>
+
 
     </div>
-  </section><!-- End Blog Section -->
 
-  <!-- ======= Footer ======= -->
-  <footer id="footer">
-    <div class="container">
-      <div class="copyright">
-        &copy; Copyright <strong><span>Eterna</span></strong>. All Rights Reserved
-      </div>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/eterna-free-multipurpose-bootstrap-template/ -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-      </div>
+  </div>
+</section><!-- End Blog Section -->
+
+
+	
+	
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+  <div class="container">
+    <div class="copyright">
+      &copy; Copyright <strong><span>kokochikochi</span></strong>. All Rights Reserved
     </div>
-  </footer><!-- End Footer -->
+    <div class="credits">
+      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+    </div>
+  </div>
+</footer><!-- End Footer -->
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+	
 
-  <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 
-  <!-- Vendor JS Files -->
-  <script src="assets/swiper-bundle.min.js"></script>
+<!-- Vendor JS Files -->
+<script src="assets/js/swiper-bundle.min.js"></script>
 
-  <!-- Template Main JS File -->
-  <script src="assets/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/js/main.js"></script>
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
 
+<!-- Bootstrap JS File -->
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

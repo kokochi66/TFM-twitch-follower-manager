@@ -26,17 +26,13 @@
 
         <article class="entry">
           <form class="row">
-            <div class="mb-3 col-4">
+            <div class="mb-3 col-12">
               <label class="form-label">트위치 아이디</label>
-              <input type="text" class="form-control" aria-describedby="emailHelp" disabled>
-            </div>
-            <div class="mb-3 col-4">
-              <label class="form-label">트위치 닉네임</label>
-              <input type="text" class="form-control" disabled>
+              <input type="text" class="form-control col-4" value="${setting_twich_user_id}" disabled>
             </div>
             <div class="mb-3 col-12">
               <label class="form-label">아이디</label>
-              <input type="text" class="form-control col-4">
+              <input type="text" class="form-control col-4" value="${setting_user_id}">
             </div>
             <div class="mb-3 col-12">
               <label class="form-label">비밀번호</label>
@@ -44,14 +40,14 @@
             </div>
             <div class="mb-5 col-12">
               <label class="form-label d-block">이메일</label>
-              <input type="password" class="form-control col-4 d-inline mr-3">@
-              <input type="password" class="form-control col-4 d-inline ml-3">
+              <input type="text" class="form-control col-4 d-inline mr-3" value="${setting_user_email}">
             </div>
-
-            <button type="submit" class="btn btn-success mr-3">변경하기</button>
-            <button type="submit" class="btn btn-danger">삭제하기</button>
+			
+			<div class="btn-group" role="group">
+	            <button type="submit" class="btn btn-success mr-3">변경하기</button>
+	            <button type="submit" class="btn btn-danger">삭제하기</button>
+			</div>
           </form>
-
         </article>
 
       </div><!-- End blog entries list -->
