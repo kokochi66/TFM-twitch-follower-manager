@@ -43,7 +43,7 @@
 
 
 <!-- Main -->
-<main id="main">
+<main id="content">
 
 	<!-- SearchBar  -->
 	<section id="searchbar" class="searchbar">

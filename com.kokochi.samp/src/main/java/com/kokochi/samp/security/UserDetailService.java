@@ -25,6 +25,7 @@ public class UserDetailService implements UserDetailsService {
 		// TODO Auto-generated method stub
 		try {
 			Member member = mapper.readUser(user_id);
+			System.out.println("readUser => " + member.toString());
 			List<MemberAuth> auth = mapper.readAuth(user_id);
 			UserDTO user = new UserDTO(member, auth);
 			

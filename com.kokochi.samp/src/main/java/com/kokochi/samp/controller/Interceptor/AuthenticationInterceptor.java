@@ -3,11 +3,10 @@ package com.kokochi.samp.controller.Interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import com.kokochi.samp.DTO.UserDTO;
 
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
@@ -23,16 +22,19 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(principal.toString().equals("anonymousUser")) {
-			modelAndView.addObject("user_nickname", "null");
-
-		} else {
-			UserDTO user = (UserDTO) principal;
-			String user_nickname = user.getUser_nickname();
-			modelAndView.addObject("user_nickname", user_nickname);
-		}
+//		System.out.println("AuthenticationInterceptior - postHandle");
 		
+//		Object principal = SecurityContextHolder.getContext().getAuthentication();
+		if(SecurityContextHolder.getContext().getAuthentication() == null) System.out.println("AuthenticationInterceptior - postHandle 널값");
+		
+//		if(principal.toString().equals("anonymousUser")) {
+//			modelAndView.addObject("user_nickname", "null");
+//
+//		} else {
+//			UserDTO user = (UserDTO) principal;
+//			String user_nickname = user.getUser_nickname();
+//			modelAndView.addObject("user_nickname", user_nickname);
+//		}
 		
 	}
 

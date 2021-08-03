@@ -33,3 +33,5 @@
 
   </div>
 </section><!-- End Blog Section -->
+
+<script src="/resources/assets/js/auth/login.js"></script>

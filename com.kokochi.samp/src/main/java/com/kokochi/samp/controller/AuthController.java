@@ -31,8 +31,8 @@ public class AuthController {
 	UserDetailService detail;
 	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
-	public void login(Locale locale, Model model) { // 메인 home 화면 매핑
-		log.info("/auth/login - Login Mapping :: Locale = "+ locale);
+	public void login(Model model) { // 메인 home 화면 매핑
+		log.info("/auth/login - Login Mapping");
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
@@ -40,8 +40,27 @@ public class AuthController {
 		log.info("login POST Mapping");
 	}
 	
+	@RequestMapping(value="/login/gettoken", method=RequestMethod.GET)
+	public String loginTwitch() throws Exception {
+		log.info("/auth/gettoken GET - 트위치로 로그인");
+		
+		// 트위치 아이디를 인증하여 연동하는 계정을 생성하거나, 일반 아이디를 생성하는 두가지 선택지를 주어야함.
+		// 우선 기본 디폴트로 트위치 아이디를 인증하여 연동하는 계정을 생성하는 것을 구현함.
+		String uri = "https://id.twitch.tv/oauth2/authorize?";
+		String client_id = "client_id="+key.read("client_id").getKey_value()+"&";
+		String redirect_uri = "redirect_uri=http://localhost:8080/auth/login/oauth2/code/twitch&";
+		String response_type = "response_type=code&";
+		String scope = "scope=user:read:follows user:read:subscriptions user:read:email channel:manage:videos&";
+		String state = "state=/auth/login/twitch&";
+		
+		uri += client_id + redirect_uri + response_type + scope + state;
+		
+		// state값을 이용해서 반환 페이지를 확인해준다.
+		return "redirect:" +uri;
+	}
+	
 	@RequestMapping(value="/register/gettoken", method=RequestMethod.GET)
-	public String register(Model model) throws Exception {
+	public String register() throws Exception {
 		log.info("/auth/regitser GET - 회원가입 페이지로 이동");
 		
 		// 트위치 아이디를 인증하여 연동하는 계정을 생성하거나, 일반 아이디를 생성하는 두가지 선택지를 주어야함.
@@ -83,8 +102,8 @@ public class AuthController {
 	}
 	
 	@RequestMapping(value="/registerForm", method=RequestMethod.GET)
-	public void registerForm(Model model) throws Exception {
-		log.info("/auth/registerForm GET - 회원가입 폼");
+	public void registerForm(Model model,String OAuthToken) throws Exception {
+		log.info("/auth/registerForm GET - 회원가입 폼 " + OAuthToken);
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)

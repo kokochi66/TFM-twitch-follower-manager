@@ -12,11 +12,15 @@
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 	
 	
-	<sec:authentication-manager alias="authenticationManager">
+	<sec:authentication-manager>
+		<sec:authentication-provider ref="authenticationProvider" />
+	</sec:authentication-manager>
+	
+<!-- 	<sec:authentication-manager alias="authenticationManager">
 		<sec:authentication-provider user-service-ref="userService">
 			<sec:password-encoder ref="bcrptPasswordEncoder" />
 		</sec:authentication-provider>
-	</sec:authentication-manager>
+	</sec:authentication-manager> -->
 	
 	<!-- 스프링 시큐리티 설정파일 -->
 	<sec:http use-expressions="true">
@@ -28,8 +32,9 @@
 		<!-- 로그인 페이지 설정 => 로그인 페이지, 로그인 실패와 성공시, 로그인 id용 파라미터와 패스워드용 파라미터를 지정함 -->
 		<sec:form-login login-processing-url="/auth/login" username-parameter="user_id" password-parameter="user_pwd"
 		authentication-success-forward-url="/" login-page="/auth/login"
-		 default-target-url="/" authentication-failure-handler-ref="loginFailureHandler"
-		 authentication-success-handler-ref="LoginSuccessHandler"
+		 default-target-url="/" 
+		 authentication-failure-handler-ref="loginFailureHandler"
+		 authentication-success-handler-ref="LoginSuccessHandler"  
 		/> 
 			
 		<sec:logout logout-url="/auth/logout" logout-success-url="/" invalidate-session="true" /> 
@@ -38,6 +43,7 @@
 	
 	<bean id="bcrptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 	<bean id="userService" class="com.kokochi.samp.security.UserDetailService" />
+	<bean id="authenticationProvider" class="com.kokochi.samp.security.CustomAuthenticationProvider" />
 	<bean id="loginFailureHandler" class="com.kokochi.samp.security.LoginFailureHandler">
 		<property name="user_id" value="user_id" />
 		<property name="user_pwd" value="user_pwd" />

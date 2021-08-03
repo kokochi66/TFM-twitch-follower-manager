@@ -13,9 +13,11 @@ import com.kokochi.samp.domain.MemberAuth;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @SuppressWarnings("serial")
 @Getter @Setter
+@ToString
 public class UserDTO implements UserDetails {
 	
 	private String user_id;
@@ -23,7 +25,8 @@ public class UserDTO implements UserDetails {
 	private String user_nickname;
 	private String user_email;
 	private String twitch_user_id;
-	private boolean enable;
+	private String Oauth_token;
+	private int enable;
 	private List<String> authority;
 	
 	public UserDTO(Member member, List<MemberAuth> authList) {
@@ -33,6 +36,7 @@ public class UserDTO implements UserDetails {
 		this.user_nickname = member.getUser_nickname();
 		this.user_email = member.getUser_email();
 		this.twitch_user_id = member.getTwitch_user_id();
+		this.enable = member.getEnable();
 		
 		this.authority = new ArrayList<String>();
 		
@@ -81,7 +85,7 @@ public class UserDTO implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return !this.enable;
+		return this.enable == 1 ? true : false;
 	}
 
 }

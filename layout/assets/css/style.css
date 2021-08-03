@@ -1900,6 +1900,7 @@ section {
   padding: 0 0 30px 0;
   color: #fff;
   font-size: 14px;
+  position: absolute; bottom: 0; width: 100%;
 }
 
 #footer .footer-newsletter {
