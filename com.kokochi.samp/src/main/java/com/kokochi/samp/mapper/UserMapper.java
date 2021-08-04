@@ -8,6 +8,8 @@ import com.kokochi.samp.domain.MemberAuth;
 public interface UserMapper {
 	public Member readUser(String user_id) throws Exception;
 	
+	public Member readUserByTwitchId(String twitch_user_id) throws Exception;
+	
 	public List<MemberAuth> readAuth(String user_id) throws Exception;
 	
 	public void create(Member member) throws Exception;

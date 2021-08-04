@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.domain.Member;
 import com.kokochi.samp.domain.MemberAuth;
+import com.kokochi.samp.domain.TwitchKey;
+import com.kokochi.samp.mapper.TwitchKeyMapper;
 import com.kokochi.samp.mapper.UserMapper;
 
 @Service
@@ -20,12 +22,14 @@ public class UserDetailService implements UserDetailsService {
 	@Autowired
 	private UserMapper mapper;
 	
+	@Autowired
+	private TwitchKeyMapper keyMapper;
+	
 	@Override
 	public UserDetails loadUserByUsername(String user_id) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		try {
 			Member member = mapper.readUser(user_id);
-			System.out.println("readUser => " + member.toString());
 			List<MemberAuth> auth = mapper.readAuth(user_id);
 			UserDTO user = new UserDTO(member, auth);
 			
@@ -36,6 +40,14 @@ public class UserDetailService implements UserDetailsService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public UserDetails loadUserByTwitchUsername(String twitch_user_id) throws Exception {
+		
+		Member member = mapper.readUserByTwitchId(twitch_user_id);
+		List<MemberAuth> auth = mapper.readAuth(member.getUser_id());
+		UserDTO user = new UserDTO(member, auth);
+		return user;
 	}
 	
 	public void userRegister(Member member) throws Exception {
@@ -69,6 +81,9 @@ public class UserDetailService implements UserDetailsService {
 		mapper.delAuth(auth);
 	}
 	
+	public TwitchKey getKey(String key_name) throws Exception {
+		return keyMapper.read(key_name);
+	}
 	
 	
 

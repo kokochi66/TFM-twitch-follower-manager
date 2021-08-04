@@ -22,6 +22,12 @@
 		WHERE user_id = #{user_id}
 	</select>
 	
+	<select id="readUserByTwitchId" resultType="Member">
+		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, enable
+		FROM user
+		WHERE twitch_user_id = #{twitch_user_id}
+	</select>
+	
 	<select id="readAuth" resultType="MemberAuth">
 		SELECT user_id, authority
 		FROM user_auth

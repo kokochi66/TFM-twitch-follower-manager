@@ -85,5 +85,46 @@ public class GetStream {
 		
 		return null;
 	}
+	
+	public ArrayList<TwitchUser> getFollowedList(String client_id, String app_access_token, String user_id) throws Exception {
+		
+		TwitchUser user = getUser(client_id, app_access_token, user_id);
+		
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", app_access_token);
+		headers.add("Client-id", client_id);
+		
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+		
+		ArrayList<TwitchUser> list = new ArrayList<>();
+		try {
+			String from_id = "from_id="+user.getId()+"&";
+			String first = "first=20&";
+			ResponseEntity<String> response = rt.exchange(
+					"https://api.twitch.tv/helix/users/follows?"+from_id+first, HttpMethod.GET,
+					entity, String.class);
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+			JSONArray jsonArray = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			
+			for(int i=0;i<jsonArray.size();i++) {
+				JSONObject cJson = (JSONObject) parser.parse(jsonArray.get(i).toString());
+				
+				TwitchUser cUser = getUser(client_id, app_access_token, "login="+cJson.get("to_login")+"&");
+				list.add(cUser);
+			}
+			
+			return list;
+			
+			
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+			
+			if(exceptionMessage.get("status").toString().equals("401")) return null;
+		}
+		
+		return null;
+	}
 
 }

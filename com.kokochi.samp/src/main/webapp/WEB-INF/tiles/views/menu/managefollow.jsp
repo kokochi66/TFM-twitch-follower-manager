@@ -16,7 +16,6 @@
 <!-- ======= Hero Section ======= -->
 <section id="content" class="content">
   <div class="container">
-
     <div class="entry row">
       <div class="col-6 mb-5">
         <select class="form-select" aria-label="Default select example">
@@ -32,19 +31,21 @@
           <a href="#" class="btn btn-primary">내 스트리머 검색</a>
         </div>
       </div>
-
-      <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-        <div class="follow-box">
-          <div class="profile_img" style="background-image: url('https://static-cdn.jtvnw.net/jtv_user_pictures/1885f8ff-2f1e-4b5b-8e21-dfe56698640f-profile_image-300x300.png');"></div>
-          <div class="info">
-            <div class="name">뿡이</div>
-            <div class="desc">그냥 뿡이ㅁㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄹㄴㅇㄻㄴㄹㄶ츝ㅊ</div>
-            <div class="check">
-              <input type="checkbox" class="form-check-input checkInput" name="" id="">
-            </div>
-          </div>
-        </div>
-      </div>
+		
+<%-- 		<c:forEach items="${follow_list}" var="follow">
+	     <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
+	        <div class="follow-box">
+	          <div class="profile_img" style="background-image: url('${follow.profile_image_url}');"></div>
+	          <div class="info">
+	            <div class="name">${follow.display_name}(${follow.login})</div>
+	            <div class="desc">${follow.description}</div>
+	            <div class="check">
+	              <input type="checkbox" class="form-check-input checkInput" name="" id="">
+	            </div>
+	          </div>
+	        </div>
+	      </div>
+		</c:forEach>	 --%>
   </div>
 </section><!-- End Blog Section -->
-<script src="/resources/assets/js/menu/managefollow.js"></script>
+<script src="${path}/assets/js/menu/managefollow.js"></script>

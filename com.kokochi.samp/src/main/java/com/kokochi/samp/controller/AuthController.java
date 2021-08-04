@@ -4,10 +4,17 @@ import java.util.Locale;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kokochi.samp.domain.Member;
@@ -31,18 +38,29 @@ public class AuthController {
 	UserDetailService detail;
 	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
-	public void login(Model model) { // 메인 home 화면 매핑
+	public void login(Model model, String errMsg) { // 메인 home 화면 매핑
 		log.info("/auth/login - Login Mapping");
+		
+		if(errMsg != null) {
+			if(errMsg.equals("UsernameNotFound")) model.addAttribute("errMsg", "존재하지 않는 사용자입니다.");
+			else if(errMsg.equals("BadCredential")) model.addAttribute("errMsg", "아이디나 비밀번호가 틀립니다.");
+			else if(errMsg.equals("isLocked")) model.addAttribute("errMsg", "정지당한 아이디입니다.");
+			else if(errMsg.equals("isDisabled")) model.addAttribute("errMsg", "사용이 불가능한 아이디 입니다.");
+			else if(errMsg.equals("AccountExpired")) model.addAttribute("errMsg", "만료된 아이디 입니다.");
+			else if(errMsg.equals("CredentialsExpired")) model.addAttribute("errMsg", "비밀번호가 만료되었습니다.");
+		}
+
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public void loginPage(Model model) {
 		log.info("login POST Mapping");
+		
+		
 	}
 	
 	@RequestMapping(value="/login/gettoken", method=RequestMethod.GET)
 	public String loginTwitch() throws Exception {
-		log.info("/auth/gettoken GET - 트위치로 로그인");
 		
 		// 트위치 아이디를 인증하여 연동하는 계정을 생성하거나, 일반 아이디를 생성하는 두가지 선택지를 주어야함.
 		// 우선 기본 디폴트로 트위치 아이디를 인증하여 연동하는 계정을 생성하는 것을 구현함.
@@ -59,9 +77,16 @@ public class AuthController {
 		return "redirect:" +uri;
 	}
 	
+	@RequestMapping(value="/login/twitch", method=RequestMethod.GET)
+	public String OAuthTokenProcess(Model model,String OAuthToken, String AuthenticatedUser) throws Exception {
+		model.addAttribute("user_id", "OAuth2_authentication");
+		model.addAttribute("user_pwd", OAuthToken);
+		
+		return "auth/hiddenLogin";
+	}
+	
 	@RequestMapping(value="/register/gettoken", method=RequestMethod.GET)
 	public String register() throws Exception {
-		log.info("/auth/regitser GET - 회원가입 페이지로 이동");
 		
 		// 트위치 아이디를 인증하여 연동하는 계정을 생성하거나, 일반 아이디를 생성하는 두가지 선택지를 주어야함.
 		// 우선 기본 디폴트로 트위치 아이디를 인증하여 연동하는 계정을 생성하는 것을 구현함.
@@ -81,7 +106,6 @@ public class AuthController {
 	
 	@RequestMapping(value="/login/oauth2/code/twitch", method=RequestMethod.GET)
 	public String OauthTwitch(RedirectAttributes rttr, String code, String scope, String state) throws Exception {
-		log.info("/auth/login/oauth2/code/twitch - OAuth 토큰얻기");
 		
 		String client_id = key.read("client_id").getKey_value();
 		String client_secret = key.read("client_secret").getKey_value();
@@ -94,16 +118,18 @@ public class AuthController {
 		
 		// 회원가입 시 값에서 로그인 아이디 값을 그대로 전달해주면, form에서 임의로 값을 수정하여 디폴트값이 변형이 일어날 수 있기 때문에,
 		// 토큰값을 전달해주어서 로그인값은 표시만 해주고, 실제 인증과 데이터베이스 등록은 토큰을 이용해서 적용하도록 해준다.
-		rttr.addFlashAttribute("AuthenticatedUser", user.getLogin());
-		rttr.addFlashAttribute("OAuthToken", OAuth_token);
+		rttr.addAttribute("AuthenticatedUser", user.getLogin());
+		rttr.addAttribute("OAuthToken", OAuth_token);
 		
 		// 전달해주는 상태값을 곧 redirect 경로로 사용함.
 		return "redirect:"+state;
 	}
 	
 	@RequestMapping(value="/registerForm", method=RequestMethod.GET)
-	public void registerForm(Model model,String OAuthToken) throws Exception {
-		log.info("/auth/registerForm GET - 회원가입 폼 " + OAuthToken);
+	public void registerForm(Model model,String OAuthToken, String AuthenticatedUser) throws Exception {
+		log.info("/auth/registerForm GET - 회원가입 폼");
+		model.addAttribute("AuthenticatedUser", AuthenticatedUser);
+		model.addAttribute("OAuthToken", OAuthToken);
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)

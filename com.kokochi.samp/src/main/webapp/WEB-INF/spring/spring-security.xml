@@ -35,7 +35,7 @@
 		 default-target-url="/" 
 		 authentication-failure-handler-ref="loginFailureHandler"
 		 authentication-success-handler-ref="LoginSuccessHandler"  
-		/> 
+		/>
 			
 		<sec:logout logout-url="/auth/logout" logout-success-url="/" invalidate-session="true" /> 
 		<sec:csrf disabled="true" />
@@ -47,7 +47,6 @@
 	<bean id="loginFailureHandler" class="com.kokochi.samp.security.LoginFailureHandler">
 		<property name="user_id" value="user_id" />
 		<property name="user_pwd" value="user_pwd" />
-		<property name="error_name" value="error_name" />
 		<property name="defaultFailureUrl" value="/auth/login" />
 	</bean>
 	<bean id="LoginSuccessHandler" class="com.kokochi.samp.security.LoginSuccessHandler" />

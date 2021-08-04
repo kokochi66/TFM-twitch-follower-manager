@@ -32,17 +32,16 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		String errMsg = "";
 		
-		if(exception instanceof UsernameNotFoundException) request.setAttribute("errMsg", "존재하지 않는 사용자입니다.");
-		if(exception instanceof BadCredentialsException) request.setAttribute("errMsg", "아이디나 비밀번호가 틀립니다.");
-		if(exception instanceof LockedException) request.setAttribute("errMsg", "정지당한 아이디입니다.");
-		if(exception instanceof DisabledException) request.setAttribute("errMsg", "사용이 불가능한 아이디 입니다.");
-		if(exception instanceof AccountExpiredException) request.setAttribute("errMsg", "만료된 아이디 입니다.");
-		if(exception instanceof CredentialsExpiredException) request.setAttribute("errMsg", "비밀번호가 만료되었습니다.");
+		if(exception instanceof UsernameNotFoundException) errMsg = "?errMsg=UsernameNotFound";
+		if(exception instanceof BadCredentialsException) errMsg = "?errMsg=BadCredential";
+		if(exception instanceof LockedException) errMsg = "?errMsg=isLocked";
+		if(exception instanceof DisabledException) errMsg = "?errMsg=isDisabled";
+		if(exception instanceof AccountExpiredException) errMsg = "?errMsg=AccountExpired";
+		if(exception instanceof CredentialsExpiredException) errMsg = "?errMsg=CredentialsExpired";
 		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/auth/login");
-		dispatcher.forward(request, response);
+		response.sendRedirect(defaultFailureUrl+errMsg);
 	}
 
 }

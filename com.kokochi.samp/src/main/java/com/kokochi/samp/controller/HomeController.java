@@ -44,16 +44,7 @@ public class HomeController {
 		
 		// 2. 인증토큰의 기한이 끝난 경우에, 새로운 인증토큰을 생성하기 위해 client_secret을 가져오고, 인증토큰을 생성하여 성공시 그대로 뷰로 넘긴다.
 		if(headslide_list == null) {
-			GetToken tokenGenerator = new GetToken();
-			String client_secret = key.read("client_secret").getKey_value();
-			
-			TwitchKey twitchkey = new TwitchKey();
-			twitchkey.setKey_name("app_access_token");
-			JSONObject getToken = tokenGenerator.GetAppAccessToken(client_id, client_secret);
-			app_access_token = "Bearer"+" "+getToken.get("access_token");
-			twitchkey.setKey_value(app_access_token);
-			key.modify(twitchkey);
-			headslide_list = streamGenerator.getLiveStreams(client_id, app_access_token, 5);
+			return "redirect:/token/app_access_token";
 		}
 		
 		// 3. 실패시 에러페이지를 띄운다. -> 추후에 추가.

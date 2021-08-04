@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.kokochi.samp.DTO.UserDTO;
+
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
@@ -24,17 +26,15 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 		
 //		System.out.println("AuthenticationInterceptior - postHandle");
 		
-//		Object principal = SecurityContextHolder.getContext().getAuthentication();
-		if(SecurityContextHolder.getContext().getAuthentication() == null) System.out.println("AuthenticationInterceptior - postHandle 널값");
-		
-//		if(principal.toString().equals("anonymousUser")) {
-//			modelAndView.addObject("user_nickname", "null");
-//
-//		} else {
-//			UserDTO user = (UserDTO) principal;
-//			String user_nickname = user.getUser_nickname();
-//			modelAndView.addObject("user_nickname", user_nickname);
-//		}
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(principal.toString().equals("anonymousUser")) {
+			request.setAttribute("user_nickname", "null");
+
+		} else {
+			UserDTO user = (UserDTO) principal;
+			String user_nickname = user.getUser_nickname();
+			request.setAttribute("user_nickname", user_nickname);
+		}
 		
 	}
 

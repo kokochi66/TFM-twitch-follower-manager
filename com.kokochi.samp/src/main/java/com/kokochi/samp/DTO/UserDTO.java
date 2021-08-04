@@ -37,6 +37,7 @@ public class UserDTO implements UserDetails {
 		this.user_email = member.getUser_email();
 		this.twitch_user_id = member.getTwitch_user_id();
 		this.enable = member.getEnable();
+		this.Oauth_token = null;
 		
 		this.authority = new ArrayList<String>();
 		
