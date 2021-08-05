@@ -86,7 +86,7 @@ public class GetStream {
 		return null;
 	}
 	
-	public ArrayList<TwitchUser> getFollowedList(String client_id, String app_access_token, String user_id) throws Exception {
+	public ArrayList<TwitchUser> getFollowedList(String client_id, String app_access_token, String user_id, int first) throws Exception {
 		
 		TwitchUser user = getUser(client_id, app_access_token, user_id);
 		
@@ -101,9 +101,9 @@ public class GetStream {
 		ArrayList<TwitchUser> list = new ArrayList<>();
 		try {
 			String from_id = "from_id="+user.getId()+"&";
-			String first = "first=20&";
+			String first_header = "first="+first+"&";
 			ResponseEntity<String> response = rt.exchange(
-					"https://api.twitch.tv/helix/users/follows?"+from_id+first, HttpMethod.GET,
+					"https://api.twitch.tv/helix/users/follows?"+from_id+first_header, HttpMethod.GET,
 					entity, String.class);
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray jsonArray = (JSONArray) parser.parse(jsonfile.get("data").toString());

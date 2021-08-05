@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.kokochi.samp.DTO.UserDTO;
+import com.kokochi.samp.domain.ManagedFollow;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
+import com.kokochi.samp.service.ManagedFollowService;
 import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,9 @@ public class MenuController {
 	
 	@Autowired
 	TwitchKeyService key;
+	
+	@Autowired
+	private ManagedFollowService follow_service;
 	
 	@RequestMapping(value="/setting", method = RequestMethod.GET)
 	public String menuSetting(Model model) { // 메인 home 화면 매핑
@@ -52,19 +57,24 @@ public class MenuController {
 			String app_access_token = key.read("app_access_token").getKey_value();
 			
 			GetStream streamGenerator = new GetStream();
-			List<TwitchUser> follow_list =  streamGenerator.getFollowedList(client_id, app_access_token, "login="+user.getTwitch_user_id()+"&");
-
+			List<TwitchUser> follow_list =  streamGenerator.getFollowedList(client_id, app_access_token, "login="+user.getTwitch_user_id()+"&", 40);
+			if(follow_list == null) return "redirect:/token/app_access_token";
+			// 가져오기에 실패하면, 토큰을 재발급받아 다시 시도한다.
+			
 			for(int i=0;i<follow_list.size();i++) {
-				log.info(follow_list.get(i).toString());
+				follow_list.get(i).setChecking_managed(follow_service.isManaged(
+						new ManagedFollow(user.getUser_id(), follow_list.get(i).getLogin())));
+				if(follow_list.get(i).isChecking_managed()) {
+					follow_list.add(0, follow_list.remove(i)); // 관리체크된 값들은 맨위로 올라오도록 리스트 위치를 조정해준다.
+				}
 			}
 			
 			model.addAttribute("follow_list", follow_list);
 			
 			return "menu/managefollow";
 		} else {
-			
+			// 오류가 나면 메인화면으로 돌아간다.
 			return "redirect:/";
-			
 		}
 	}
 	@RequestMapping(value="/replayvideo", method = RequestMethod.GET)

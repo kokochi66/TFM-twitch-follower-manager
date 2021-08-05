@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+/* follow */
+#content .follow-box {
+    background-color: rgb(236, 236, 236); border: 1px solid rgb(100, 100, 100); 
+    transition: all ease-in-out .3s; padding: 20px 20px; border-radius: 10px;
+}
+#content .follow-box.mylist {background-color: rgb(215, 255, 205);}
+#content .follow-box .profile_img {
+    width: 70px; height: 70px; background-position: center center; 
+    background-size: cover; border-radius: 50%; position: absolute; top: 20px; left: 30px; border: 2px solid #888;
+}
+#content .follow-box .info {
+    height: 70px; margin-left: 90px; position: relative;
+}
+#content .follow-box .info .name {    
+	font-size: 18px; font-weight: bold; overflow: hidden;
+    text-overflow: ellipsis; margin-right: 25px; white-space: nowrap;
+}
+#content .follow-box .info .login {
+	font-size: 14px;
+}
+#content .follow-box .info .desc {font-size: 14px; padding-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+#content .follow-box .info .check {position:absolute; top: 0; right: 0;}

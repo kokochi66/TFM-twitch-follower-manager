@@ -43,15 +43,7 @@ public class HomeController {
 		List<Stream> headslide_list = streamGenerator.getLiveStreams(client_id, app_access_token, 5);
 		
 		// 2. 인증토큰의 기한이 끝난 경우에, 새로운 인증토큰을 생성하기 위해 client_secret을 가져오고, 인증토큰을 생성하여 성공시 그대로 뷰로 넘긴다.
-		if(headslide_list == null) {
-			return "redirect:/token/app_access_token";
-		}
-		
-		// 3. 실패시 에러페이지를 띄운다. -> 추후에 추가.
-		
-//		headslide_list.get(0).getThumbnail_url().replace("{width}", "400");
-//		headslide_list.get(0).getThumbnail_url().replace("{height}", "250");
-		
+		if(headslide_list == null) return "redirect:/token/app_access_token";
 		
 		// 성공시 모델에 리스트 입력 (입력전에, 썸네일 이미지의 크기를 조정해주어야 함.
 		for(int i=0;i<headslide_list.size();i++) {

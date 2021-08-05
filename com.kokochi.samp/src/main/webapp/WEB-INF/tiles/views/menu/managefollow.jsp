@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><c:set var="path" value="/resources"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="path" value="/resources"/>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 
 
-
-
+<link href="${path}/assets/css/menu/managedfollow.css" rel="stylesheet">
 <!-- ======= Breadcrumbs ======= -->
 <section id="breadcrumbs" class="breadcrumbs">
   <div class="container">
@@ -30,22 +30,21 @@
           <a href="#" class="btn btn-primary active" aria-current="page">스트리머 추가</a>
           <a href="#" class="btn btn-primary">내 스트리머 검색</a>
         </div>
-      </div>
-		
-<%-- 		<c:forEach items="${follow_list}" var="follow">
+      </div>	
+		<c:forEach items="${follow_list}" var="follow">
 	     <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-	        <div class="follow-box">
+	        <div class="follow-box ${follow.checking_managed ? "mylist" : ""}">
 	          <div class="profile_img" style="background-image: url('${follow.profile_image_url}');"></div>
 	          <div class="info">
-	            <div class="name">${follow.display_name}(${follow.login})</div>
+	            <div class="name">${follow.display_name}<span class="login">(${follow.login})</span></div>
 	            <div class="desc">${follow.description}</div>
 	            <div class="check">
-	              <input type="checkbox" class="form-check-input checkInput" name="" id="">
+	              <input type="checkbox" class="form-check-input checkInput" name="" id="" ${follow.checking_managed ? "checked" : ""}>
 	            </div>
 	          </div>
 	        </div>
 	      </div>
-		</c:forEach>	 --%>
+		</c:forEach>	
   </div>
 </section><!-- End Blog Section -->
 <script src="${path}/assets/js/menu/managefollow.js"></script>
