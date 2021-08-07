@@ -14,23 +14,22 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Stream {
-	
+public class Video {
 	private String id;
+	private String stream_id;
 	private String user_id;
-	private String user_login;
 	private String user_name;
-	private String game_id;
-	private String game_name;
-	private String type;
 	private String title;
-	private int viewer_count;
-	private Date started_at;
-	private String language;
+	private String description;
+	private Date created_at;
+	private Date published_at;
+	private String url;
 	private String thumbnail_url;
-	private String profile_image_url;
-	private String[] tag_ids;
-	private boolean is_mature;
-	private String pagination;
-
+	private String viewable;
+	private int view_count;
+	private String language;
+	private String type;
+	private String duration;
+	private JSONObject muted_segments;
+	private String nextPage;
 }

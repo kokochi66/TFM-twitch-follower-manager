@@ -491,7 +491,6 @@ section {
 
 .featured .icon-box {
   height: 200px;
-  padding: 40px 30px;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   background: rgb(255, 255, 255);
@@ -523,13 +522,6 @@ section {
   margin-bottom: 0;
 }
 
-.featured .icon-box:hover {
-  background: rgb(138, 138, 138);
-}
-
-.featured .icon-box:hover i, .featured .icon-box:hover h3 a, .featured .icon-box:hover p {
-  color: #fff;
-}
 
 /*--------------------------------------------------------------
 # About

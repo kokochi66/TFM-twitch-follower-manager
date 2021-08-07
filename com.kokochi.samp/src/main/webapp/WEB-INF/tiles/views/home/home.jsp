@@ -5,6 +5,7 @@
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:set var="path" value="/resources" />
+<c:set var="default_img" value="${path}/assets/img/no_image.png" />
 
 <!-- HeadSlider -->
 <section id="headslider">
@@ -90,15 +91,14 @@
 		<section id="featured" class="featured">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-4">
-						<div class="icon-box" title="최근에 확인한 다시보기"></div>
-					</div>
-					<div class="col-lg-4 mt-4 mt-lg-0">
-						<div class="icon-box" title="최근에 확인한 다시보기"></div>
-					</div>
-					<div class="col-lg-4 mt-4 mt-lg-0">
-						<div class="icon-box" title="최근에 확인한 다시보기"></div>
-					</div>
+					<c:forEach items="${replay_video_list}" var="replay_video">
+						<div class="col-lg-4 mt-4 mt-lg-0">
+							<div class="icon-box" title="최근에 확인한 다시보기">
+								<img alt="" src="${replay_video.thumbnail_url == null || replay_video.thumbnail_url.equals("") ? 
+									default_img : replay_video.thumbnail_url}" width="100%" height="100%">
+							</div>
+						</div>
+					</c:forEach>
 				</div>
 			</div>
 		</section>

@@ -1,5 +1,7 @@
 package com.kokochi.samp.queryAPI.domain;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,6 +20,6 @@ public class TwitchUser {
 	private String type;
 	private int view_count;
 	private String email;
-	private String created_at;
+	private Date created_at;
 	private boolean checking_managed;
 }

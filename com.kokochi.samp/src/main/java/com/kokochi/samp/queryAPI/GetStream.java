@@ -13,12 +13,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.kokochi.samp.queryAPI.domain.Stream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 
 public class GetStream {
 	
 	private JSONParser parser = new JSONParser();
+	private Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
 	
 	public ArrayList<Stream> getLiveStreams(String client_id, String app_access_token, int first) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
@@ -39,7 +41,7 @@ public class GetStream {
 			for(int i=0;i<jsonArray.size();i++) {
 				JSONObject cJson = (JSONObject) parser.parse(jsonArray.get(i).toString());
 				
-				Stream stream = new Gson().fromJson(cJson.toString(), Stream.class);
+				Stream stream = gsonParser.fromJson(cJson.toString(), Stream.class);
 				TwitchUser cUser = getUser(client_id, app_access_token, "id="+stream.getUser_id()+"&");
 				
 				stream.setProfile_image_url(cUser.getProfile_image_url());
@@ -63,16 +65,16 @@ public class GetStream {
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
 		
-		ArrayList<Stream> list = new ArrayList<>();
 		try {
 			ResponseEntity<String> response = rt.exchange(
 					"https://api.twitch.tv/helix/users?"+user_id, HttpMethod.GET,
 					entity, String.class);
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
-			JSONArray jsonArray = (JSONArray) parser.parse(jsonfile.get("data").toString());
-			JSONObject cJson = (JSONObject) parser.parse(jsonArray.get(0).toString());
+			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			if(data.size() <= 0) return null; 	// 가져온 비디오 데이터가 없다면 null을 출력
+			JSONObject cJson = (JSONObject) parser.parse(data.get(0).toString());
 			
-			TwitchUser twitchUser = new Gson().fromJson(cJson.toString(), TwitchUser.class);
+			TwitchUser twitchUser = gsonParser.fromJson(cJson.toString(), TwitchUser.class);
 			
 			return twitchUser;
 			
