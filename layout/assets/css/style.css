@@ -491,7 +491,6 @@ section {
 
 .featured .icon-box {
   height: 200px;
-  padding: 40px 30px;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   background: rgb(255, 255, 255);
@@ -523,13 +522,6 @@ section {
   margin-bottom: 0;
 }
 
-.featured .icon-box:hover {
-  background: rgb(138, 138, 138);
-}
-
-.featured .icon-box:hover i, .featured .icon-box:hover h3 a, .featured .icon-box:hover p {
-  color: #fff;
-}
 
 /*--------------------------------------------------------------
 # About
@@ -566,8 +558,7 @@ section {
   width: 100%;
   text-align: center;
   border: 1px solid #ededed;
-  padding: 80px 20px;
-  transition: all ease-in-out 0.3s;
+  transition: all ease-in-out 0.1s;
 }
 
 .services .icon-box .icon {

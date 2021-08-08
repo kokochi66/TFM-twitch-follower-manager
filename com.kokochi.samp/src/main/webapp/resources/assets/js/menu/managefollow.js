@@ -9,7 +9,7 @@ followBtn.forEach((elem, idx) => {
             httpRequest.open('POST', '/request/managedfollow/add');
             httpRequest.setRequestHeader('user_id', 'kokochi');
             httpRequest.setRequestHeader('to_user',
-             followBoxes[idx].querySelector('.login').innerHTML.slice(1).slice(0,-1)
+             followBoxes[idx].querySelector('.user_id').innerHTML
              );
             httpRequest.send();
         }
@@ -19,7 +19,7 @@ followBtn.forEach((elem, idx) => {
             httpRequest.open('POST', '/request/managedfollow/remove');
             httpRequest.setRequestHeader('user_id', 'kokochi');
             httpRequest.setRequestHeader('to_user',
-             followBoxes[idx].querySelector('.login').innerHTML.slice(1).slice(0,-1)
+             followBoxes[idx].querySelector('.user_id').innerHTML
              );
             httpRequest.send();
         }

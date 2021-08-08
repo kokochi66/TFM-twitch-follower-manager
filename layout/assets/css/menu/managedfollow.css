@@ -21,5 +21,4 @@
 	font-size: 14px;
 }
 #content .follow-box .info .desc {font-size: 14px; padding-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
-#content .follow-box .info .user_id {display: none;}
 #content .follow-box .info .check {position:absolute; top: 0; right: 0;}

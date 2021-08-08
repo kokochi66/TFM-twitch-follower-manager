@@ -64,22 +64,17 @@ public class HomeController {
 			UserDTO user = (UserDTO) principal;
 			
 			// 나의 팔로우 관리 목록의 가장 최근 다시보기 영상 가져오기 쿼리
-			
-			Video video = videoGetter.getOneVideoFromId(client_id, user.getOauth_token(), "user_id=137640527");
 			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
 			// 팔로우 관리목록 가져오기
 			
-			ArrayList<TwitchUser> twitchUser_list = new ArrayList<>();
-			for(int i=0;i<follow_list.size();i++) {
-				twitchUser_list.add(streamGetter.getUser(client_id, user.getOauth_token(), "login="+follow_list.get(i).getTo_user()));
-			}
-			//팔로우 관리 목록으로 부터 각 유저들을 쿼리로 가져오기
-			
-			List<Video> replay_video_list = videoGetter.getRecentVideoFromUsers(twitchUser_list, client_id, app_access_token, 3);
+			List<Video> replay_video_list = videoGetter.getRecentVideoFromUsers(follow_list, client_id, user.getOauth_token(), 8);
 			for(int i=0;i<replay_video_list.size();i++) {
-				log.info(replay_video_list.get(i).toString());
-				String thumb_url = replay_video_list.get(i).getThumbnail_url().replace("%{width}", "350").replace("%{height}", "200");
+//				log.info(replay_video_list.get(i).toString() + " " + replay_video_list.size());
+				Video v = replay_video_list.get(i);
+				TwitchUser tu = streamGetter.getUser(client_id, user.getOauth_token(), "id="+v.getUser_id());
+				String thumb_url = replay_video_list.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200");
 				replay_video_list.get(i).setThumbnail_url(thumb_url);
+				replay_video_list.get(i).setProfile_url(tu.getProfile_image_url());
 			}
 			model.addAttribute("replay_video_list", replay_video_list);
 			// 가져온 유저들의 가장 최근 영상들을 가져와 모델에 넣기

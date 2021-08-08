@@ -5,7 +5,7 @@
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:set var="path" value="/resources" />
-<c:set var="default_img" value="${path}/assets/img/no_image.png" />
+<c:set var="default_img" value="${path}/assets/img/default_image.jpg" />
 
 <!-- HeadSlider -->
 <section id="headslider">
@@ -91,14 +91,21 @@
 		<section id="featured" class="featured">
 			<div class="container">
 				<div class="row">
-					<c:forEach items="${replay_video_list}" var="replay_video">
-						<div class="col-lg-4 mt-4 mt-lg-0">
-							<div class="icon-box" title="최근에 확인한 다시보기">
-								<img alt="" src="${replay_video.thumbnail_url == null || replay_video.thumbnail_url.equals("") ? 
-									default_img : replay_video.thumbnail_url}" width="100%" height="100%">
-							</div>
+					<div class="col-lg-4 mt-4 mt-lg-0">
+						<div class="icon-box" title="최근에 확인한 다시보기">
+							<img alt="" width="100%" height="100%">
 						</div>
-					</c:forEach>
+					</div>
+					<div class="col-lg-4 mt-4 mt-lg-0">
+						<div class="icon-box" title="최근에 확인한 다시보기">
+							<img alt="" width="100%" height="100%">
+						</div>
+					</div>
+					<div class="col-lg-4 mt-4 mt-lg-0">
+						<div class="icon-box" title="최근에 확인한 다시보기">
+							<img alt="" width="100%" height="100%">
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -109,14 +116,12 @@
 			<div class="container">
 	
 				<div class="row">
-					<div class="col-lg-3 col-md-6 btn-danger p-lg-3 text-sm-center"
-						title="나의 구독한 스트리머 목록">My Follow</div>
-					<div class="col-lg-3 col-md-6 btn-dark p-lg-3 text-sm-center"
-						title="현재 시청자 순 조회">Viewer</div>
-					<div class="col-lg-3 col-md-6 btn-primary p-lg-3 text-sm-center"
-						title="구독자 순 조회">Follower</div>
-					<div class="col-lg-3 col-md-6 btn-secondary p-lg-3 text-sm-center"
-						title="게임 별 조회">Game</div>
+					<div class="col-4 btn-danger p-3 text-sm-center"
+						title="내 팔로우 관리 목록의 최신 다시보기">내 관리목록의 최신 다시보기</div>
+					<div class="col-4 btn-dark p-3 text-sm-center"
+						title="내가 담은 다시보기">내 다시보기 목록</div>
+					<div class="col-4 btn-primary p-3 text-sm-center"
+						title="최신 인기 다시보기">최신 인기영상</div>
 				</div>
 	
 			</div>
@@ -132,38 +137,23 @@
 				</div>
 	
 				<div class="row">
-					<div
-						class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-stretch mb-5">
-						<div class="icon-box" title="방송목록"></div>
-					</div>
-					<div
-						class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-stretch mb-5">
-						<div class="icon-box" title="방송목록"></div>
-					</div>
-					<div
-						class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-stretch mb-5">
-						<div class="icon-box" title="방송목록"></div>
-					</div>
-					<div
-						class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-stretch mb-5">
-						<div class="icon-box" title="방송목록"></div>
-					</div>
-					<div
-						class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-stretch mb-5">
-						<div class="icon-box" title="방송목록"></div>
-					</div>
-					<div
-						class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-stretch mb-5">
-						<div class="icon-box" title="방송목록"></div>
-					</div>
-					<div
-						class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-stretch mb-5">
-						<div class="icon-box" title="방송목록"></div>
-					</div>
-					<div
-						class="col-lg-3 col-md-4 col-sm-6 d-flex align-items-stretch mb-5">
-						<div class="icon-box"></div>
-					</div>
+					<c:forEach items="${replay_video_list}" var="replay_video">
+						<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+							<div class="icon-box" title="방송목록">
+								<a href="${replay_video.url}" class="linkBox" target="_blank">
+									<img alt="" src="${replay_video.thumbnail_url == null || replay_video.thumbnail_url.equals("") ? default_img : replay_video.thumbnail_url}" 
+										width="100%" />
+								</a>
+							</div>
+							<div class="icon-info">
+								<div class="profile">
+									<img alt="" src="${replay_video.profile_url == null || replay_video.profile_url.equals("") ? default_img : replay_video.profile_url}" width="100%" height="100%"/>
+								</div>
+								<div class="title text">${replay_video.title}</div>
+								<div class="name text">${replay_video.user_name}</div>
+							</div>
+						</div>
+					</c:forEach>
 				</div>
 	
 			</div>

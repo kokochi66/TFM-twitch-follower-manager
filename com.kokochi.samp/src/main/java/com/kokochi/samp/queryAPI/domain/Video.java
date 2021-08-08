@@ -2,6 +2,7 @@ package com.kokochi.samp.queryAPI.domain;
 
 import java.util.Date;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class Video {
 	private String language;
 	private String type;
 	private String duration;
-	private JSONObject muted_segments;
+	private JSONArray muted_segments;
 	private String nextPage;
+	private String profile_url;
 }
