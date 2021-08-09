@@ -34,4 +34,20 @@ public class Video {
 	private JSONArray muted_segments;
 	private String nextPage;
 	private String profile_url;
+	
+	public JSONObject parseToJSONObject() {
+		JSONObject res = new JSONObject();
+		res.put("user_id", this.user_id);
+		res.put("user_name", this.user_name);
+		res.put("title", this.title);
+		res.put("description", this.description);
+		res.put("url", this.url);
+		res.put("thumbnail_url", this.thumbnail_url);
+		res.put("view_count", this.view_count);
+		res.put("language", this.language);
+		res.put("nextPage", this.nextPage);
+		res.put("profile_url", this.profile_url);
+		
+		return res;
+	}
 }

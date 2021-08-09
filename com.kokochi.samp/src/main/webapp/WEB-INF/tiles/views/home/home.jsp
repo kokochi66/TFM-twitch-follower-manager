@@ -87,41 +87,17 @@
 	</sec:authorize>
 
 	<sec:authorize access="isAuthenticated()">
-	<!-- My Video -->
-		<section id="featured" class="featured">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-4 mt-4 mt-lg-0">
-						<div class="icon-box" title="최근에 확인한 다시보기">
-							<img alt="" width="100%" height="100%">
-						</div>
-					</div>
-					<div class="col-lg-4 mt-4 mt-lg-0">
-						<div class="icon-box" title="최근에 확인한 다시보기">
-							<img alt="" width="100%" height="100%">
-						</div>
-					</div>
-					<div class="col-lg-4 mt-4 mt-lg-0">
-						<div class="icon-box" title="최근에 확인한 다시보기">
-							<img alt="" width="100%" height="100%">
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- End Featured Section -->
-	
 		<!-- Sort Button List -->
 		<section id="about" class="about">
 			<div class="container">
 	
 				<div class="row">
 					<div class="col-4 btn-danger p-3 text-sm-center"
-						title="내 팔로우 관리 목록의 최신 다시보기">내 관리목록의 최신 다시보기</div>
+						title="관리목록 다시보기">관리목록 다시보기</div>
 					<div class="col-4 btn-dark p-3 text-sm-center"
-						title="내가 담은 다시보기">내 다시보기 목록</div>
+						title="팔로우 다시보기">팔로우 다시보기</div>
 					<div class="col-4 btn-primary p-3 text-sm-center"
-						title="최신 인기 다시보기">최신 인기영상</div>
+						title="관리목록 인기클립">관리목록 인기클립</div>
 				</div>
 	
 			</div>
@@ -133,10 +109,10 @@
 			<div class="container">
 	
 				<div class="section-title" data-aos="fade-up">
-					<h2>My Follow</h2>
+					<h2>관리목록 다시보기</h2>
 				</div>
 	
-				<div class="row">
+				<div class="row icon-set">
 					<c:forEach items="${replay_video_list}" var="replay_video">
 						<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
 							<div class="icon-box" title="방송목록">
@@ -151,11 +127,14 @@
 								</div>
 								<div class="title text">${replay_video.title}</div>
 								<div class="name text">${replay_video.user_name}</div>
+								<div class="user_id displayNone">${replay_video.user_id}</div>
+								<div class="next_page displayNone">${replay_video.nextPage}</div>
 							</div>
 						</div>
 					</c:forEach>
 				</div>
-	
+				
+				<div class="col-4 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
 			</div>
 		</section>
 		<!-- End Services Section -->

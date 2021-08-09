@@ -1,20 +1,29 @@
 package com.kokochi.samp.controller;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.domain.ManagedFollow;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.GetVideo;
+import com.kokochi.samp.queryAPI.domain.Clips;
 import com.kokochi.samp.queryAPI.domain.Stream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.queryAPI.domain.Video;
@@ -35,6 +44,8 @@ public class HomeController {
 	
 	@Autowired
 	private ManagedFollowService follow_service;
+	
+	private JSONParser parser = new JSONParser();
 	
 	@RequestMapping(value="/")
 	public String home(Locale locale, Model model) throws Exception { // 메인 home 화면 매핑
@@ -63,9 +74,13 @@ public class HomeController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			
-			// 나의 팔로우 관리 목록의 가장 최근 다시보기 영상 가져오기 쿼리
 			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
 			// 팔로우 관리목록 가져오기
+			
+			List<Clips> clip_list = videoGetter.getClipsRecentByUsers(follow_list, client_id, user.getOauth_token(), 3);
+//			for(int i=0;i<clip_list.size();i++) log.info(clip_list.get(i).toString());
+			model.addAttribute("clip_list", clip_list);
+			// 최신 인기클립 가져와 모델에 넣기
 			
 			List<Video> replay_video_list = videoGetter.getRecentVideoFromUsers(follow_list, client_id, user.getOauth_token(), 8);
 			for(int i=0;i<replay_video_list.size();i++) {
@@ -81,5 +96,45 @@ public class HomeController {
 		}
 		
 		return "homes";
+	}
+	
+	@RequestMapping(value="/home/request/getNextVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
+	@ResponseBody
+	public String removefollowed_request(@RequestHeader(value="service_map")String service_map, 
+			@RequestHeader(value="service_target")String service_target) throws Exception {
+		log.info("/home/request/getNextVideo - 다음 비디오 가져오기 " + service_target);
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(!principal.toString().equals("anonymousUser")) {
+			UserDTO user = (UserDTO) principal;
+			
+			Map<String, String> serviceMap = new HashMap<>();
+			JSONArray service_arr = (JSONArray) parser.parse(service_map);
+			for(int i=0;i<service_arr.size();i++) {
+				JSONArray c_service = (JSONArray) parser.parse(service_arr.get(i).toString());
+				serviceMap.put(c_service.get(0).toString(), c_service.get(1).toString());
+			}
+			
+			GetVideo videoGetter = new GetVideo();
+			GetStream streamGetter = new GetStream();
+			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
+			String client_id = key.read("client_id").getKey_value();
+			
+			List<Video> service_video = videoGetter.getRecentVideoFromUsersToNext(serviceMap, follow_list, client_id, user.getOauth_token(), 8);
+			JSONArray res_arr = new JSONArray();
+			for(int i=0;i<service_video.size();i++) {
+//				log.info("service_video :: " + service_video.get(i).toString());
+				service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+				TwitchUser tu = streamGetter.getUser(client_id, user.getOauth_token(), "id="+service_video.get(i).getUser_id());
+				service_video.get(i).setProfile_url(tu.getProfile_image_url());
+				
+				JSONObject res_ob = service_video.get(i).parseToJSONObject();
+				res_arr.add(res_ob);
+			}
+//			log.info(res_arr.toJSONString());
+			return res_arr.toJSONString();
+		}
+		
+		return "failure";
 	}
 }
