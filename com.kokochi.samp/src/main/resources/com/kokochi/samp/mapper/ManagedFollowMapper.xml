@@ -31,7 +31,7 @@
 		FROM managed_follow
 		WHERE user_id = #{user_id}
 		ORDER BY to_user
-		LIMIT #{left_num}, #{right_num}
+		LIMIT #{left}, #{right}
 	</select>
 	
 </mapper>

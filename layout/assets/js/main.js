@@ -20,7 +20,6 @@ window.onload = function() {
   });
   let addMoreBtn = document.querySelector('#services .addMore');
   let default_img = '/resources/assets/img/default_image.jpg';
-  let video_list = 'replay_video'
   let loading_box = document.createElement('div');
   loading_box.className = 'loading m-auto mt-5 mb-5'
 
@@ -46,8 +45,9 @@ window.onload = function() {
   let service_container = document.querySelector('#services .container')
   let service_last = document.querySelector('#services .service_last_box');
   let AboutListBtns = document.querySelectorAll('#about .listBtn')
-  let video_list_str = ['replay_video', 'recent_video', 'recent_clip'];
-  let video_list_info = ['관리목록 다시보기', '팔로우 다시보기', '관리목록 인기클립'];
+  let video_list = 'recent_video'
+  let video_list_str = ['recent_video', 'recent_live', 'recent_clip'];
+  let video_list_info = ['관리목록 다시보기', '관리목록 라이브', '관리목록 인기클립'];
 
   AboutListBtns.forEach((elem, idx) => {
     elem.addEventListener('click', () => {
@@ -76,8 +76,10 @@ window.onload = function() {
   
     httpRequest.onload = () => {
       if(httpRequest.status == 200) {
-        let result = JSON.parse(httpRequest.response);
-        addService_IconSet(result)
+        let result = httpRequest.response;
+        if(result) {
+          addService_IconSet(JSON.parse(result))
+        }
         service_container.removeChild(loading_box);
         return result;
       } else {

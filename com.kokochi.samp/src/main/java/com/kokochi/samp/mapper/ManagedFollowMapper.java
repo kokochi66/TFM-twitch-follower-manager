@@ -2,6 +2,8 @@ package com.kokochi.samp.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.kokochi.samp.domain.ManagedFollow;
 
 public interface ManagedFollowMapper {
@@ -14,5 +16,5 @@ public interface ManagedFollowMapper {
 	
 	public List<ManagedFollow> list(String user_id) throws Exception;
 	
-	public List<ManagedFollow> list_num(String user_id, String left_num, String right_num) throws Exception;
+	public List<ManagedFollow> list_num(@Param("user_id")String user_id, @Param("left")int left, @Param("right")int right) throws Exception;
 }

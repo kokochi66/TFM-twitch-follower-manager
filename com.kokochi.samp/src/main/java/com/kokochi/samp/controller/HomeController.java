@@ -77,11 +77,6 @@ public class HomeController {
 			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
 			// 팔로우 관리목록 가져오기
 			
-			List<Clips> clip_list = videoGetter.getClipsRecentByUsers(follow_list, client_id, user.getOauth_token(), 3);
-//			for(int i=0;i<clip_list.size();i++) log.info(clip_list.get(i).toString());
-			model.addAttribute("clip_list", clip_list);
-			// 최신 인기클립 가져와 모델에 넣기
-			
 			List<Video> replay_video_list = videoGetter.getRecentVideoFromUsers(follow_list, client_id, user.getOauth_token(), 8);
 			for(int i=0;i<replay_video_list.size();i++) {
 //				log.info(replay_video_list.get(i).toString() + " " + replay_video_list.size());
@@ -102,7 +97,7 @@ public class HomeController {
 	@ResponseBody
 	public String removefollowed_request(@RequestHeader(value="service_map")String service_map, 
 			@RequestHeader(value="service_target")String service_target) throws Exception {
-		log.info("/home/request/getNextVideo - 다음 비디오 가져오기 " + service_target);
+//		log.info("/home/request/getNextVideo - 다음 비디오 가져오기 " + service_target +" " + service_map);
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
@@ -124,9 +119,9 @@ public class HomeController {
 			
 			List<Video> service_video = new ArrayList<>();
 			
-			if(service_target.equals("replay_video"))
+			if(service_target.equals("recent_video"))
 				service_video = videoGetter.getRecentVideoFromUsersToNext(serviceMap, follow_list, client_id, user.getOauth_token(), 8);
-			else if(service_target.equals("recent_video")) {
+			else if(service_target.equals("recent_live")) {
 				int map_left = 0;
 				if(serviceMap.size() > 0) {
 					for(String key : serviceMap.keySet()) {
@@ -134,15 +129,28 @@ public class HomeController {
 						break;
 					}
 				}
+//				System.out.println("getNextVideo - map_left :: " + map_left);
 				List<ManagedFollow> follow_list_limit = follow_service.list_num(user.getUser_id(), map_left, map_left+8);
+				
 				for(int i=0;i<follow_list_limit.size();i++) {
-					Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), client_id);
-					service_video.add(s.StreamToVideo());
+//					System.out.println("getNextVideo - list add :: " + follow_list_limit.get(i).getTo_user());
+					Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), "user_id="+follow_list_limit.get(i).getTo_user());
+					if(s != null) {
+						s.setThumbnail_url(s.getThumbnail_url().replace("{width}", "300").replace("{height}", "200"));
+						Video v = s.StreamToVideo();
+						v.setNextPage(Integer.toString(map_left+8));
+						service_video.add(v);
+					}
+//					System.out.println("getNextVideo - follow_list_limit :: " + s.StreamToVideo().toString());
 				}
+//				System.out.println("getNextVideo - service_video");
 			}
 			else if(service_target.equals("recent_clip")) {
-				List<Clips> service_clip = videoGetter.getClipsRecentByUsers(follow_list, client_id, client_id, 8);
-				for(int i=0;i<service_clip.size();i++) service_video.add(service_clip.get(i).clipsToVideo());
+				List<Clips> service_clip = videoGetter.getClipsRecentByUsers(serviceMap, follow_list, client_id, user.getOauth_token(), 8);
+				for(int i=0;i<service_clip.size();i++) {
+//					System.out.println("getNextVideo - recent_clip :: " + service_clip.get(i).toString());
+					service_video.add(service_clip.get(i).clipsToVideo());
+				}
 			}
 			
 			
@@ -156,6 +164,7 @@ public class HomeController {
 				JSONObject res_ob = service_video.get(i).parseToJSONObject();
 				res_arr.add(res_ob);
 			}
+			if(res_arr.size() <= 0) return null;
 //			log.info(res_arr.toJSONString());
 			return res_arr.toJSONString();
 		}

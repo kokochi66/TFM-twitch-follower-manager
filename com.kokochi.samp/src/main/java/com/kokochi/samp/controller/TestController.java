@@ -1,5 +1,7 @@
 package com.kokochi.samp.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,11 +21,11 @@ public class TestController {
 	@Autowired
 	private ManagedFollowService follow_service;
 	
-	@RequestMapping(value="/managed", method=RequestMethod.GET)
+	@RequestMapping(value="/followtest", method=RequestMethod.GET)
 	public String formTest(Model model) throws Exception {
 		log.info("TestController - form GET");
 		
-		log.info(follow_service.isManaged(new ManagedFollow("kokochi", "asdasdasd"))+" ");
+		List<ManagedFollow> follow_list_limit = follow_service.list_num("kokochi", 0, 8);
 		
 		return "test/formTest";
 	}

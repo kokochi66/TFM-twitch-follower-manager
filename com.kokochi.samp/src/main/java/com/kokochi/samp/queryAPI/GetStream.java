@@ -36,6 +36,7 @@ public class GetStream {
 					entity, String.class, "ko");
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			if(data.size() <= 0) return null;
 			JSONObject cJson = (JSONObject) parser.parse(data.get(0).toString());
 			Stream stream = gsonParser.fromJson(cJson.toString(), Stream.class);
 			

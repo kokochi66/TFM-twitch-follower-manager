@@ -95,7 +95,7 @@
 					<div class="col-4 btn-danger p-3 text-sm-center listBtn"
 						title="관리목록 다시보기">관리목록 다시보기</div>
 					<div class="col-4 btn-dark p-3 text-sm-center listBtn"
-						title="팔로우 다시보기">팔로우 다시보기</div>
+						title="팔로우 다시보기">관리목록 라이브</div>
 					<div class="col-4 btn-primary p-3 text-sm-center listBtn"
 						title="관리목록 인기클립">관리목록 인기클립</div>
 				</div>
@@ -141,3 +141,5 @@
 	</sec:authorize>
 </main>
 <!-- End #main -->
+
+<script src="${path}/assets/js/main.js"></script>

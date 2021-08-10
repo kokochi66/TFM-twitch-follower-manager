@@ -217,7 +217,7 @@ public class GetVideo {
 		return null;
 	}
 	
-	public List<Clips> getClipsRecentByUsers(List<ManagedFollow> users, String client_id, String access_Token, int limit) throws Exception {
+	public List<Clips> getClipsRecentByUsers(Map<String,String> serviceMap, List<ManagedFollow> users, String client_id, String access_Token, int limit) throws Exception {
 		if(users.size() <= 0) return null; // users의 크기가 1 이상이어야함.
 		ArrayList<Clips> res = new ArrayList<>();
 		Date today = new Date();
@@ -226,11 +226,14 @@ public class GetVideo {
 		cal.add(Calendar.DATE, -7);
 		today = new Date(cal.getTimeInMillis());
 
-		
 		PriorityQueue<Clips> pq = new PriorityQueue<>((a, b) -> a.getCreated_at().compareTo(b.getCreated_at()));
 		for(int i=0;i<users.size();i++) {
 //			System.out.println("GetVideo - getClipsRecentByUsers :: " + "broadcaster_id="+users.get(i).getTo_user());
-			Clips c = getClipsOneByUserId(client_id, access_Token, "broadcaster_id="+users.get(i).getTo_user()+"&started_at="+format.format(today));
+			String toUserId = users.get(i).getTo_user();
+			Clips c;
+			if(serviceMap.containsKey(toUserId)) {
+				c = getClipsOneByUserId(client_id, access_Token, "broadcaster_id="+users.get(i).getTo_user()+"&started_at="+format.format(today)+"&after="+serviceMap.get(toUserId));
+			} else c = getClipsOneByUserId(client_id, access_Token, "broadcaster_id="+users.get(i).getTo_user()+"&started_at="+format.format(today));
 			if(c != null) pq.add(c);
 			if(pq.size() > limit) pq.poll();
 		}

@@ -90,8 +90,8 @@ public class MenuController {
 	@RequestMapping(value="/request/managedfollow/add", method = RequestMethod.POST)
 	@ResponseBody
 	public String addfollowed_request(@RequestHeader(value="user_id")String user_id, 
-			@RequestHeader(value="to_user")String to_user, @RequestHeader(value="user_map")String user_map) throws Exception {
-		log.info("/managedfollow/add - 팔로우 관리목록 추가 " + user_id +" "+to_user+" "+user_map);
+			@RequestHeader(value="to_user")String to_user) throws Exception {
+		log.info("/managedfollow/add - 팔로우 관리목록 추가 " + user_id +" "+to_user);
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
