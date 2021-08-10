@@ -1,5 +1,6 @@
 package com.kokochi.samp.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -7,7 +8,6 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -109,18 +109,43 @@ public class HomeController {
 			UserDTO user = (UserDTO) principal;
 			
 			Map<String, String> serviceMap = new HashMap<>();
-			JSONArray service_arr = (JSONArray) parser.parse(service_map);
-			for(int i=0;i<service_arr.size();i++) {
-				JSONArray c_service = (JSONArray) parser.parse(service_arr.get(i).toString());
-				serviceMap.put(c_service.get(0).toString(), c_service.get(1).toString());
-			}
+			if(!service_map.equals("\"n\"") && service_map != null) {
+				JSONArray service_arr = (JSONArray) parser.parse(service_map);
+				for(int i=0;i<service_arr.size();i++) {
+					JSONArray c_service = (JSONArray) parser.parse(service_arr.get(i).toString());
+					serviceMap.put(c_service.get(0).toString(), c_service.get(1).toString());
+				}
+			} // n이 입력으로 들어오면 다음으로 넣어지는 값이 없음. 즉, Map의 값이 없게 세팅하여 가장 최근값을 리턴하도록 함.
 			
 			GetVideo videoGetter = new GetVideo();
 			GetStream streamGetter = new GetStream();
 			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			
-			List<Video> service_video = videoGetter.getRecentVideoFromUsersToNext(serviceMap, follow_list, client_id, user.getOauth_token(), 8);
+			List<Video> service_video = new ArrayList<>();
+			
+			if(service_target.equals("replay_video"))
+				service_video = videoGetter.getRecentVideoFromUsersToNext(serviceMap, follow_list, client_id, user.getOauth_token(), 8);
+			else if(service_target.equals("recent_video")) {
+				int map_left = 0;
+				if(serviceMap.size() > 0) {
+					for(String key : serviceMap.keySet()) {
+						map_left = Integer.parseInt(serviceMap.get(key));
+						break;
+					}
+				}
+				List<ManagedFollow> follow_list_limit = follow_service.list_num(user.getUser_id(), map_left, map_left+8);
+				for(int i=0;i<follow_list_limit.size();i++) {
+					Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), client_id);
+					service_video.add(s.StreamToVideo());
+				}
+			}
+			else if(service_target.equals("recent_clip")) {
+				List<Clips> service_clip = videoGetter.getClipsRecentByUsers(follow_list, client_id, client_id, 8);
+				for(int i=0;i<service_clip.size();i++) service_video.add(service_clip.get(i).clipsToVideo());
+			}
+			
+			
 			JSONArray res_arr = new JSONArray();
 			for(int i=0;i<service_video.size();i++) {
 //				log.info("service_video :: " + service_video.get(i).toString());

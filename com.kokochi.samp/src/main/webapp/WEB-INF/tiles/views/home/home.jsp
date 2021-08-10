@@ -92,11 +92,11 @@
 			<div class="container">
 	
 				<div class="row">
-					<div class="col-4 btn-danger p-3 text-sm-center"
+					<div class="col-4 btn-danger p-3 text-sm-center listBtn"
 						title="관리목록 다시보기">관리목록 다시보기</div>
-					<div class="col-4 btn-dark p-3 text-sm-center"
+					<div class="col-4 btn-dark p-3 text-sm-center listBtn"
 						title="팔로우 다시보기">팔로우 다시보기</div>
-					<div class="col-4 btn-primary p-3 text-sm-center"
+					<div class="col-4 btn-primary p-3 text-sm-center listBtn"
 						title="관리목록 인기클립">관리목록 인기클립</div>
 				</div>
 	
@@ -108,7 +108,7 @@
 		<section id="services" class="services">
 			<div class="container">
 	
-				<div class="section-title" data-aos="fade-up">
+				<div class="section-title">
 					<h2>관리목록 다시보기</h2>
 				</div>
 	
@@ -133,9 +133,9 @@
 						</div>
 					</c:forEach>
 				</div>
-				
-				<div class="col-4 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
+				<div class="service_last_box"></div>
 			</div>
+			<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
 		</section>
 		<!-- End Services Section -->
 	</sec:authorize>

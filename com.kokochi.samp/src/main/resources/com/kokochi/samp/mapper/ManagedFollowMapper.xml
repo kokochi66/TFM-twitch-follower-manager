@@ -26,4 +26,12 @@
 		WHERE user_id = #{user_id}
 	</select>
 	
+	<select id="list_num" resultType="ManagedFollow">
+		SELECT user_id, to_user
+		FROM managed_follow
+		WHERE user_id = #{user_id}
+		ORDER BY to_user
+		LIMIT #{left_num}, #{right_num}
+	</select>
+	
 </mapper>

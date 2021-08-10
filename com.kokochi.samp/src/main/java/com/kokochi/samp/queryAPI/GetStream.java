@@ -22,6 +22,36 @@ public class GetStream {
 	private JSONParser parser = new JSONParser();
 	private Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
 	
+	public Stream getLiveStream(String client_id, String app_access_token, String user_id) throws Exception {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", app_access_token);
+		headers.add("Client-id", client_id);
+		
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+		
+		try {
+			ResponseEntity<String> response = rt.exchange(
+					"https://api.twitch.tv/helix/streams?"+user_id, HttpMethod.GET,
+					entity, String.class, "ko");
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			JSONObject cJson = (JSONObject) parser.parse(data.get(0).toString());
+			Stream stream = gsonParser.fromJson(cJson.toString(), Stream.class);
+			
+			TwitchUser cUser = getUser(client_id, app_access_token, "id="+stream.getUser_id()+"&");
+			stream.setProfile_image_url(cUser.getProfile_image_url());
+
+			return stream;
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+			
+			if(exceptionMessage.get("status").toString().equals("401")) return null;
+		}
+		
+		return null;
+	}
+	
 	public ArrayList<Stream> getLiveStreams(String client_id, String app_access_token, int first) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);
@@ -104,6 +134,7 @@ public class GetStream {
 		try {
 			String from_id = "from_id="+user.getId()+"&";
 			String first_header = "first="+first+"&";
+			if(first == -1) first_header = "";
 			ResponseEntity<String> response = rt.exchange(
 					"https://api.twitch.tv/helix/users/follows?"+from_id+first_header, HttpMethod.GET,
 					entity, String.class);

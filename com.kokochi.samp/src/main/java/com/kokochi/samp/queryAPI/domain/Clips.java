@@ -29,5 +29,18 @@ public class Clips {
 	private String thumbnail_url;
 	private float duration;
 	private String nextPage;
-
+	private String profile_url;
+	
+	public Video clipsToVideo() {
+		Video v = new Video();
+		v.setUser_id(this.broadcaster_id);
+		v.setUser_name(this.broadcaster_name);
+		v.setTitle(this.title);
+		v.setUrl(this.url);
+		v.setThumbnail_url(this.thumbnail_url);
+		v.setLanguage(this.language);
+		v.setNextPage(this.nextPage);
+		v.setProfile_url(profile_url);
+		return v;
+	}
 }

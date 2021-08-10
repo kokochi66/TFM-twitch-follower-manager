@@ -32,5 +32,17 @@ public class Stream {
 	private String[] tag_ids;
 	private boolean is_mature;
 	private String pagination;
+	
+	public Video StreamToVideo() {
+		Video v = new Video();
+		v.setUser_id(this.user_id);
+		v.setUser_name(this.user_name);
+		v.setTitle(this.title);
+		v.setUrl("https://www.twitch.tv/"+this.user_login);
+		v.setThumbnail_url(this.thumbnail_url);
+		v.setLanguage(this.language);
+		v.setNextPage("0");
+		return v;
+	}
 
 }

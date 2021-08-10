@@ -30,4 +30,8 @@ public class ManagedFollowService {
 	public List<ManagedFollow> list(String user_id) throws Exception {
 		return mapper.list(user_id);
 	}
+	
+	public List<ManagedFollow> list_num(String user_id, int left, int right) throws Exception {
+		return mapper.list_num(user_id,Integer.toString(left),Integer.toString(right));
+	}
 }

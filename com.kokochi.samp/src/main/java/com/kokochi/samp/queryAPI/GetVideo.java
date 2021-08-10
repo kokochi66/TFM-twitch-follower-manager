@@ -108,8 +108,8 @@ public class GetVideo {
 	public ArrayList<Video> getRecentVideoFromUsersToNext(Map<String,String> serviceMap, List<ManagedFollow> users, String client_id, String OAuth_Token, int limit) throws Exception { 
 		if(users.size() <= 0) return null; // users의 크기가 1 이상이어야함.
 		ArrayList<Video> res = new ArrayList<>();
-		
 		PriorityQueue<Video> pq = new PriorityQueue<>((a, b) -> a.getCreated_at().compareTo(b.getCreated_at()));
+		
 		for(int i=0;i<users.size();i++) {
 			String toUserId = users.get(i).getTo_user();
 			Video v;
