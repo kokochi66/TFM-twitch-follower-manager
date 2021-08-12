@@ -48,6 +48,7 @@ ul, li {list-style: none; margin: 0; padding: 0;}
 #headslider .swiper-wrapper .swiper-slide .imageBox .info .stream_game:hover {
     text-decoration: underline;
 }
+#searchBar_text {background-color: transparent;}
 
 
 /* #searchbar */

@@ -1,0 +1,78 @@
+#about {padding: 0 0 60px 0;}
+#about .profile {display: flex; flex-flow: row; align-items: flex-end;}
+#about .profile .img-box {display: inline-block; flex: 1;}
+#about .profile .img-box .img {
+    width: 150px; height: 150px; border: 3px solid #000;
+    border-radius: 50%; overflow: hidden;
+}
+#about .profile .info-box {flex: 5;}
+#about .profile .info-box .name {
+    font-size: 35px;  margin-left: 20px; margin-bottom: 20px;
+}
+#about .profile .info-box .login { font-size: 20px; margin-left: 5px;}
+#about .profile .rank-box {float: right; flex: 1; text-align: center;}
+
+
+#tab {padding: 0 0 50px 0;}
+#tab .menu-box {
+    font-size: 24px; font-weight: bold; cursor: pointer;
+    background-color: #eee;
+}
+#tab .menu-box:hover {background-color: #ddd;}
+#tab .menu-box.active {background-color: #ccc;}
+
+
+#services {}
+
+
+#services .container > div {}
+#services .live-box {}
+#services .live-box .live-info {display: flex; box-shadow: 0px 2px 15px rgb(0 0 0 / 15%);}
+#services .live-box .live-info .video-box {flex: 4; position: relative; cursor: pointer;}
+#services .live-box .live-info .video-box .thumbnail {border: 1px solid #ccc; overflow: hidden;}
+#services .live-box .live-info .video-box .thumbnail.live-off {background-color: #888; height: 500px;}
+#services .live-box .live-info .video-box .thumbnail img {filter: blur(5px);}
+#services .live-box .live-info .video-box .play_btn {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 100px; height: 100px; border: 2px solid #eee;
+    border-radius: 50%; overflow: hidden;
+}
+#services .live-box .live-info .info-box {
+    flex: 1; border: 1px solid #ccc; border-left: 0;
+    background-color: #eee; display: flex; flex-direction: column;
+    justify-content: center;
+}
+#services .live-box .live-info .info-box > div {
+    color: #111; text-align: center; font-size: 18px;
+    margin: 2px 0;
+}
+#services .live-box .live-info .info-box .title {font-weight: bold; font-size: 22px;}
+#services .live-box .live-info .info-box .rank {color: red;}
+#services .live-box .live-info .info-box .tags .tag {
+    display: inline-block; padding: 3px 4px; border: 1px solid #111;
+    border-radius: 8px; margin: 5px 0; font-size: 12px; background-color: #bbb;
+    font-weight: bold;
+}
+
+#services .replay-box {}
+#services .icon-box {border: 1px solid #888;}
+
+#services .follow-box {
+    padding: 20px; border-radius: 10px; border: 1px solid #888;
+}
+#services .follow-box .profile {
+    width: 70px;
+    height: 70px;
+    background-position: center center;
+    background-size: cover;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    border: 2px solid #888;
+}
+#services .follow-box .info {
+    height: 70px;
+    margin-left: 90px;
+    position: relative;
+}
