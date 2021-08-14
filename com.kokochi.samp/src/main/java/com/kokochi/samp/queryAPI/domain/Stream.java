@@ -44,5 +44,23 @@ public class Stream {
 		v.setNextPage("0");
 		return v;
 	}
+	
+	public JSONObject StreamToJSON() {
+		JSONObject j = new JSONObject();
+		j.put("id", this.id);
+		j.put("user_id", this.user_id);
+		j.put("user_login", this.user_login);
+		j.put("user_name", this.user_name);
+		j.put("game_id", this.game_id);
+		j.put("game_name", this.game_name);
+		j.put("type", this.type);
+		j.put("title", this.title);
+		j.put("viewer_count", this.viewer_count);
+		j.put("started_at", this.started_at.toString());
+		j.put("language", this.language);
+		j.put("thumbnail_url", this.thumbnail_url);
+		j.put("profile_image_url", this.profile_image_url);
+		return j;
+	}
 
 }

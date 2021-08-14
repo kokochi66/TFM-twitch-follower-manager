@@ -30,4 +30,9 @@
 		<put-attribute name="content" value="/WEB-INF/tiles/views/test/{1}.jsp" />
 	</definition>
 	
+	<definition name="detail/*" extends="main-template">
+		<put-attribute name="title" value=": 스트리머 정보" />
+		<put-attribute name="content" value="/WEB-INF/tiles/views/detail/{1}.jsp" />
+	</definition>
+	
 </tiles-definitions>

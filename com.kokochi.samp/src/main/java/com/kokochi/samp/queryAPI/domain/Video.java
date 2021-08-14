@@ -41,6 +41,7 @@ public class Video {
 		res.put("user_name", this.user_name);
 		res.put("title", this.title);
 		res.put("description", this.description);
+		res.put("created_at", this.created_at.toString());
 		res.put("url", this.url);
 		res.put("thumbnail_url", this.thumbnail_url);
 		res.put("view_count", this.view_count);

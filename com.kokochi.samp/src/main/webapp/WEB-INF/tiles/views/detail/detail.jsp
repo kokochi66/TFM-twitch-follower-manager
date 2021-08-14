@@ -38,13 +38,14 @@
 			<div class="profile">
 				<div class="img-box">
 					<div class="img">
-						<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg" alt="" width="100%">
+						<img src="${stream.profile_image_url}" alt="" width="100%">
 					</div>
 				</div>
 				<div class="info-box">
 					<div class="name">
-						이춘향<span class="login">leechunhyang</span>
+						${stream.display_name}<span class="login">${stream.login}</span>
 					</div>
+					<div class="user_id displayNone">${stream.id}</div>
 					<div class="btn-list">
 						<div class="btn btn-danger">팔로우</div>
 						<div class="btn btn-primary">구독</div>
@@ -69,92 +70,39 @@
 	</section>
 	<section id="services">
 		<div class="container">
-			<div class="live-box displayNone">
+			<div class="live-box">
 				<div class="live-info">
 					<div class="video-box">
-						<div class="thumbnail">
-							<img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_leechunhyang-1920x1080.jpg" alt="" width="100%">
-						</div>
-						<div class="play_btn">
-							<img src="assets/img/play.png" alt="" width="100%">
-						</div>
-						<div class="text"></div>
+						<a href="" class="linkBox url"  target="_blank">
+							<div class="thumbnail">
+								<img src="" alt="" width="100%">
+							</div>
+							<div class="play_btn">
+								<img src="${path}/assets/img/play.png" alt="" width="100%">
+							</div>
+							<div class="text"></div>
+						</a>
 					</div>
 					<div class="info-box">
-						<div class="title">[이춘향] (๑˘  ꇴ ˘ ๑)</div>
-						<div class="viewer">1896 명</div>
-						<div class="game">Just Chatting</div>
-						<div class="start_at">30분전</div>
-						<div class="rank">라이브 12위</div>
+						<div class="title"></div>
+						<div class="viewer"></div>
+						<div class="game"></div>
+						<div class="start_at"></div>
+						<div class="rank"></div>
 						<div class="tags">
 							<div class="tag">한국어</div>
-							<div class="tag">e스포츠</div>
-							<div class="tag">e스포츠</div>
-							<div class="tag">e스포츠</div>
-							<div class="tag">e스포츠</div>
-							<div class="tag">e스포츠</div>
 							<div class="tag">e스포츠</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="replay-detail-box displayNone">
-				<div class="row">
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-				</div>
+				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
 			<div class="clip-box displayNone">
-				<div class="row">
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
-					</div>
-				</div>
+				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
-			<div class="relative-box">
+			<div class="relative-box displayNone">
 				<div class="row">
 					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
 						<div class="follow-box">
@@ -205,10 +153,10 @@
 						</div>
 					</div>
 				</div>
+				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
-			<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 		</div>
 	</section>
 </main>
 <!-- End #main -->
-<script src="${path}/assets/js/main.js"></script>
+<script src="${path}/assets/js/detail/detail.js"></script>

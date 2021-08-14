@@ -2,6 +2,8 @@ package com.kokochi.samp.queryAPI.domain;
 
 import java.util.Date;
 
+import org.json.simple.JSONObject;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,5 +44,20 @@ public class Clips {
 		v.setNextPage(this.nextPage);
 		v.setProfile_url(profile_url);
 		return v;
+	}
+	
+	public JSONObject clipsToJSON() {
+		JSONObject j = new JSONObject();
+		j.put("broadcaster_id", this.broadcaster_id);
+		j.put("broadcaster_name", this.broadcaster_name);
+		j.put("title", this.title);
+		j.put("url", this.url);
+		j.put("view_count", this.view_count);
+		j.put("created_at", this.created_at.toString());
+		j.put("thumbnail_url", this.thumbnail_url);
+		j.put("language", this.language);
+		j.put("nextPage", this.nextPage);
+		j.put("profile_url", this.profile_url);
+		return j;
 	}
 }

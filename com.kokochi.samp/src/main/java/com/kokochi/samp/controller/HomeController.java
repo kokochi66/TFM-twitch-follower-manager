@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.domain.ManagedFollow;
 import com.kokochi.samp.mapper.UserMapper;
+import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.GetVideo;
 import com.kokochi.samp.queryAPI.domain.Clips;
@@ -114,6 +115,7 @@ public class HomeController {
 			
 			GetVideo videoGetter = new GetVideo();
 			GetStream streamGetter = new GetStream();
+			GetClips clipGetter = new GetClips();
 			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			
@@ -146,7 +148,7 @@ public class HomeController {
 //				System.out.println("getNextVideo - service_video");
 			}
 			else if(service_target.equals("recent_clip")) {
-				List<Clips> service_clip = videoGetter.getClipsRecentByUsers(serviceMap, follow_list, client_id, user.getOauth_token(), 8);
+				List<Clips> service_clip = clipGetter.getClipsRecentByUsers(serviceMap, follow_list, client_id, user.getOauth_token(), 8);
 				for(int i=0;i<service_clip.size();i++) {
 //					System.out.println("getNextVideo - recent_clip :: " + service_clip.get(i).toString());
 					service_video.add(service_clip.get(i).clipsToVideo());

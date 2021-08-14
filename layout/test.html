@@ -115,6 +115,7 @@
 					<div class="name">
 						이춘향<span class="login">leechunhyang</span>
 					</div>
+					<div class="user_id displayNone">133923936</div>
 					<div class="btn-list">
 						<div class="btn btn-danger">팔로우</div>
 						<div class="btn btn-primary">구독</div>
@@ -139,20 +140,23 @@
 	</section>
 	<section id="services">
 		<div class="container">
-			<div class="live-box displayNone">
+			<div class="live-box">
 				<div class="live-info">
 					<div class="video-box">
-						<div class="thumbnail">
-							<img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_leechunhyang-1920x1080.jpg" alt="" width="100%">
-						</div>
-						<div class="play_btn">
-							<img src="assets/img/play.png" alt="" width="100%">
-						</div>
-						<div class="text"></div>
+						<a href="#" class="linkBox url" target="_blank">
+							<div class="thumbnail">
+								<img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_leechunhyang-1920x1080.jpg" alt="" width="100%">
+							</div>
+							<div class="play_btn">
+								<img src="assets/img/play.png" alt="" width="100%">
+							</div>
+							<div class="text"></div>
+						</a>
+
 					</div>
 					<div class="info-box">
 						<div class="title">[이춘향] (๑˘  ꇴ ˘ ๑)</div>
-						<div class="viewer">1896 명</div>
+						<div class="viewer"><span>1896</span>명</div>
 						<div class="game">Just Chatting</div>
 						<div class="start_at">30분전</div>
 						<div class="rank">라이브 12위</div>
@@ -171,7 +175,16 @@
 			<div class="replay-detail-box displayNone">
 				<div class="row">
 					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-						<div class="icon-box"></div>
+						<div class="icon-box">
+							<a href="linkBox" target="_blank">
+								<img src="https://static-cdn.jtvnw.net/cf_vods/d1m7jfoe9zdc1j/cbdf7d1860fecb29382c_kumikomii_43175120317_1628365711//thumb/thumb0-300x200.jpg" alt="">
+							</a>
+						</div>
+						<div class="icon-info">
+							<div class="title">💖고차비✿ 새벽의 찹차비 '^')♥</div>
+							<div class="view_count">23819회 시청</div>
+							<div class="created_at">2021-08-07T19:48:41Z</div>
+						</div>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
 						<div class="icon-box"></div>
@@ -195,6 +208,7 @@
 						<div class="icon-box"></div>
 					</div>
 				</div>
+				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
 			<div class="clip-box displayNone">
 				<div class="row">
@@ -222,9 +236,10 @@
 					<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
 						<div class="icon-box"></div>
 					</div>
+					<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 				</div>
 			</div>
-			<div class="relative-box">
+			<div class="relative-box displayNone">
 				<div class="row">
 					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
 						<div class="follow-box">
@@ -275,12 +290,13 @@
 						</div>
 					</div>
 				</div>
+				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
-			<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 		</div>
 	</section>
 </main>
 <!-- End #main -->
+<script src="assets/js/detail/detail.js"></script>
 
 <!-- ======= Footer ======= -->
 <footer id="footer">
@@ -294,7 +310,7 @@
   </div>
 </footer><!-- End Footer -->
 <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
-	
+
 
 
 <!-- Vendor JS Files -->
