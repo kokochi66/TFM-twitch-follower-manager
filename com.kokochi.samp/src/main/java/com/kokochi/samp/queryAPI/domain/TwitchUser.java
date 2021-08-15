@@ -2,6 +2,8 @@ package com.kokochi.samp.queryAPI.domain;
 
 import java.util.Date;
 
+import org.json.simple.JSONObject;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,4 +24,20 @@ public class TwitchUser {
 	private String email;
 	private Date created_at;
 	private boolean checking_managed;
+	
+	public JSONObject TwitchUserToJSON() {
+		JSONObject j = new JSONObject();
+		j.put("description", this.description);
+		j.put("display_name", this.display_name);
+		j.put("id", this.id);
+		j.put("login", this.login);
+		j.put("offline_image_url", this.offline_image_url);
+		j.put("profile_image_url", this.profile_image_url);
+		j.put("type", this.type);
+		j.put("view_count", this.view_count);
+		j.put("email", this.email);
+		j.put("created_at", this.created_at.toString());
+		j.put("checking_managed", this.checking_managed);
+		return j;
+	}
 }

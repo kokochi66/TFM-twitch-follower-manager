@@ -1,6 +1,8 @@
 package com.kokochi.samp.queryAPI;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -160,5 +162,64 @@ public class GetStream {
 		
 		return null;
 	}
-
+	
+	public boolean getRelativeFollow(Map<String, Integer> res, String client_id, String access_token, String to_id, String next, int count) throws Exception {
+		if(count >= 1) return true;
+		System.out.println("getRelativeFollow - count :: " + count);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", access_token);
+		headers.add("Client-id", client_id);
+		
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+		
+		try {
+			ResponseEntity<String> response = rt.exchange(
+					"https://api.twitch.tv/helix/users/follows?first=100&"+to_id+next, HttpMethod.GET,
+					entity, String.class);
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
+			for(int i=0;i<data.size();i++) {
+				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
+				String c_from_id = cJson.get("from_id").toString();
+				JSONObject from_pagination = new JSONObject();
+				
+				do {
+					String from_next = from_pagination.containsKey("cursor") ? from_pagination.get("cursor").toString() : "";
+					response = rt.exchange(
+							"https://api.twitch.tv/helix/users/follows?first=100&from_id="+c_from_id+"&after="+from_next, HttpMethod.GET,
+							entity, String.class);
+					JSONObject from_jsonfile = (JSONObject) parser.parse(response.getBody());
+					JSONArray from_data = (JSONArray) parser.parse(from_jsonfile.get("data").toString());
+					from_pagination = (JSONObject) parser.parse(from_jsonfile.get("pagination").toString());
+//					System.out.println("getRelativeFollow - from_data.size :: " + from_data.size());
+					
+					for(int j=0;j<from_data.size();j++) {
+						JSONObject from_cJson = (JSONObject) parser.parse(from_data.get(j).toString());
+						String c_to_id = from_cJson.get("to_id").toString();
+//						System.out.println("getRelativeFollow - from_to_id :: " + c_to_id +" "+ j +" "+ from_data.size());
+						if(!res.containsKey(c_to_id)) {
+							res.put(c_to_id, 1);
+							
+						} else {
+							res.replace(c_to_id, res.get(c_to_id) + 1);
+						}
+					}
+					
+				} while(from_pagination.containsKey("cursor"));
+			}
+			if(pagination.containsKey("cursor")) getRelativeFollow(res,client_id,access_token, to_id, "after="+pagination.get("cursor").toString(), count + 1);
+			
+			return true;
+			
+			
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+			
+			if(exceptionMessage.get("status").toString().equals("401")) return false;
+		}
+		
+		return true;
+	}
 }

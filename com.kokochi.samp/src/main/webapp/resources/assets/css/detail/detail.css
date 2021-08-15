@@ -57,9 +57,16 @@
 #services .replay-box {}
 #services .icon-box {border: 1px solid #888;}
 
+#services {}
+#services .icon-info {margin-top: 5px;}
+#services .icon-info .title {font-size: 16px;}
+#services .icon-info .view_count {font-size: 12px; float: right;}
+#services .icon-info .created_at {font-size: 13px;}
+
 #services .follow-box {
     padding: 20px; border-radius: 10px; border: 1px solid #888;
 }
+#services .follow-box.mylist {background-color: rgb(215, 255, 205);}
 #services .follow-box .profile {
     width: 70px;
     height: 70px;
@@ -69,17 +76,16 @@
     position: absolute;
     top: 20px;
     left: 30px;
-    border: 2px solid #888;
+    border: 2px solid #888; overflow: hidden;
 }
 #services .follow-box .info {
     height: 70px;
     margin-left: 90px;
     position: relative;
 }
-
-
-#services {}
-#services .icon-info {margin-top: 5px;}
-#services .icon-info .title {font-size: 16px;}
-#services .icon-info .view_count {font-size: 12px; float: right;}
-#services .icon-info .created_at {font-size: 13px;}
+#services .follow-box .info > div {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#services .follow-box .info .check .checkInput {
+    position: absolute; top: 0; right: 0;
+}

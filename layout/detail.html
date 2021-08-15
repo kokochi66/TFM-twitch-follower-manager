@@ -1,0 +1,213 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>TFM - 트위치 팔로우 관리자 : 스트리머 정보</title>
+  
+
+
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<!-- Favicons -->
+<!-- <link href="assets/img/favicon.png" rel="icon"> -->
+<!-- <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon"> -->
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+<!-- Vendor CSS Files -->
+<link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/swiper-bundle.min.css" rel="stylesheet">
+<link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+
+
+<!-- Template Main CSS File -->
+<link href="assets/css/style.css" rel="stylesheet">
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/main.css" rel="stylesheet">
+
+<script src="assets/js/script.js"></script>
+</head> 
+<body>
+	
+
+
+
+<!-- ======= Top Bar ======= -->
+<section id="topbar" class="d-lg-block">
+	<div class="container d-flex">
+		<div class="logo mr-auto">
+			<h1 class="text-light">
+				<a href="/" title="홈페이지의 메인 타이틀입니다."><span>TFM</span></a>
+			</h1>
+		</div>
+		<div class="social-links">
+			<a href="https://www.twitch.tv/" class="twitch" target="_blank"><i
+				class="icofont-twitch" title="트위치 홈페이지로 이동하는 링크"></i></a>
+
+			<div class="dropdown d-inline">
+				<a href="#" class="login dropdown-toggle" id="dropdownMenu2"
+					data-bs-toggle="dropdown" aria-expanded="false"><i
+					class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					
+					
+					
+						<li><button class="dropdown-item" type="button" onclick="location.href='/auth/login'">로그인</button></li>
+					
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/menu/setting'">설정</button></li>
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/menu/managefollow'">팔로우 채널 관리</button></li>
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/menu/replayvideo'">다시보기 찜 관리</button></li>
+					<li><button class="dropdown-item" type="button"
+							onclick="location.href='/test/form'">폼 테스트</button></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+	
+	
+
+
+
+
+
+
+
+<link rel="stylesheet" href="assets/css/detail/detail.css" />
+<!-- HeadSlider -->
+<section id="breadcrumbs" class="breadcrumbs">
+	<!-- SearchBar  -->
+	<section id="searchbar" class="searchbar p-0">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6" style="margin: 0 auto;">
+					<div class="input-group mb-3 mt-3">
+						<input type="text" class="form-control" id="searchBar_text"
+							placeholder="스트리머 찾기">
+						<button class="searchBar_btn" id="searchBar_btn">
+							<i class="icofont-ui-search icon"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+</section>
+<!-- End HeadSlider -->
+
+
+<!-- Main -->
+<main id="content">
+	<section id="about">
+		<div class="container">
+			<div class="profile">
+				<div class="img-box">
+					<div class="img">
+						<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/d48767c9-fef7-48cf-9e10-e3baffefbb19-profile_image-300x300.png" alt="" width="100%">
+					</div>
+				</div>
+				<div class="info-box">
+					<div class="name">
+						김진우<span class="login">jinu6734</span>
+					</div>
+					<div class="user_id displayNone">131925215</div>
+					<div class="info">
+                        <div class="follow">팔로우 3만명</div>
+                        <div class="language">한국어</div>
+                        <div class="started_at">2016년 9월 4일 생성</div>
+                    </div>
+				</div>
+				<div class="rank-box">200위</div>
+			</div>
+		</div>
+	</section>
+	<section id="tab">
+		<div class="container">
+			<div class="row">
+				<div class="menu-box col-3 text-center p-4 border-bottom border-right border-top border-dark active">라이브</div>
+				<div class="menu-box col-3 text-center p-4 border-bottom border-right border-top border-dark">다시보기</div>
+				<div class="menu-box col-3 text-center p-4 border-bottom border-right border-top border-dark">클립</div>
+				<div class="menu-box col-3 text-center p-4 border-bottom border-top border-dark">연관 스트리머</div>
+			</div>
+		</div>
+	</section>
+	<section id="services">
+		<div class="container">
+			<div class="live-box">
+				<div class="live-info">
+					<div class="video-box">
+						<a href="" class="linkBox url"  target="_blank">
+							<div class="thumbnail">
+								<img src="" alt="" width="100%">
+							</div>
+							<div class="play_btn">
+								<img src="assets/img/play.png" alt="" width="100%">
+							</div>
+							<div class="text"></div>
+						</a>
+					</div>
+					<div class="info-box">
+						<div class="title"></div>
+						<div class="viewer"></div>
+						<div class="game"></div>
+						<div class="start_at"></div>
+						<div class="rank"></div>
+						<div class="tags">
+							<div class="tag">한국어</div>
+							<div class="tag">e스포츠</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="replay-detail-box displayNone">
+				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
+			</div>
+			<div class="clip-box displayNone">
+				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
+			</div>
+			<div class="relative-box displayNone">
+				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
+			</div>
+		</div>
+	</section>
+</main>
+<!-- End #main -->
+<script src="assets/js/detail/detail.js"></script>
+
+	
+	
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+  <div class="container">
+    <div class="copyright">
+      &copy; Copyright <strong><span>kokochikochi</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+    </div>
+  </div>
+</footer><!-- End Footer -->
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+	
+
+
+<!-- Vendor JS Files -->
+<script src="assets/js/swiper-bundle.min.js"></script>
+
+<!-- Bootstrap JS File -->
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

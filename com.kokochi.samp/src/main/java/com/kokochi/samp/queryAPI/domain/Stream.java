@@ -62,5 +62,4 @@ public class Stream {
 		j.put("profile_image_url", this.profile_image_url);
 		return j;
 	}
-
 }

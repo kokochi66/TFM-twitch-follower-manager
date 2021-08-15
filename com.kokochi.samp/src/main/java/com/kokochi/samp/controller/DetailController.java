@@ -1,7 +1,11 @@
 package com.kokochi.samp.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -56,7 +60,6 @@ public class DetailController {
 		if(stream == null) return"detail/findError";
 		
 		model.addAttribute("stream", stream);
-		
 		return "detail/detail";
 	}
 	
@@ -120,6 +123,55 @@ public class DetailController {
 			JSONObject j = replay_list.get(i).clipsToJSON();
 			res_arr.add(j);
 		}
+		return res_arr.toJSONString();
+	}
+	
+	@RequestMapping(value="/request/relative", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
+	@ResponseBody
+	public String getRelativeDataFromStream(@RequestHeader(value="login")String login) throws Exception {
+		log.info("/detail/request/relative - 연관 스트리머 데이터 가져오기 :: " + login);
+		
+		String client_id = key.read("client_id").getKey_value();
+		String app_access_token = key.read("app_access_token").getKey_value();
+		GetStream streamGetter = new GetStream();
+		
+		Map<String, Integer> relative = new HashMap<>();
+		streamGetter.getRelativeFollow(relative, client_id, app_access_token, "to_id="+login+"&", "", 0);
+		if(relative == null || relative.size() == 0) return "error";
+		
+		List<Entry<String, Integer>> SortEntry = new ArrayList<>();
+		for(Entry<String, Integer> entry : relative.entrySet()) {
+			if(entry.getValue() >= 10) SortEntry.add(entry);
+		}
+		Collections.sort(SortEntry, (a,b) -> b.getValue().compareTo(a.getValue()));
+//		for(int i=SortEntry.size()-1;i>=0;i--) {
+//			log.info(SortEntry.get(i).getKey() +" " + SortEntry.get(i).getValue());
+//		}
+		JSONArray res_arr = new JSONArray();
+		for(int i=1;i<SortEntry.size();i++) {
+			res_arr.add(SortEntry.get(i).getKey());
+		}
+		return res_arr.toJSONString();
+	}
+	
+	@RequestMapping(value="/request/getTwitchUserSet", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
+	@ResponseBody
+	public String getTwitchUserDataFromStream(@RequestHeader(value="login_arr")String login_arr) throws Exception {
+		log.info("/detail/request/getTwitchUserSet - 트위치 사용자 데이터 가져오기");
+		JSONArray res_arr = new JSONArray();
+		JSONArray service_arr = (JSONArray) parser.parse(login_arr);
+		
+		String client_id = key.read("client_id").getKey_value();
+		String app_access_token = key.read("app_access_token").getKey_value();
+		GetStream streamGetter = new GetStream();
+		
+		for(int i=0;i<service_arr.size();i++) {
+			String c_user_id = service_arr.get(i).toString();
+			TwitchUser t_us = streamGetter.getUser(client_id, app_access_token, "id="+c_user_id+"&");
+			JSONObject j = t_us.TwitchUserToJSON();
+			res_arr.add(j);
+		}
+
 		return res_arr.toJSONString();
 	}
 }

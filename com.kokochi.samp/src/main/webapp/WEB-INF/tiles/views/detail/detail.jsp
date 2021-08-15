@@ -48,9 +48,7 @@
 					<div class="user_id displayNone">${stream.id}</div>
 					<div class="btn-list">
 						<div class="btn btn-danger">팔로우</div>
-						<div class="btn btn-primary">구독</div>
-						<div class="btn btn-success">알림설정</div>
-						<div class="btn btn-secondary">관리목록</div>
+						<div class="btn btn-primary">관리목록</div>
 					</div>
 					
 				</div>
@@ -103,56 +101,6 @@
 				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
 			<div class="relative-box displayNone">
-				<div class="row">
-					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-						<div class="follow-box">
-							<div class="profile"></div>
-							<div class="info"></div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-						<div class="follow-box">
-							<div class="profile"></div>
-							<div class="info"></div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-						<div class="follow-box">
-							<div class="profile"></div>
-							<div class="info"></div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-						<div class="follow-box">
-							<div class="profile"></div>
-							<div class="info"></div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-						<div class="follow-box">
-							<div class="profile"></div>
-							<div class="info"></div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-						<div class="follow-box">
-							<div class="profile"></div>
-							<div class="info"></div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-						<div class="follow-box">
-							<div class="profile"></div>
-							<div class="info"></div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-						<div class="follow-box">
-							<div class="profile"></div>
-							<div class="info"></div>
-						</div>
-					</div>
-				</div>
 				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
 		</div>
