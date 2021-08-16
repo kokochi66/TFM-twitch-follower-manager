@@ -19,9 +19,6 @@ window.onload = function() {
     }
   });
   let addMoreBtn = document.querySelector('#services .addMore');
-  let default_img = '/resources/assets/img/default_image.jpg';
-  let loading_box = document.createElement('div');
-  loading_box.className = 'loading m-auto mt-5 mb-5'
 
   addMoreBtn.addEventListener('click', () => {
     service_container = document.querySelector('#services .container')
@@ -69,7 +66,7 @@ window.onload = function() {
 
 
   function sendService_Data(video, map) {
-    httpRequest = new XMLHttpRequest();
+    let httpRequest = new XMLHttpRequest();
     httpRequest.open('POST', '/home/request/getNextVideo');
     httpRequest.setRequestHeader('service_map', JSON.stringify(map));
     httpRequest.setRequestHeader('service_target',video);

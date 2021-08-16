@@ -17,8 +17,8 @@
 
 
 <!-- Template Main CSS File -->
-<link href="${path}/assets/css/style.css" rel="stylesheet">
 <link href="${path}/assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="${path}/assets/css/style.css" rel="stylesheet">
 <link href="${path}/assets/css/main.css" rel="stylesheet">
 
 <script src="${path}/assets/js/script.js"></script>

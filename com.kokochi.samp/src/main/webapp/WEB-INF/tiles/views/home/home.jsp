@@ -7,61 +7,8 @@
 <c:set var="path" value="/resources" />
 <c:set var="default_img" value="${path}/assets/img/default_image.jpg" />
 
-<!-- HeadSlider -->
-<section id="headslider">
-	<div id="headslider-container" class="swiper-container">
-		<div class="swiper-wrapper">
-			<c:forEach items="${headslide_list}" var="stream">
-				<div class="swiper-slide">
-					<div class="imageBox">
-						<a href="https://www.twitch.tv/${stream.user_login}"
-							class="linkBox" target="_blank">
-							<div class="img">
-								<img src="${stream.thumbnail_url}" alt="방송이미지" width="100%">
-							</div>
-						</a>
-						<div class="info">
-							<div class="profile_img">
-								<img src="${stream.profile_image_url}" alt="" width="100%">
-							</div>
-							<div class="user_name">${stream.user_name}(${stream.user_login})</div>
-							<div class="stream_game">${stream.game_name}</div>
-							<div class="viewer_count">시청자 ${stream.viewer_count}명</div>
-							<div class="started_date">${stream.started_at}</div>
-						</div>
-					</div>
-				</div>
-			</c:forEach>
-
-		</div>
-		<div id="hero-pagination" class="swiper-pagination"></div>
-		<div class="swiper-button-prev"></div>
-		<div class="swiper-button-next"></div>
-	</div>
-
-</section>
-<!-- End HeadSlider -->
-
-
 <!-- Main -->
 <main id="content">
-
-	<!-- SearchBar  -->
-	<section id="searchbar" class="searchbar">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6" style="margin: 0 auto;">
-					<div class="input-group mb-3 mt-3">
-						<input type="text" class="form-control" id="searchBar_text"
-							placeholder="스트리머 찾기">
-						<button class="searchBar_btn" id="searchBar_btn">
-							<i class="icofont-ui-search icon"></i>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
 
 	<sec:authorize access="isAnonymous()">
 		<!-- Main Notice -->
@@ -138,8 +85,7 @@
 			<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
 		</section>
 		<!-- End Services Section -->
+		<script src="${path}/assets/js/home/listvideo.js"></script>
 	</sec:authorize>
 </main>
 <!-- End #main -->
-
-<script src="${path}/assets/js/main.js"></script>

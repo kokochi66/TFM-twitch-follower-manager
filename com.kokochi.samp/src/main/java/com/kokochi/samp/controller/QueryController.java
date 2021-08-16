@@ -1,18 +1,30 @@
 package com.kokochi.samp.controller;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
 
 import com.kokochi.samp.domain.ManagedFollow;
 import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetVideo;
+import com.kokochi.samp.queryAPI.domain.Clips;
 import com.kokochi.samp.service.ManagedFollowService;
 import com.kokochi.samp.service.TwitchKeyService;
 
@@ -55,5 +67,42 @@ public class QueryController {
 			}
 		}
 		return "success";
+	}
+	
+	@RequestMapping(value="/request/searchStreams", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
+	@ResponseBody
+	public String getSearchStream(@RequestBody String query) throws Exception {
+		log.info("/query/request/searchStreams - 검색창 쿼리 :: " + query);
+		
+		String client_id = key.read("client_id").getKey_value();
+		String app_access_token = key.read("app_access_token").getKey_value();
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", app_access_token);
+		headers.add("Client-id", client_id);
+		
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+		JSONParser parser = new JSONParser();
+		try {
+			ResponseEntity<String> response = rt.exchange(
+					"https://api.twitch.tv/helix/search/channels?first=5&query="+query, HttpMethod.GET,
+					entity, String.class);
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
+			
+//			System.out.println("GetVideo - GetClipsOneByUserId :: " + clip.toString());
+			log.info("success");
+			return data.toJSONString();
+			
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+			log.info("getSearchStream " + exceptionMessage.toJSONString());
+			
+			if(exceptionMessage.get("status").toString().equals("401")) return "failed";
+		}
+		
+		return "failed";
 	}
 }

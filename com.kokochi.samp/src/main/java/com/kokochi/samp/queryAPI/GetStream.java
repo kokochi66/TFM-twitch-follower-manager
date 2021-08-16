@@ -56,6 +56,7 @@ public class GetStream {
 	}
 	
 	public ArrayList<Stream> getLiveStreams(String client_id, String app_access_token, int first) throws Exception {
+		System.out.println("getLiveStreams :: " + client_id +" " + app_access_token +" " + first);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);
 		headers.add("Client-id", client_id);
@@ -68,11 +69,13 @@ public class GetStream {
 			ResponseEntity<String> response = rt.exchange(
 					"https://api.twitch.tv/helix/streams?language={language}&first={first}", HttpMethod.GET,
 					entity, String.class, "ko", first);
-			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
-			JSONArray jsonArray = (JSONArray) parser.parse(jsonfile.get("data").toString());
+//			System.out.println("getLiveStreams - get responseBody :: " + response.getBody().toString());
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody().toString());
+			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
 			
-			for(int i=0;i<jsonArray.size();i++) {
-				JSONObject cJson = (JSONObject) parser.parse(jsonArray.get(i).toString());
+			for(int i=0;i<data.size();i++) {
+//				System.out.println("getLiveStreams :: " + data.get(i).toString() +" " + data.size());
+				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
 				
 				Stream stream = gsonParser.fromJson(cJson.toString(), Stream.class);
 				TwitchUser cUser = getUser(client_id, app_access_token, "id="+stream.getUser_id()+"&");
@@ -83,6 +86,7 @@ public class GetStream {
 			
 		} catch (HttpStatusCodeException  e) {
 			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+			System.out.println("getLiveStreams :: " + e); 
 			
 			if(exceptionMessage.get("status").toString().equals("401")) return null;
 		}

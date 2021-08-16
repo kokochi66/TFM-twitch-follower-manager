@@ -18,6 +18,7 @@ window.onload = function() {
       }
     }
   });
+  
   let addMoreBtn = document.querySelector('#services .addMore');
 
   addMoreBtn.addEventListener('click', () => {
@@ -66,7 +67,7 @@ window.onload = function() {
 
 
   function sendService_Data(video, map) {
-    httpRequest = new XMLHttpRequest();
+    let httpRequest = new XMLHttpRequest();
     httpRequest.open('POST', '/home/request/getNextVideo');
     httpRequest.setRequestHeader('service_map', JSON.stringify(map));
     httpRequest.setRequestHeader('service_target',video);

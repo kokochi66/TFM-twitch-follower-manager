@@ -10,29 +10,6 @@
 <c:set var="default_img" value="${path}/assets/img/default_image.jpg" />
 
 <link rel="stylesheet" href="${path}/assets/css/detail/detail.css" />
-<!-- HeadSlider -->
-<section id="breadcrumbs" class="breadcrumbs">
-	<!-- SearchBar  -->
-	<section id="searchbar" class="searchbar p-0">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6" style="margin: 0 auto;">
-					<div class="input-group mb-3 mt-3">
-						<input type="text" class="form-control" id="searchBar_text"
-							placeholder="스트리머 찾기">
-						<button class="searchBar_btn" id="searchBar_btn">
-							<i class="icofont-ui-search icon"></i>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-
-</section>
-<!-- End HeadSlider -->
-
-
 <!-- Main -->
 <main id="content">
 	<section id="about">

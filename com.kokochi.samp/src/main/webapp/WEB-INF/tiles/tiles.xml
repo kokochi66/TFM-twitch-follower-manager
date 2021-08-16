@@ -2,7 +2,17 @@
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
 	"http://tiles.apache.org/dtds/tiles-config_3.0.dtd">
 <tiles-definitions>
-	<definition name="main-template" template="/WEB-INF/tiles/layouts/main_template.jsp">
+	
+	<definition name="home-template" template="/WEB-INF/tiles/layouts/home_template.jsp">
+		<put-attribute name="title" value="Main" />
+		<put-attribute name="topbar" value="/WEB-INF/tiles/module/main/topbar.jsp" />
+		<put-attribute name="searchBar" value="/WEB-INF/tiles/module/search/searchBar.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/module/main/footer.jsp" />
+		<put-attribute name="style" value="/WEB-INF/tiles/module/main/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/tiles/module/main/script.jsp" />
+	</definition>
+	
+	<definition name="menu-template" template="/WEB-INF/tiles/layouts/menu_template.jsp">
 		<put-attribute name="title" value="Main" />
 		<put-attribute name="topbar" value="/WEB-INF/tiles/module/main/topbar.jsp" />
 		<put-attribute name="footer" value="/WEB-INF/tiles/module/main/footer.jsp" />
@@ -10,29 +20,39 @@
 		<put-attribute name="script" value="/WEB-INF/tiles/module/main/script.jsp" />
 	</definition>
 	
-	<definition name="homes" extends="main-template">
-		<put-attribute name="title" value=": 메인 페이지" />
-		<put-attribute name="content" value="/WEB-INF/tiles/views/home/home.jsp" />
+	<definition name="detail-template" template="/WEB-INF/tiles/layouts/detail_template.jsp">
+		<put-attribute name="title" value="Main" />
+		<put-attribute name="topbar" value="/WEB-INF/tiles/module/main/topbar.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/module/main/footer.jsp" />
+		<put-attribute name="style" value="/WEB-INF/tiles/module/main/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/tiles/module/main/script.jsp" />
 	</definition>
 	
-	<definition name="auth/*" extends="main-template">
+	<definition name="homes" extends="home-template">
+		<put-attribute name="title" value=": 메인 페이지" />
+		<put-attribute name="content" value="/WEB-INF/tiles/views/home/home.jsp" />
+		<put-attribute name="headSlider" value="/WEB-INF/tiles/views/home/home_headslider.jsp" />
+	</definition>
+	
+	<definition name="auth/*" extends="menu-template">
 		<put-attribute name="title" value=": 로그인" />
 		<put-attribute name="content" value="/WEB-INF/tiles/views/auth/{1}.jsp" />
 	</definition>
 	
-	<definition name="menu/*" extends="main-template">
+	<definition name="menu/*" extends="menu-template">
 		<put-attribute name="title" value=": 메뉴" />
 		<put-attribute name="content" value="/WEB-INF/tiles/views/menu/{1}.jsp" />
 	</definition>
 	
-	<definition name="test/*" extends="main-template">
+	<definition name="test/*" extends="menu-template">
 		<put-attribute name="title" value=": 테스트" />
 		<put-attribute name="content" value="/WEB-INF/tiles/views/test/{1}.jsp" />
 	</definition>
 	
-	<definition name="detail/*" extends="main-template">
+	<definition name="detail/*" extends="detail-template">
 		<put-attribute name="title" value=": 스트리머 정보" />
 		<put-attribute name="content" value="/WEB-INF/tiles/views/detail/{1}.jsp" />
+		<put-attribute name="header" value="/WEB-INF/tiles/views/detail/detail_header.jsp" />
 	</definition>
 	
 </tiles-definitions>
