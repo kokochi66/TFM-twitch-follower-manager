@@ -41,7 +41,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 				String client_id = service.getKey("client_id").getKey_value();
 				
 				TwitchUser tuser = streamGenerator.getUser(client_id, user_pwd, "");
-				UserDTO user = (UserDTO) service.loadUserByTwitchUsername(tuser.getLogin());
+				UserDTO user = (UserDTO) service.loadUserByTwitchUsername(tuser.getId());
 				user.setUser_pwd("");	// 비밀번호는 객체에 적용하지 않음
 				user.setOauth_token(user_pwd);
 				
@@ -52,9 +52,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-
-		
 			
 		} else {
 			// 일반 로그인 처리

@@ -28,7 +28,7 @@
           <form class="row">
             <div class="mb-3 col-12">
               <label class="form-label">트위치 아이디</label>
-              <input type="text" class="form-control col-4" value="${setting_twich_user_id}" disabled>
+              <input type="text" class="form-control col-4" value="${setting_twich_user_login}" disabled>
             </div>
             <div class="mb-3 col-12">
               <label class="form-label">아이디</label>

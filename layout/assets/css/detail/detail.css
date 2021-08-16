@@ -10,6 +10,15 @@
     font-size: 35px;  margin-left: 20px; margin-bottom: 20px;
 }
 #about .profile .info-box .login { font-size: 20px; margin-left: 5px;}
+#about .profile .info-box .info-num {display: flex; justify-content: flex-start;}
+#about .profile .info-box .info-num > div {
+    border-right: 1px solid #ccc; padding-right: 10px; margin-left: 15px;
+}
+#about .profile .info-box .info-num .follow {margin-left: 0;}
+#about .profile .info-box .info-num .language {}
+#about .profile .info-box .info-num .started_at {border-right: none;}
+
+
 #about .profile .rank-box {float: right; flex: 1; text-align: center;}
 
 

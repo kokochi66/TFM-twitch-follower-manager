@@ -32,10 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 	
 	@Autowired
-	TwitchKeyService key;
+	private TwitchKeyService key;
 	
 	@Autowired
-	UserDetailService detail;
+	private UserDetailService detail;
+	
+	private GetToken tokenGenerator = new GetToken();
+	private GetStream streamGenereator = new GetStream();
 	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public void login(Model model, String errMsg) { // 메인 home 화면 매핑
@@ -109,11 +112,9 @@ public class AuthController {
 		
 		String client_id = key.read("client_id").getKey_value();
 		String client_secret = key.read("client_secret").getKey_value();
-		GetToken tokenGenerator = new GetToken();
 		JSONObject oauthToken = tokenGenerator.GetOauth2AuthorizeToken(client_id, client_secret, code);
 		
 		String OAuth_token = "Bearer " +oauthToken.get("access_token");
-		GetStream streamGenereator = new GetStream();
 		TwitchUser user = streamGenereator.getUser(client_id, OAuth_token, "");
 		
 		// 회원가입 시 값에서 로그인 아이디 값을 그대로 전달해주면, form에서 임의로 값을 수정하여 디폴트값이 변형이 일어날 수 있기 때문에,
@@ -137,7 +138,6 @@ public class AuthController {
 		log.info("/auth/register POST - 회원가입 처리");
 		
 		String client_id = key.read("client_id").getKey_value();
-		GetStream streamGenereator = new GetStream();
 		TwitchUser user = streamGenereator.getUser(client_id, authtoken, "");
 		member.setTwitch_user_id(user.getLogin());
 		

@@ -166,21 +166,18 @@ window.onload = () => {
     }
     
     function replay_addEvent() {
-        console.log('replay addbtn');
         replay_detail_addMore.removeEventListener('click', replay_addEvent)
         let replay_detail_row = replay_detail_box.querySelectorAll('.row')
         let replay_detail_last_next = replay_detail_row[replay_detail_row.length-1].querySelector('.next_page').innerHTML
         setting_replay_req("after="+replay_detail_last_next+"&");
     }
     function clips_addEvent() {
-        console.log('clips addbtn');
         clip_box_addMore.removeEventListener('click', clips_addEvent)
         let clip_box_row = clip_box.querySelectorAll('.row')
         let clip_box_last_next = clip_box_row[clip_box_row.length-1].querySelector('.next_page').innerHTML
         setting_clip_req("after="+clip_box_last_next+"&");
     }
     function relative_addEvent() {
-        console.log('relative addbtn');
         relative_box_addMore.removeEventListener('click', relative_addEvent)
         relative_box.insertBefore(loading_box, relative_box_addMore)
         relative_format_twitchUserSet(relative_file.slice(

@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kokochi.samp.converter.LanguageConverter;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetClips;
+import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.GetVideo;
+import com.kokochi.samp.queryAPI.domain.Channel;
 import com.kokochi.samp.queryAPI.domain.Clips;
 import com.kokochi.samp.queryAPI.domain.Stream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
@@ -38,15 +41,20 @@ import lombok.extern.slf4j.Slf4j;
 public class DetailController {
 	
 	@Autowired
-	TwitchKeyService key;
+	private TwitchKeyService key;
 	
 	@Autowired
-	UserMapper usermapper;
+	private UserMapper usermapper;
 	
 	@Autowired
 	private ManagedFollowService follow_service;
 	
 	private JSONParser parser = new JSONParser();
+	
+	private GetStream streamGetter = new GetStream();
+	private GetFollow followGetter = new GetFollow();
+	private GetClips clipGetter = new GetClips();
+	private GetVideo videoGetter = new GetVideo();
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public String detail(Model model, @RequestParam("streams")String streams) throws Exception { // 메인 home 화면 매핑
@@ -55,11 +63,18 @@ public class DetailController {
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
 		
-		GetStream streamGetter = new GetStream();
+		LanguageConverter langConverter = new LanguageConverter();
+		
 		TwitchUser stream = streamGetter.getUser(client_id, app_access_token, "id="+streams);
+		int stream_total = followGetter.getFollowedTotal(client_id, app_access_token, "to_id="+streams);
+		Channel stream_channel = streamGetter.getChannelInfo(client_id, app_access_token, "broadcaster_id="+streams);
+		stream_channel.setBroadcaster_language(
+				langConverter.LanguageConvert(stream_channel.getBroadcaster_language()));
 		if(stream == null) return"detail/findError";
 		
 		model.addAttribute("stream", stream);
+		model.addAttribute("stream_total", stream_total);
+		model.addAttribute("stream_channel", stream_channel);
 		return "detail/detail";
 	}
 	
@@ -70,7 +85,6 @@ public class DetailController {
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		GetStream streamGetter = new GetStream();
 		Stream stream = streamGetter.getLiveStream(client_id, app_access_token, "user_id="+login);
 		if(stream == null) {
 			JSONObject res = new JSONObject();
@@ -93,7 +107,6 @@ public class DetailController {
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		GetVideo videoGetter = new GetVideo();
 		ArrayList<Video> replay_list = videoGetter.getVideoFromId(client_id, app_access_token, "user_id="+login+"&"+next, 8);
 		if(replay_list == null || replay_list.size() == 0) return "error";
 		
@@ -114,7 +127,6 @@ public class DetailController {
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		GetClips clipGetter = new GetClips();
 		List<Clips> replay_list = clipGetter.getClipsByUserId(client_id, app_access_token, "broadcaster_id="+login+"&"+next, 8);
 		if(replay_list == null || replay_list.size() == 0) return "error";
 		
@@ -133,10 +145,9 @@ public class DetailController {
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		GetStream streamGetter = new GetStream();
 		
 		Map<String, Integer> relative = new HashMap<>();
-		streamGetter.getRelativeFollow(relative, client_id, app_access_token, "to_id="+login+"&", "", 0);
+		followGetter.getRelativeFollow(relative, client_id, app_access_token, "to_id="+login+"&", "", 0);
 		if(relative == null || relative.size() == 0) return "error";
 		
 		List<Entry<String, Integer>> SortEntry = new ArrayList<>();
@@ -163,7 +174,6 @@ public class DetailController {
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		GetStream streamGetter = new GetStream();
 		
 		for(int i=0;i<service_arr.size();i++) {
 			String c_user_id = service_arr.get(i).toString();

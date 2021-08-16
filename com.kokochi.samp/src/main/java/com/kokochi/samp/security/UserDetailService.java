@@ -15,6 +15,7 @@ import com.kokochi.samp.domain.MemberAuth;
 import com.kokochi.samp.domain.TwitchKey;
 import com.kokochi.samp.mapper.TwitchKeyMapper;
 import com.kokochi.samp.mapper.UserMapper;
+import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
 
 @Service
 public class UserDetailService implements UserDetailsService {
@@ -47,6 +48,9 @@ public class UserDetailService implements UserDetailsService {
 		Member member = mapper.readUserByTwitchId(twitch_user_id);
 		List<MemberAuth> auth = mapper.readAuth(member.getUser_id());
 		UserDTO user = new UserDTO(member, auth);
+		
+		PostQuery postQuery = new PostQuery();
+		postQuery.initManagedFollow(user.getTwitch_user_id(), user.getUser_id());
 		return user;
 	}
 	

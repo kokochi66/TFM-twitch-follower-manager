@@ -25,6 +25,7 @@ public class UserDTO implements UserDetails {
 	private String user_nickname;
 	private String user_email;
 	private String twitch_user_id;
+	private String twitch_user_login;
 	private String Oauth_token;
 	private int enable;
 	private List<String> authority;
@@ -36,6 +37,7 @@ public class UserDTO implements UserDetails {
 		this.user_nickname = member.getUser_nickname();
 		this.user_email = member.getUser_email();
 		this.twitch_user_id = member.getTwitch_user_id();
+		this.twitch_user_login = member.getTwitch_user_login();
 		this.enable = member.getEnable();
 		this.Oauth_token = null;
 		

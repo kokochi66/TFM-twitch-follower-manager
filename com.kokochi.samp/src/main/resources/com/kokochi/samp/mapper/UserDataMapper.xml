@@ -4,11 +4,12 @@
 <mapper namespace="com.kokochi.samp.mapper.UserMapper">
 	
 	<resultMap type="com.kokochi.samp.domain.Member" id="memberMap">
-		<id property="user_id" column="user_id "/>
-		<result property="user_pwd" column="user_pwd "/>
-		<result property="user_email" column="user_email "/>
-		<result property="user_nickname" column="user_nickname "/>
-		<result property="twitch_user_id" column="twitch_user_id "/>
+		<id property="user_id" column="user_id"/>
+		<result property="user_pwd" column="user_pwd"/>
+		<result property="user_email" column="user_email"/>
+		<result property="user_nickname" column="user_nickname"/>
+		<result property="twitch_user_id" column="twitch_user_id"/>
+		<result property="twitch_user_login" column="twitch_user_login"/>
 	</resultMap>
 	
 	<resultMap type="com.kokochi.samp.domain.MemberAuth" id="authMap">
@@ -17,13 +18,13 @@
 	</resultMap>
 	
 	<select id="readUser" resultType="Member">
-		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, enable
+		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable
 		FROM user
 		WHERE user_id = #{user_id}
 	</select>
 	
 	<select id="readUserByTwitchId" resultType="Member">
-		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, enable
+		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable
 		FROM user
 		WHERE twitch_user_id = #{twitch_user_id}
 	</select>
@@ -35,8 +36,8 @@
 	</select>
 	
 	<insert id="create">
-		INSERT INTO user(user_id, user_pwd, user_email, user_nickname, twitch_user_id)
-		VALUES(#{user_id}, #{user_pwd}, #{user_email}, #{user_nickname}, #{twitch_user_id})
+		INSERT INTO user(user_id, user_pwd, user_email, user_nickname, twitch_user_id, twitch_user_login)
+		VALUES(#{user_id}, #{user_pwd}, #{user_email}, #{user_nickname}, #{twitch_user_id}, #{twitch_user_login})
 	</insert>
 	
 	<delete id="delete">
@@ -46,12 +47,13 @@
 	
 	<update id="update">
 		UPDATE user
-		SET user_pwd = #{user_pwd}, user_email = #{user_email}, user_nickname = #{user_nickname}, twitch_user_id = #{twitch_user_id}, enable = #{enable}
+		SET user_pwd = #{user_pwd}, user_email = #{user_email}, user_nickname = #{user_nickname}, 
+			twitch_user_id = #{twitch_user_id}, twitch_user_login = #{twitch_user_login}, enable = #{enable}
 		WHERE user_id = #{user_id}
 	</update>
 	
 	<select id="userList" resultType="Member">
-		SELECT user_id, user_pwd, user_email, user_nickname, twitch_user_id, enable
+		SELECT user_id, user_pwd, user_email, user_nickname, twitch_user_id, twitch_user_login, enable
 		FROM user
 	</select>
 	

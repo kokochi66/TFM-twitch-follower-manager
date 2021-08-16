@@ -38,15 +38,19 @@ import lombok.extern.slf4j.Slf4j;
 public class HomeController {
 	
 	@Autowired
-	TwitchKeyService key;
+	private TwitchKeyService key;
 	
 	@Autowired
-	UserMapper usermapper;
+	private UserMapper usermapper;
 	
 	@Autowired
 	private ManagedFollowService follow_service;
 	
 	private JSONParser parser = new JSONParser();
+	
+	private GetStream streamGetter = new GetStream();
+	private GetVideo videoGetter = new GetVideo();
+	private GetClips clipGetter = new GetClips();
 	
 	@RequestMapping(value="/")
 	public String home(Locale locale, Model model) throws Exception { // 메인 home 화면 매핑
@@ -54,8 +58,7 @@ public class HomeController {
 		// 1. client_id를 가져오고, 인증토큰을 가져와서 라이브중인 스트림을 먼저 가져온다. 성공하면 그대로 뷰로 넘김
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		GetStream streamGenerator = new GetStream();
-		List<Stream> headslide_list = streamGenerator.getLiveStreams(client_id, app_access_token, 5);
+		List<Stream> headslide_list = streamGetter.getLiveStreams(client_id, app_access_token, 5);
 		
 		// 2. 인증토큰의 기한이 끝난 경우에, 새로운 인증토큰을 생성하기 위해 client_secret을 가져오고, 인증토큰을 생성하여 성공시 그대로 뷰로 넘긴다.
 		if(headslide_list == null) return "redirect:/token/app_access_token";
@@ -68,9 +71,6 @@ public class HomeController {
 
 		model.addAttribute("headslide_list", headslide_list);
 		
-		
-		GetVideo videoGetter = new GetVideo();
-		GetStream streamGetter = new GetStream();
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
@@ -113,9 +113,6 @@ public class HomeController {
 				}
 			} // n이 입력으로 들어오면 다음으로 넣어지는 값이 없음. 즉, Map의 값이 없게 세팅하여 가장 최근값을 리턴하도록 함.
 			
-			GetVideo videoGetter = new GetVideo();
-			GetStream streamGetter = new GetStream();
-			GetClips clipGetter = new GetClips();
 			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			

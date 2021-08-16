@@ -1,7 +1,6 @@
 package com.kokochi.samp.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,8 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.domain.ManagedFollow;
+import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
+import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
 import com.kokochi.samp.service.ManagedFollowService;
 import com.kokochi.samp.service.TwitchKeyService;
 
@@ -27,10 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 public class MenuController {
 	
 	@Autowired
-	TwitchKeyService key;
+	private TwitchKeyService key;
 	
 	@Autowired
 	private ManagedFollowService follow_service;
+	
+	private GetStream streamGenerator = new GetStream();
+	private GetFollow followGetter = new GetFollow();
+	private PostQuery postQuery = new PostQuery();
 	
 	@RequestMapping(value="/setting", method = RequestMethod.GET)
 	public String menuSetting(Model model) { // 메인 home 화면 매핑
@@ -40,7 +45,7 @@ public class MenuController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			
-			model.addAttribute("setting_twich_user_id", user.getTwitch_user_id());
+			model.addAttribute("setting_twich_user_login", user.getTwitch_user_login());
 			model.addAttribute("setting_user_id", user.getUser_id());
 			model.addAttribute("setting_user_email", user.getUser_email());
 		}
@@ -56,11 +61,11 @@ public class MenuController {
 			// 로그인한 사용자의 팔로우 목록 가져오기
 			
 			UserDTO user = (UserDTO) principal;
+			postQuery.initManagedFollow(user.getTwitch_user_id(), user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			String app_access_token = key.read("app_access_token").getKey_value();
 			
-			GetStream streamGenerator = new GetStream();
-			List<TwitchUser> follow_list =  streamGenerator.getFollowedList(client_id, app_access_token, "login="+user.getTwitch_user_id()+"&", 40);
+			List<TwitchUser> follow_list =  followGetter.getFollowedList(client_id, app_access_token, "from_id="+user.getTwitch_user_id()+"&", "first=40&");
 			if(follow_list == null) return "redirect:/token/app_access_token";
 			// 가져오기에 실패하면, 토큰을 재발급받아 다시 시도한다.
 			

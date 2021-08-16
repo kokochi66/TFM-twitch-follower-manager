@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <c:set var="path" value="/resources" />
 <c:set var="default_img" value="${path}/assets/img/default_image.jpg" />
 
@@ -46,13 +48,15 @@
 						${stream.display_name}<span class="login">${stream.login}</span>
 					</div>
 					<div class="user_id displayNone">${stream.id}</div>
-					<div class="btn-list">
-						<div class="btn btn-danger">팔로우</div>
-						<div class="btn btn-primary">관리목록</div>
-					</div>
+					<div class="info-num">
+                        <div class="follow">팔로우 <fmt:formatNumber value="${stream_total}"/>명</div>
+                        <div class="language">${stream_channel.broadcaster_language}</div>
+                        <div class="started_at">
+                        	<fmt:formatDate var="resultRegDt" value="${stream.created_at}" pattern="yyyy/MM/dd"/>${resultRegDt} 생성</div>
+                    </div>
 					
 				</div>
-				<div class="rank-box">200위</div>
+				<div class="rank-box"></div>
 			</div>
 		</div>
 	</section>

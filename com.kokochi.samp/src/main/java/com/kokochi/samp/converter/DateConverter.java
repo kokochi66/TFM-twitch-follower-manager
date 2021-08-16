@@ -1,4 +1,4 @@
-package com.kokochi.samp.queryAPI.domain;
+package com.kokochi.samp.converter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

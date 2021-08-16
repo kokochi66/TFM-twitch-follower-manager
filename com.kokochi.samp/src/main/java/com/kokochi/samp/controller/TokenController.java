@@ -20,13 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 public class TokenController {
 	
 	@Autowired
-	TwitchKeyService key;
+	private TwitchKeyService key;
+	
+	private GetToken tokenGenerator = new GetToken();
 	
 	@RequestMapping(value="/app_access_token")
 	public String create_app_access_token(HttpServletRequest request) throws Exception {
 		log.info("app_access_token generated");
 		
-		GetToken tokenGenerator = new GetToken();
 		String client_id = key.read("client_id").getKey_value();
 		String client_secret = key.read("client_secret").getKey_value();
 		
