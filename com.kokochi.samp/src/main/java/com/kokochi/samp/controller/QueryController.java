@@ -74,35 +74,33 @@ public class QueryController {
 	public String getSearchStream(@RequestBody String query) throws Exception {
 		log.info("/query/request/searchStreams - 검색창 쿼리 :: " + query);
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKey_value();	// 데이터베이스에서 client_id값을 가져옴
+		String app_access_token = key.read("app_access_token").getKey_value(); // 데이터베이스에서 인증된 app_access_token 값을 가져옴
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);
-		headers.add("Client-id", client_id);
-		
-		HttpEntity entity = new HttpEntity(headers);
+		headers.add("Client-id", client_id);	// 인증값을 요청 헤더에 넣어줌
+		HttpEntity entity = new HttpEntity(headers); // 헤더 값을 entity로 넣어줌
 		RestTemplate rt = new RestTemplate();
 		JSONParser parser = new JSONParser();
 		try {
 			ResponseEntity<String> response = rt.exchange(
 					"https://api.twitch.tv/helix/search/channels?first=5&query="+query, HttpMethod.GET,
-					entity, String.class);
+					entity, String.class);	// 트위치 API에 query값을 담아서 요청을 보냄
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
-			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
-			
+//			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
 //			System.out.println("GetVideo - GetClipsOneByUserId :: " + clip.toString());
 			log.info("success");
-			return data.toJSONString();
+			return data.toJSONString();	// 결과값을 타입변환하여 반환해줌
 			
 		} catch (HttpStatusCodeException  e) {
 			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
 			log.info("getSearchStream " + exceptionMessage.toJSONString());
 			
 			if(exceptionMessage.get("status").toString().equals("401")) return "failed";
-		}
+		}	// 에러처리
 		
-		return "failed";
+		return "failed";	// 정상적이지 않은 경우에는 failed를 반환함.
 	}
 }

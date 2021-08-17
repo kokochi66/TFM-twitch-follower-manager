@@ -13,6 +13,7 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -80,12 +81,12 @@ public class DetailController {
 	
 	@RequestMapping(value="/request/live", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
-	public String getLiveDataFromStream(@RequestHeader(value="login")String login) throws Exception {
-		log.info("/detail/request/live - 라이브 데이터 가져오기 :: " + login);
+	public String getLiveDataFromStream(@RequestBody String body) throws Exception {
+		log.info("/detail/request/live - 라이브 데이터 가져오기 :: " + body);
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		Stream stream = streamGetter.getLiveStream(client_id, app_access_token, "user_id="+login);
+		Stream stream = streamGetter.getLiveStream(client_id, app_access_token, "user_id="+body);
 		if(stream == null) {
 			JSONObject res = new JSONObject();
 			res.put("title", "방송중이 아님");
@@ -101,13 +102,15 @@ public class DetailController {
 	
 	@RequestMapping(value="/request/replay", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
-	public String getReplayDataFromStream(@RequestHeader(value="login")String login,
-			@RequestHeader(value="next")String next) throws Exception {
-		log.info("/detail/request/replay - 다시보기 데이터 가져오기 :: " + login);
+	public String getReplayDataFromStream(@RequestBody String body) throws Exception {
+		log.info("/detail/request/replay - 다시보기 데이터 가져오기 :: " + body);
+		if(body.equals("") || body == null) return "error";
+		JSONObject body_json = (JSONObject) parser.parse(body);
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		ArrayList<Video> replay_list = videoGetter.getVideoFromId(client_id, app_access_token, "user_id="+login+"&"+next, 8);
+		ArrayList<Video> replay_list = videoGetter.getVideoFromId(client_id, app_access_token, 
+				"user_id="+body_json.get("login").toString()+"&"+body_json.get("next").toString(), 8);
 		if(replay_list == null || replay_list.size() == 0) return "error";
 		
 		JSONArray res_arr = new JSONArray();
@@ -121,13 +124,15 @@ public class DetailController {
 	
 	@RequestMapping(value="/request/clips", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
-	public String getClipsDataFromStream(@RequestHeader(value="login")String login,
-			@RequestHeader(value="next")String next) throws Exception {
-		log.info("/detail/request/clips - 클립 데이터 가져오기 :: " + login);
+	public String getClipsDataFromStream(@RequestBody String body) throws Exception {
+		log.info("/detail/request/clips - 클립 데이터 가져오기 :: " + body);
+		if(body.equals("") || body == null) return "error";
+		JSONObject body_json = (JSONObject) parser.parse(body);
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		List<Clips> replay_list = clipGetter.getClipsByUserId(client_id, app_access_token, "broadcaster_id="+login+"&"+next, 8);
+		List<Clips> replay_list = clipGetter.getClipsByUserId(client_id, app_access_token, 
+				"broadcaster_id="+body_json.get("login").toString()+"&"+body_json.get("next").toString(), 8);
 		if(replay_list == null || replay_list.size() == 0) return "error";
 		
 		JSONArray res_arr = new JSONArray();
@@ -140,14 +145,14 @@ public class DetailController {
 	
 	@RequestMapping(value="/request/relative", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
-	public String getRelativeDataFromStream(@RequestHeader(value="login")String login) throws Exception {
-		log.info("/detail/request/relative - 연관 스트리머 데이터 가져오기 :: " + login);
+	public String getRelativeDataFromStream(@RequestBody String body) throws Exception {
+		log.info("/detail/request/relative - 연관 스트리머 데이터 가져오기 :: " + body);
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
 		
 		Map<String, Integer> relative = new HashMap<>();
-		followGetter.getRelativeFollow(relative, client_id, app_access_token, "to_id="+login+"&", "", 0);
+		followGetter.getRelativeFollow(relative, client_id, app_access_token, "to_id="+body+"&", "", 0);
 		if(relative == null || relative.size() == 0) return "error";
 		
 		List<Entry<String, Integer>> SortEntry = new ArrayList<>();
@@ -167,10 +172,10 @@ public class DetailController {
 	
 	@RequestMapping(value="/request/getTwitchUserSet", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
-	public String getTwitchUserDataFromStream(@RequestHeader(value="login_arr")String login_arr) throws Exception {
+	public String getTwitchUserDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/getTwitchUserSet - 트위치 사용자 데이터 가져오기");
 		JSONArray res_arr = new JSONArray();
-		JSONArray service_arr = (JSONArray) parser.parse(login_arr);
+		JSONArray service_arr = (JSONArray) parser.parse(body);
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();

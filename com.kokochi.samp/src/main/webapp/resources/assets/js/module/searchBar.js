@@ -7,7 +7,7 @@ function init_SearchBar() {
     //     searchBar_input_preview.classList.add('active');
     // })
     document.addEventListener('click', (e) => {
-        console.log(e.target , searchBar_input_preview)
+        // console.log(e.target , searchBar_input_preview)
         if(e.target !== searchBar_input_preview &&
             e.target !== searchBar_input_text) {
             searchBar_input_preview.classList.remove('active');
@@ -16,58 +16,45 @@ function init_SearchBar() {
 
 
     async function searchBar_input_searchEvent() {
-        searchBar_input_preview.classList.add('active');
+        if(!searchBar_input_text.value) return; // 널값이 입력될 경우에는 쿼리를 진행하지 않음.
+        searchBar_input_preview.classList.add('active');    // 창 표시하기
         searchBar_input_text.removeEventListener('input', searchBar_input_searchEvent)
-        if(!searchBar_input_text.value) {
-            searchBar_input_text.addEventListener('input', searchBar_input_searchEvent)
-            return;
-        }
+        // 검색 쿼리가 진행되는 동안 쿼리가 중복 진행되지 않도록, 이벤트를 잠시동안 제거
         searchBar_input_preview.innerHTML = ''
+        // 이전의 미리보기에 존재하던 값을 초기화해줌.
         
-        const response = fetch('/query/request/searchStreams', {
-            method: 'POST',
+        let response = fetch('/query/request/searchStreams', { // 서버 자체에 POST 요청을 보냄.
+            method: 'POST', 
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: searchBar_input_text.value
+            body: searchBar_input_text.value    // 요청 body에 검색창 입력값을 넣음
         }).then(function(res){ 
-            res.json().then(result => {
+            res.json().then(result => { // 결과값을 json 객체로 받아옴
                 // console.log(result)
-                searchBar_add_searchPreview(result)
-            });
+                searchBar_add_searchPreview(result) // 받아온 객체 배열로 뷰에 추가해줌.
+            }).catch(resB => console.log(resB));
         }).catch(function(res){ 
-            console.log('catch res :: ' , res) 
+            console.log('catch res :: ' , res)
+            // 에러가 발생한 경우에는 아무런 값이 뷰에 추가되지 않음.
             searchBar_input_text.addEventListener('input', searchBar_input_searchEvent)
         })
     }
+
     function searchBar_add_searchPreview(data) {
         for(let i=0;i<data.length;i++) {
-            let c_input_preview_cont = document.createElement('a')
-            c_input_preview_cont.className = 'input-preview-cont linkBox'
-            c_input_preview_cont.href = '/detail?streams='+data[i].id
-
-
-            let c_input_preview_profile = document.createElement('div')
-            c_input_preview_profile.className = 'profile_img'
-            let c_input_preview_profile_img = document.createElement('img')
-            c_input_preview_profile_img.src = data[i].thumbnail_url
-            c_input_preview_profile.appendChild(c_input_preview_profile_img)
-
-            let c_input_preview_userNickname = document.createElement('div')
-            c_input_preview_userNickname.className = 'user_nickname'
-            c_input_preview_userNickname.innerHTML = data[i].display_name
-            let c_input_preview_user_login = document.createElement('div')
-            c_input_preview_user_login.className = 'user_login'
-            c_input_preview_user_login.innerHTML = data[i].broadcaster_login
-            let c_input_preview_userId = document.createElement('div')
-            c_input_preview_userId.className = 'user_id displayNone'
-            c_input_preview_userId.innerHTML = data[i].id
-
-            c_input_preview_cont.appendChild(c_input_preview_profile)
-            c_input_preview_cont.appendChild(c_input_preview_userNickname)
-            c_input_preview_cont.appendChild(c_input_preview_user_login)
-            c_input_preview_cont.appendChild(c_input_preview_userId)
-            searchBar_input_preview.appendChild(c_input_preview_cont)
+            let c_input_box = document.createElement('a')
+            c_input_box.className = 'input-preview-cont linkBox'
+            c_input_box.href = `/detail?streams=${data[i].id}`
+            c_input_box.innerHTML = `
+                <div class="profile_img">
+                    <img src="${data[i].thumbnail_url}" />
+                </div>
+                <div class="user_nickname">${data[i].display_name}</div>
+                <div class="user_login">${data[i].broadcaster_login}</div>
+                <div class="user_id displayNone">${data[i].id}</div>
+            `;
+            searchBar_input_preview.appendChild(c_input_box)
         }
         searchBar_input_text.addEventListener('input', searchBar_input_searchEvent)
     }

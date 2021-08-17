@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
 </head>
+
 <body>
 	<div class="btn">abc</div>
+	<div id="wrap"></div>
 	<script>
 		let btn = document.querySelector('.btn')
+		let wrap = document.querySelector('#wrap')
 		btn.addEventListener('click', btnEvent)
 		function btnEvent() {
-			console.log('btn clicked');
-			btn.removeEventListener('click', btnEvent);
+			let add_page = document.createElement('div')
+			add_page.innerHTML = `
+			<div class="header">
+				<div class="name">나의 헤더</div>
+				<div class="info">
+					<div class="img">이미지</div>
+					<div class="date">날짜</div>
+				</div>
+			</div>`;
+			wrap.appendChild(add_page);
 		}
 	</script>
 </body>
+
 </html>
