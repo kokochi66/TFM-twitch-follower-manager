@@ -50,8 +50,6 @@ public class DetailController {
 	@Autowired
 	private ManagedFollowService follow_service;
 	
-	private JSONParser parser = new JSONParser();
-	
 	private GetStream streamGetter = new GetStream();
 	private GetFollow followGetter = new GetFollow();
 	private GetClips clipGetter = new GetClips();
@@ -66,7 +64,7 @@ public class DetailController {
 		
 		LanguageConverter langConverter = new LanguageConverter();
 		
-		TwitchUser stream = streamGetter.getUser(client_id, app_access_token, "id="+streams);
+		TwitchUser stream = streamGetter.getUser(client_id, app_access_token, streams);
 		int stream_total = followGetter.getFollowedTotal(client_id, app_access_token, "to_id="+streams);
 		Channel stream_channel = streamGetter.getChannelInfo(client_id, app_access_token, "broadcaster_id="+streams);
 		stream_channel.setBroadcaster_language(
@@ -86,7 +84,7 @@ public class DetailController {
 		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
-		Stream stream = streamGetter.getLiveStream(client_id, app_access_token, "user_id="+body);
+		Stream stream = streamGetter.getLiveStream(client_id, app_access_token, body, "");
 		if(stream == null) {
 			JSONObject res = new JSONObject();
 			res.put("title", "방송중이 아님");
@@ -104,6 +102,7 @@ public class DetailController {
 	@ResponseBody
 	public String getReplayDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/replay - 다시보기 데이터 가져오기 :: " + body);
+		JSONParser parser = new JSONParser();
 		if(body.equals("") || body == null) return "error";
 		JSONObject body_json = (JSONObject) parser.parse(body);
 		
@@ -126,6 +125,7 @@ public class DetailController {
 	@ResponseBody
 	public String getClipsDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/clips - 클립 데이터 가져오기 :: " + body);
+		JSONParser parser = new JSONParser();
 		if(body.equals("") || body == null) return "error";
 		JSONObject body_json = (JSONObject) parser.parse(body);
 		
@@ -174,6 +174,7 @@ public class DetailController {
 	@ResponseBody
 	public String getTwitchUserDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/getTwitchUserSet - 트위치 사용자 데이터 가져오기");
+		JSONParser parser = new JSONParser();
 		JSONArray res_arr = new JSONArray();
 		JSONArray service_arr = (JSONArray) parser.parse(body);
 		
@@ -182,7 +183,7 @@ public class DetailController {
 		
 		for(int i=0;i<service_arr.size();i++) {
 			String c_user_id = service_arr.get(i).toString();
-			TwitchUser t_us = streamGetter.getUser(client_id, app_access_token, "id="+c_user_id+"&");
+			TwitchUser t_us = streamGetter.getUser(client_id, app_access_token, c_user_id);
 			JSONObject j = t_us.TwitchUserToJSON();
 			res_arr.add(j);
 		}

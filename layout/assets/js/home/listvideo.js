@@ -1,142 +1,216 @@
-window.onload = function() {
-    let addMoreBtn = document.querySelector('#services .addMore');
-  
-    addMoreBtn.addEventListener('click', () => {
-      service_container = document.querySelector('#services .container')
-      service_container.appendChild(loading_box);
-  
-      let Service_iconSet = document.querySelectorAll('#services .icon-set');
-      let Last_iconSet = Service_iconSet[Service_iconSet.length-1];
-      let user_idSet = Last_iconSet.querySelectorAll('.user_id')
-      let next_pageSet = Last_iconSet.querySelectorAll('.next_page')
-      let Service_Map = []
-      for(let i=0;i<user_idSet.length;i++) {
-        Service_Map[i] = []
-        Service_Map[i][0] = user_idSet[i].innerHTML
-        Service_Map[i][1] = next_pageSet[i].innerHTML
-      }
-      sendService_Data(video_list , Service_Map);
-    })
-  
-  
-    let service = document.querySelector('#services')
-    let service_container = document.querySelector('#services .container')
-    let service_last = document.querySelector('#services .service_last_box');
+function listVideo() {
+    let service_video_boxes = document.querySelectorAll('#services .container > div')
     let AboutListBtns = document.querySelectorAll('#about .listBtn')
-    let video_list = 'recent_video'
-    let video_list_str = ['recent_video', 'recent_live', 'recent_clip'];
-    let video_list_info = ['관리목록 다시보기', '관리목록 라이브', '관리목록 인기클립'];
+
+    let recent_video_box = document.querySelector('#services .recent_video')
+    let recent_video_addBtn = document.querySelector('#services .recent_video .addMore')
+    let recent_video_data = [];
+
+    let recent_live_box = document.querySelector('#services .recent_live')
+    let recent_live_addBtn = document.querySelector('#services .recent_live .addMore')
+
+    let recent_clip_box = document.querySelector('#services .recent_clip')
+    let recent_clip_addBtn = document.querySelector('#services .recent_clip .addMore')
+    let recent_clip_data = [];
+    recent_video_box.insertBefore(createLoadingBox(), recent_video_addBtn)
+    recent_live_box.insertBefore(createLoadingBox(), recent_live_addBtn)
+    recent_clip_box.insertBefore(createLoadingBox(), recent_clip_addBtn)
   
     AboutListBtns.forEach((elem, idx) => {
       elem.addEventListener('click', () => {
-        service_container = document.querySelector('#services .container')
-        service.removeChild(service_container)
-  
-        addService_Container(idx)
-        video_list = video_list_str[idx]
-  
-        let s_last_box = document.createElement('div')
-        s_last_box.className = 'service_last_box'
-        service_container.appendChild(s_last_box);
-        service_container.appendChild(loading_box);
-        service_last = document.querySelector('#services .service_last_box');
-  
-        sendService_Data(video_list, 'n');
+        service_video_boxes.forEach(video_elem => {video_elem.classList.add('displayNone')})
+        service_video_boxes[idx].classList.remove('displayNone')
       })
     })
-  
-  
-    function sendService_Data(video, map) {
-      let httpRequest = new XMLHttpRequest();
-      httpRequest.open('POST', '/home/request/getNextVideo');
-      httpRequest.setRequestHeader('service_map', JSON.stringify(map));
-      httpRequest.setRequestHeader('service_target',video);
-    
-      httpRequest.onload = () => {
-        if(httpRequest.status == 200) {
-          let result = httpRequest.response;
-          if(result) {
-            addService_IconSet(JSON.parse(result))
-          }
-          service_container.removeChild(loading_box);
-          return result;
-        } else {
+    recent_video_addBtn.addEventListener('click', () => {
+      recent_video_box.insertBefore(createLoadingBox(), recent_video_addBtn)
+      let next_body = [],
+        recent_video_rowBox = recent_video_box.querySelectorAll('.icon-set'),
+        recent_video_rowBox_last = recent_video_rowBox[recent_video_rowBox.length-1];
+        recent_video_rowBox_last_userId = recent_video_rowBox_last.querySelectorAll('.user_id')
+        recent_video_rowBox_last_nextPage = recent_video_rowBox_last.querySelectorAll('.next_page')
+      for(let i=0;i<recent_video_rowBox_last_userId.length;i++) {
+        next_body[i] = [];
+        next_body[i][0] = recent_video_rowBox_last_userId[i].innerHTML
+        next_body[i][1] = recent_video_rowBox_last_nextPage[i].innerHTML
+      }
+      request_getMyRecentVideo(JSON.stringify(next_body))
+    })
+    recent_live_addBtn.addEventListener('click', () => {
+      recent_live_box.insertBefore(createLoadingBox(), recent_live_addBtn)
+      let next_body = [],
+        recent_live_rowBox = recent_live_box.querySelectorAll('.icon-set'),
+        recent_live_rowBox_last = recent_live_rowBox[recent_live_rowBox.length-1];
+        recent_live_rowBox_last_userId = recent_live_rowBox_last.querySelectorAll('.user_id')
+        recent_live_rowBox_last_nextPage = recent_live_rowBox_last.querySelectorAll('.next_page')
+      for(let i=0;i<recent_live_rowBox_last_userId.length;i++) {
+        next_body[i] = [];
+        next_body[i][0] = recent_live_rowBox_last_userId[i].innerHTML
+        next_body[i][1] = recent_live_rowBox_last_nextPage[i].innerHTML
+      }
+      request_getMyLiveVideo(JSON.stringify(next_body))
+    })
+    recent_clip_addBtn.addEventListener('click', () => {
+      recent_clip_box.insertBefore(createLoadingBox(), recent_clip_addBtn)
+      for(let i=0;i<8;i++) {
+        if(recent_clip_data[i].nextPage) {
+          let next_body = [recent_clip_data[i].user_id, recent_clip_data[i].nextPage]
+          request_getMyClipVideoNext(JSON.stringify(next_body))
         }
       }
-    
-      httpRequest.send();
+      addService_IconSet(recent_clip_data.slice(0, 8), recent_clip_box, recent_clip_addBtn)
+      recent_clip_data = recent_clip_data.slice(8, recent_clip_data.length);
+    })
+
+    function request_getMyRecentVideo(body) {
+      let response = fetch('/home/request/getMyRecentVideo', {
+          method: 'POST', 
+          headers: {
+              'Content-Type': 'application/json;charset=utf-8'
+          },
+          body : body
+      }).then(function(res){ 
+          res.json()
+          .then(result => { // 결과값을 json 객체로 받아옴
+              // console.log(result)
+              if(result !== 'error') addService_IconSet(result(0,8), recent_video_box, recent_video_addBtn)
+          })
+          .catch(resB => {
+            recent_video_box.removeChild(recent_video_box.querySelector('.loading'));
+          })
+      }).catch(function(res){ 
+          console.log('catch res :: ' , res)
+      })
     }
-    function addService_IconSet(data) {
+    function request_getMyRecentVideoNext(body) {
+      let response = fetch('/home/request/getMyRecentVideo/next', {
+          method: 'POST', 
+          headers: {
+              'Content-Type': 'application/json;charset=utf-8'
+          },
+          body : body
+      }).then(function(res){ 
+          res.json()
+          .then(result => { // 결과값을 json 객체로 받아옴
+              // console.log(result)
+              if(result !== 'error') {
+                addService_IconSet(result, recent_video_box, recent_video_addBtn)
+                for(let i=0;i<result.length;i++) recent_video_data.push(result[i])
+                recent_video_data.sort((a,b) => {
+                  return Date.parse(a.created_at) < Date.parse(b.created_at) ? -1 : 1
+                })
+              }
+          })
+          .catch(resB => {
+            recent_video_box.removeChild(recent_video_box.querySelector('.loading'));
+          })
+      }).catch(function(res){ 
+          console.log('catch res :: ' , res)
+      })
+    }
+    function request_getMyLiveVideo() {
+      let response = fetch('/home/request/getMyLiveVideo', { // 서버 자체에 POST 요청을 보냄.
+          method: 'POST', 
+          headers: {
+              'Content-Type': 'application/json;charset=utf-8'
+          },
+          body : 'none'
+      }).then(function(res){ 
+          res.json()
+          .then(result => { // 결과값을 json 객체로 받아옴
+              // console.log(result)
+              if(result !== 'error') addService_IconSet(result, recent_live_box, recent_live_addBtn)
+          })
+          .catch(resB => {
+            console.log('res json catch :: ' , resB)
+            recent_live_box.removeChild(recent_live_box.querySelector('.loading'));
+          });
+      }).catch(function(res){ 
+          console.log('catch res :: ' , res)
+      })
+    }
+    function request_getMyClipVideoNext(body) {
+      let response = fetch('/home/request/getMyClipVideo/next', { // 서버 자체에 POST 요청을 보냄.
+          method: 'POST', 
+          headers: {
+              'Content-Type': 'application/json;charset=utf-8'
+          },
+          body : body
+      }).then(function(res){ 
+          res.json()
+          .then(result => {
+              // console.log(result)
+              if(result !== 'error') {
+                // 쿼리 결과 처리
+                for(let i=0;i<result.length;i++) recent_clip_data.push(result[i])
+                recent_clip_data.sort((a,b) => {
+                  return b.view_count - a.view_count
+                })
+                console.log(recent_clip_data)
+              }
+          }).catch(resB => {
+            console.log(resB)
+            recent_clip_box.removeChild(recent_clip_box.querySelector('.loading'));
+          })
+      }).catch(function(res){ 
+          console.log('catch res :: ' , res)
+      })
+    }
+    function request_getMyClipVideo(body) {
+      let response = fetch('/home/request/getMyClipVideo', { // 서버 자체에 POST 요청을 보냄.
+          method: 'POST', 
+          headers: {
+              'Content-Type': 'application/json;charset=utf-8'
+          },
+          body : body
+      }).then(function(res){ 
+          res.json()
+          .then(result => { // 결과값을 json 객체로 받아옴
+              // console.log(result)
+              if(result !== 'error') {
+                recent_clip_data = result;
+                addService_IconSet(recent_clip_data.slice(0, 8), recent_clip_box, recent_clip_addBtn)
+                recent_clip_data = recent_clip_data.slice(8, recent_clip_data.length);
+              }
+          }).catch(resB => {
+            console.log(resB)
+            recent_clip_box.removeChild(recent_clip_box.querySelector('.loading'));
+          })
+      }).catch(function(res){ 
+          console.log('catch res :: ' , res)
+      })
+    }
+    function addService_IconSet(data, target, last) {
       let s_row = document.createElement('div');
       s_row.className = 'row icon-set';
     
       for(let i=0;i<data.length;i++) {
         let s_col_box = document.createElement('div');
         s_col_box.className = 'col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5';
-    
-        let s_icon_box = document.createElement('div');
-        s_icon_box.className = 'icon-box';
-      
-        let s_link_box = document.createElement('a');
-        s_link_box.className = 'linkBox';
-        s_link_box.target = '_blank';
-        s_link_box.href = data[i].url;
-      
-        let s_img_box = document.createElement('img');
-        s_img_box.src = data[i].thumbnail_url ? data[i].thumbnail_url : default_img;
-        s_img_box.style.width = '100%';
-    
-        s_link_box.appendChild(s_img_box)
-        s_icon_box.appendChild(s_link_box);
-        s_col_box.appendChild(s_icon_box);
-    
-        let s_icon_info = document.createElement('div');
-        s_icon_info.className = 'icon-info';
-    
-        let s_profile = document.createElement('div');
-        s_profile.className = 'profile'
-        let s_profile_img = document.createElement('img');
-        s_profile_img.src = data[i].profile_url ? data[i].profile_url : default_img;
-        s_profile_img.style.width = '100%';
-        s_profile_img.style.height = '100%';
-        s_profile.appendChild(s_profile_img);
-        let s_title = document.createElement('div');
-        s_title.className = 'title text';
-        s_title.innerHTML = data[i].title;
-        let s_name = document.createElement('div');
-        s_name.className = 'name text'
-        s_name.innerHTML = data[i].user_name;
-        let s_user_id = document.createElement('div');
-        s_user_id.className = 'user_id displayNone'
-        s_user_id.innerHTML = data[i].user_id;
-        let s_next_page = document.createElement('div');
-        s_next_page.className = 'next_page displayNone'
-        s_next_page.innerHTML = data[i].nextPage;
-    
-        s_icon_info.appendChild(s_profile)
-        s_icon_info.appendChild(s_title)
-        s_icon_info.appendChild(s_name)
-        s_icon_info.appendChild(s_user_id)
-        s_icon_info.appendChild(s_next_page)
-        s_col_box.appendChild(s_icon_info);
-    
+        s_col_box.innerHTML = `
+          <div class="icon-box" title="방송목록">
+            <a href="${data[i].url}" class="linkBox" target="_blank">
+              <img alt="" src="${data[i].thumbnail_url ? data[i].thumbnail_url : default_img}" width="100%">
+            </a>
+          </div>
+          <div class="icon-info">
+            <div class="profile">
+              <img alt="" src="${data[i].profile_url ? data[i].profile_url : default_img}" width="100%" height="100%">
+            </div>
+            <div class="title text">${data[i].title}</div>
+            <div class="name text">${data[i].user_name}</div>
+            <div class="user_id displayNone">${data[i].user_id}</div>
+            <div class="next_page displayNone">${data[i].nextPage}</div>
+          </div>
+        `;
         s_row.appendChild(s_col_box)
       }
-      service_container.insertBefore(s_row, service_last);
+
+      target.insertBefore(s_row, last);
+      target.removeChild(target.querySelector('.loading'));
     }
-    function addService_Container(idx) {
-      let s_container_box = document.createElement('div')
-      s_container_box.className = 'container'
-    
-      let s_section_title_box = document.createElement('div')
-      s_section_title_box.className = 'section-title'
-  
-      let s_section_title_box_h2 = document.createElement('h2')
-      s_section_title_box_h2.innerHTML = video_list_info[idx]
-      
-      s_section_title_box.appendChild(s_section_title_box_h2)
-      s_container_box.appendChild(s_section_title_box);
-      service.insertBefore(s_container_box, addMoreBtn);
-      service_container = document.querySelector('#services .container')
-    }
+    request_getMyRecentVideo('none')
+    request_getMyLiveVideo('none')
+    request_getMyClipVideo('none')
   }
+  listVideo();

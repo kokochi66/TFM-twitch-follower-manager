@@ -1,5 +1,6 @@
 package com.kokochi.samp.queryAPI;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +10,18 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import com.kokochi.samp.queryAPI.domain.Stream;
+import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.service.TwitchKeyService;
 
 public class GetToken {
 	
-	private JSONParser parser = new JSONParser();
-	
 	public JSONObject GetAppAccessToken(String client_id, String client_secret) throws Exception {
 		
+		JSONParser parser = new JSONParser();
 		MultiValueMap<String, String> params  = new LinkedMultiValueMap<>();
 		HttpHeaders headers = new HttpHeaders();
 		params.add("client_id", client_id);
@@ -38,7 +41,9 @@ public class GetToken {
 	}
 	
 	public JSONObject GetOauth2AuthorizeToken(String client_id, String client_secret, String code) throws Exception {
+		
 		MultiValueMap<String, String> params  = new LinkedMultiValueMap<>();
+		JSONParser parser = new JSONParser();
 		HttpHeaders headers = new HttpHeaders();
 		params.add("client_id", client_id);
 		params.add("client_secret", client_secret);
@@ -56,6 +61,17 @@ public class GetToken {
 		JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 		
 		return jsonfile;
+	}
+	
+	public void requestAppAccessToken() {
+		System.out.println("tokenGetter - requestAppAccessToken");
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+		try {
+			ResponseEntity<String> response = rt.exchange(
+					"/token//app_access_token", HttpMethod.POST, entity, String.class);
+		} catch (HttpStatusCodeException  e) {}
 	}
 
 }

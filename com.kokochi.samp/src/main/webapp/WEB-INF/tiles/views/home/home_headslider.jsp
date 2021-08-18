@@ -11,7 +11,7 @@
 <section id="headslider">
 	<div id="headslider-container" class="swiper-container">
 		<div class="swiper-wrapper">
-			<c:forEach items="${headslide_list}" var="stream">
+<%-- 			<c:forEach items="${headslide_list}" var="stream">
 				<div class="swiper-slide">
 					<div class="imageBox">
 						<a href="https://www.twitch.tv/${stream.user_login}"
@@ -31,7 +31,7 @@
 						</div>
 					</div>
 				</div>
-			</c:forEach>
+			</c:forEach> --%>
 
 		</div>
 		<div id="hero-pagination" class="swiper-pagination"></div>

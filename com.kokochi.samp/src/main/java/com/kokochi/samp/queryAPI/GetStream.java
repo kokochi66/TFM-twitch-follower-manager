@@ -21,42 +21,45 @@ import com.kokochi.samp.queryAPI.domain.TwitchUser;
 
 public class GetStream {
 	
-	private JSONParser parser = new JSONParser();
-	private Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
-	
-	public Stream getLiveStream(String client_id, String app_access_token, String user_id) throws Exception {
+	public Stream getLiveStream(String client_id, String app_access_token, String user_id, String query) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);
 		headers.add("Client-id", client_id);
 		
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
-					"https://api.twitch.tv/helix/streams?"+user_id, HttpMethod.GET,
-					entity, String.class, "ko");
+					"https://api.twitch.tv/helix/streams?user_id="+user_id+"&"+query, HttpMethod.GET,
+					entity, String.class);
+//			System.out.println("getLiveStream :: " + response.getBody());
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
 			if(data.size() <= 0) return null;
 			JSONObject cJson = (JSONObject) parser.parse(data.get(0).toString());
 			Stream stream = gsonParser.fromJson(cJson.toString(), Stream.class);
 			
-			TwitchUser cUser = getUser(client_id, app_access_token, "id="+stream.getUser_id()+"&");
+			TwitchUser cUser = getUser(client_id, app_access_token, "id="+user_id+"&");
 			stream.setProfile_image_url(cUser.getProfile_image_url());
 
 			return stream;
 		} catch (HttpStatusCodeException  e) {
 			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
 			
-			if(exceptionMessage.get("status").toString().equals("401")) return null;
+			if(exceptionMessage.get("status").toString().equals("401")) {
+				GetToken tokenGetter = new GetToken();
+				tokenGetter.requestAppAccessToken();
+			}
 		}
 		
 		return null;
 	}
 	
 	public ArrayList<Stream> getLiveStreams(String client_id, String app_access_token, int first) throws Exception {
-		System.out.println("getLiveStreams :: " + client_id +" " + app_access_token +" " + first);
+//		System.out.println("getLiveStreams :: " + client_id +" " + app_access_token +" " + first);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);
 		headers.add("Client-id", client_id);
@@ -65,10 +68,13 @@ public class GetStream {
 		RestTemplate rt = new RestTemplate();
 		
 		ArrayList<Stream> list = new ArrayList<>();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+//		System.out.print("getLiveStreams - 초기화 완료");
 		try {
 			ResponseEntity<String> response = rt.exchange(
-					"https://api.twitch.tv/helix/streams?language={language}&first={first}", HttpMethod.GET,
-					entity, String.class, "ko", first);
+					"https://api.twitch.tv/helix/streams?language=ko&first="+first, HttpMethod.GET,
+					entity, String.class);
 //			System.out.println("getLiveStreams - get responseBody :: " + response.getBody().toString());
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody().toString());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
@@ -88,7 +94,10 @@ public class GetStream {
 			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
 			System.out.println("getLiveStreams :: " + e); 
 			
-			if(exceptionMessage.get("status").toString().equals("401")) return null;
+			if(exceptionMessage.get("status").toString().equals("401")) {
+				GetToken tokenGetter = new GetToken();
+				tokenGetter.requestAppAccessToken();
+			}
 		}
 		
 		return list;
@@ -101,10 +110,12 @@ public class GetStream {
 		
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
-					"https://api.twitch.tv/helix/users?"+user_id, HttpMethod.GET,
+					"https://api.twitch.tv/helix/users?id="+user_id, HttpMethod.GET,
 					entity, String.class);
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
@@ -133,6 +144,8 @@ public class GetStream {
 		
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(

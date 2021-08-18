@@ -38,10 +38,14 @@ public class Stream {
 		v.setUser_id(this.user_id);
 		v.setUser_name(this.user_name);
 		v.setTitle(this.title);
+		v.setDescription("");
+		v.setCreated_at(this.started_at);
 		v.setUrl("https://www.twitch.tv/"+this.user_login);
 		v.setThumbnail_url(this.thumbnail_url);
+		v.setView_count(this.viewer_count);
 		v.setLanguage(this.language);
-		v.setNextPage("0");
+		v.setNextPage("");
+		v.setProfile_url(this.profile_image_url);
 		return v;
 	}
 	

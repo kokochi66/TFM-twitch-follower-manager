@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kokochi.samp.domain.TwitchKey;
@@ -24,8 +26,9 @@ public class TokenController {
 	
 	private GetToken tokenGenerator = new GetToken();
 	
-	@RequestMapping(value="/app_access_token")
-	public String create_app_access_token(HttpServletRequest request) throws Exception {
+	@RequestMapping(value="/app_access_token", method=RequestMethod.POST)
+	@ResponseBody
+	public String create_app_access_token() throws Exception {
 		log.info("app_access_token generated");
 		
 		String client_id = key.read("client_id").getKey_value();
@@ -37,8 +40,6 @@ public class TokenController {
 		String app_access_token = "Bearer"+" "+getToken.get("access_token");
 		twitchkey.setKey_value(app_access_token);
 		key.modify(twitchkey);
-		
-		String refer = request.getHeader("Referer");
-		return "redirect:"+refer;
+		return "Success";
 	}
 }

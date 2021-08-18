@@ -1,5 +1,6 @@
 package com.kokochi.samp.queryAPI.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.json.simple.JSONArray;
@@ -36,12 +37,14 @@ public class Video {
 	private String profile_url;
 	
 	public JSONObject parseToJSONObject() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//		System.out.println("JSONObject - parseToJSONObject :: " + format.format(this.created_at));
 		JSONObject res = new JSONObject();
 		res.put("user_id", this.user_id);
 		res.put("user_name", this.user_name);
 		res.put("title", this.title);
 		res.put("description", this.description);
-		res.put("created_at", this.created_at.toString());
+		res.put("created_at", format.format(this.created_at));
 		res.put("url", this.url);
 		res.put("thumbnail_url", this.thumbnail_url);
 		res.put("view_count", this.view_count);

@@ -19,11 +19,6 @@ import com.kokochi.samp.queryAPI.domain.TwitchUser;
 
 public class GetFollow {
 	
-	private JSONParser parser = new JSONParser();
-	private Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
-	
-	private GetStream streamGetter = new GetStream();
-	
 	public ArrayList<TwitchUser> getFollowedList(String client_id, String app_access_token, String user_id, String first) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);
@@ -33,6 +28,8 @@ public class GetFollow {
 		RestTemplate rt = new RestTemplate();
 		
 		ArrayList<TwitchUser> list = new ArrayList<>();
+		JSONParser parser = new JSONParser();
+		GetStream streamGetter = new GetStream();
 		try {
 			ResponseEntity<String> response = rt.exchange(
 					"https://api.twitch.tv/helix/users/follows?"+user_id+first, HttpMethod.GET,
@@ -43,7 +40,7 @@ public class GetFollow {
 			for(int i=0;i<data.size();i++) {
 				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
 				
-				TwitchUser cUser = streamGetter.getUser(client_id, app_access_token, "login="+cJson.get("to_login")+"&");
+				TwitchUser cUser = streamGetter.getUser(client_id, app_access_token, cJson.get("to_id").toString());
 				list.add(cUser);
 			}
 			
@@ -71,6 +68,7 @@ public class GetFollow {
 		RestTemplate rt = new RestTemplate();
 		
 		ArrayList<String> list = new ArrayList<>();
+		JSONParser parser = new JSONParser();
 		try {
 			JSONObject pagination = new JSONObject();
 			String nextPage = "";
@@ -110,6 +108,7 @@ public class GetFollow {
 		
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
+		JSONParser parser = new JSONParser();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -136,6 +135,7 @@ public class GetFollow {
 		
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
+		JSONParser parser = new JSONParser();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(

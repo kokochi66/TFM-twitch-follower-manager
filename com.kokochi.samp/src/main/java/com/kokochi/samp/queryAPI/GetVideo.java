@@ -1,9 +1,7 @@
 package com.kokochi.samp.queryAPI;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +21,10 @@ import org.springframework.web.client.RestTemplate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kokochi.samp.domain.ManagedFollow;
-import com.kokochi.samp.queryAPI.domain.Clips;
+import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.queryAPI.domain.Video;
 
 public class GetVideo {
-	
-	private JSONParser parser = new JSONParser();
-	private Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
-	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	
 	public Video getOneVideoFromId(String client_id, String access_Token, String user_id) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
@@ -39,6 +33,8 @@ public class GetVideo {
 		
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -79,6 +75,8 @@ public class GetVideo {
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
 		ArrayList<Video> res = new ArrayList<>();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -108,77 +106,97 @@ public class GetVideo {
 		return res;
 	}
 	
-	public ArrayList<Video> getRecentVideoFromUsers(List<ManagedFollow> users, String client_id, String OAuth_Token, int limit) throws Exception { 
+	public ArrayList<Video> getRecentVideoFromUsers(String client_id, String access_token, 
+			List<ManagedFollow> users, String query) throws Exception { 
 		if(users.size() <= 0) return null; // users의 크기가 1 이상이어야함.
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", access_token);
+		headers.add("Client-id", client_id);
+		
+		GetStream streamGetter = new GetStream();
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
 		ArrayList<Video> res = new ArrayList<>();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
 		
-		PriorityQueue<Video> pq = new PriorityQueue<>((a, b) -> a.getCreated_at().compareTo(b.getCreated_at()));
-		for(int i=0;i<users.size();i++) {
-			Video v = getOneVideoFromId(client_id, OAuth_Token, "user_id="+users.get(i).getTo_user());
-			if(v != null) pq.add(v);
-			if(pq.size() > limit) pq.poll();
-		}
-		// 최초로 각 스트리머들의 가장 최근 영상들을 pq에 삽입한다.
-		
-		Queue<Video> que = new LinkedList<>();
-		while(!pq.isEmpty()) que.add(pq.poll());
-		
-		for(int i=0;i<limit;i++) {
-			if(que.size() < limit - i) continue;
-			Video v = que.poll();
-			if(v != null) pq.add(v);
-			if(pq.size() > limit) pq.poll();
-			for(int j=0;j<i;j++) {
-				Video vc = getOneVideoFromId(client_id, OAuth_Token, "after="+v.getNextPage()+"&user_id="+v.getUser_id());
-				if(vc != null) {
-					v = vc;
-					pq.add(v);
+		try {
+			for(int i=0;i<users.size();i++) {
+				String c_user_id = users.get(i).getTo_user();
+//				System.out.println("GetVideo - userId =  " + c_user_id);
+				ResponseEntity<String> response = rt.exchange(
+						"https://api.twitch.tv/helix/videos?user_id="
+								+c_user_id+"&sort=time&"+query, HttpMethod.GET, entity, String.class);
+//				System.out.println("getRecentVideoFromUsers :: " + response.getBody());
+				JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+				JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+				JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
+				if(data.size() <= 0) continue; 	// 가져온 비디오 데이터가 없다면 null을 출력
+				
+				TwitchUser c_tu = streamGetter.getUser(client_id, access_token, c_user_id);
+				
+				for(int j=0;j<data.size();j++) {
+//					System.out.println("GetVideo - getRecentVideoFromUsers " + data.get(j).toString() +" "+j+" "+data.size());
+					JSONObject cJson = (JSONObject) parser.parse(data.get(j).toString());
+					Video v = gsonParser.fromJson(cJson.toString(), Video.class);
+					v.setNextPage(pagination.get("cursor").toString());
+					v.setProfile_url(c_tu.getProfile_image_url());
+					if(j == data.size()-1) v.setNextPage(pagination.get("cursor").toString());
+					res.add(v);
 				}
-				if(pq.size() > limit) pq.poll();
 			}
+			Collections.sort(res, (a,b) -> b.getCreated_at().compareTo(a.getCreated_at()));
+			return res;
+			
+			
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+//			System.out.println("GetVideo - getOneVideoFromId " + exceptionMessage.toJSONString());
+			
+			if(exceptionMessage.get("status").toString().equals("401")) return null;
 		}
-		
-		while(!pq.isEmpty()) res.add(0, pq.poll()); // pq에서 결과 리스트값으로 값을 넣는다.
 		return res;
 	}
 	
-	public ArrayList<Video> getRecentVideoFromUsersToNext(Map<String,String> serviceMap, List<ManagedFollow> users, String client_id, String OAuth_Token, int limit) throws Exception { 
-		if(users.size() <= 0) return null; // users의 크기가 1 이상이어야함.
+	public ArrayList<Video> getRecentVideoFromUserNext(String client_id, String access_token, String user_id, String query) throws Exception { 
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", access_token);
+		headers.add("Client-id", client_id);
+		
+		GetStream streamGetter = new GetStream();
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
 		ArrayList<Video> res = new ArrayList<>();
-		PriorityQueue<Video> pq = new PriorityQueue<>((a, b) -> a.getCreated_at().compareTo(b.getCreated_at()));
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
 		
-		for(int i=0;i<users.size();i++) {
-			String toUserId = users.get(i).getTo_user();
-			Video v;
-			if(serviceMap.containsKey(toUserId)) {
-				v = getOneVideoFromId(client_id, OAuth_Token, "after="+serviceMap.get(toUserId)+"&user_id="+toUserId);
-//				System.out.println("GetVideo - getRecentVideoFromUsersToNext :: " + v.toString());
+		try {
+			ResponseEntity<String> response = rt.exchange(
+					"https://api.twitch.tv/helix/videos?user_id="
+							+user_id+"&sort=time&"+query, HttpMethod.GET, entity, String.class);
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
+			if(data.size() <= 0) return res; 	// 가져온 비디오 데이터가 없다면 null을 출력
+			
+			TwitchUser c_tu = streamGetter.getUser(client_id, access_token, user_id);
+			for(int i=0;i<data.size();i++) {
+				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
+				Video v = gsonParser.fromJson(cJson.toString(), Video.class);
+				v.setNextPage(pagination.get("cursor").toString());
+				v.setProfile_url(c_tu.getProfile_image_url());
+				if(i == data.size()-1) v.setNextPage(pagination.get("curosr").toString());
+				res.add(v);
 			}
-			else v = getOneVideoFromId(client_id, OAuth_Token, "user_id="+toUserId);
-			if(v != null) pq.add(v);
-			if(pq.size() > limit) pq.poll();
+			return res;
+			
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+//			System.out.println("GetVideo - getOneVideoFromId " + exceptionMessage.toJSONString());
+			
+			if(exceptionMessage.get("status").toString().equals("401")) return null;
 		}
-		// 최초로 각 스트리머들의 가장 최근 영상들을 pq에 삽입한다.
-		
-		Queue<Video> que = new LinkedList<>();
-		while(!pq.isEmpty()) que.add(pq.poll());
-		
-		for(int i=0;i<limit;i++) {
-			if(que.size() < limit - i) continue;
-			Video v = que.poll();
-			if(v != null) pq.add(v);
-			if(pq.size() > limit) pq.poll();
-			for(int j=0;j<i;j++) {
-				Video vc = getOneVideoFromId(client_id, OAuth_Token, "after="+v.getNextPage()+"&user_id="+v.getUser_id());
-				if(vc != null) {
-					v = vc;
-					pq.add(v);
-				}
-				if(pq.size() > limit) pq.poll();
-			}
-		}
-		
-		while(!pq.isEmpty()) res.add(0, pq.poll()); // pq에서 결과 리스트값으로 값을 넣는다.
 		return res;
 	}
 	

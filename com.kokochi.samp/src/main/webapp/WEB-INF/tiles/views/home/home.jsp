@@ -3,7 +3,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="/resources" />
 <c:set var="default_img" value="${path}/assets/img/default_image.jpg" />
 
@@ -22,8 +23,10 @@
 								연동하여 여러분의 스트리머 목록을 관리하고, 서비스를 이용하세요!</div>
 							<div class="row">
 								<div class="btn-group col-6 container pt-4 pb-5">
-									<button type="button" class="btn btn-outline-primary" onclick="location.href='/auth/register/gettoken'">회원가입</button>
-									<button type="button" class="btn btn-outline-secondary" onclick="location.href='/auth/login'">로그인</button>
+									<button type="button" class="btn btn-outline-primary"
+										onclick="location.href='/auth/register/gettoken'">회원가입</button>
+									<button type="button" class="btn btn-outline-secondary"
+										onclick="location.href='/auth/login'">로그인</button>
 								</div>
 							</div>
 						</div>
@@ -37,7 +40,7 @@
 		<!-- Sort Button List -->
 		<section id="about" class="about">
 			<div class="container">
-	
+
 				<div class="row">
 					<div class="col-4 btn-danger p-3 text-sm-center listBtn"
 						title="관리목록 다시보기">관리목록 다시보기</div>
@@ -46,16 +49,33 @@
 					<div class="col-4 btn-primary p-3 text-sm-center listBtn"
 						title="관리목록 인기클립">관리목록 인기클립</div>
 				</div>
-	
+
 			</div>
 		</section>
 		<!-- End About Section -->
-	
+
 		<!-- Video List -->
 		<section id="services" class="services">
 			<div class="container">
-	
-				<div class="section-title">
+				<div class="recent_video">
+					<div class="section-title">
+						<h2>관리목록 다시보기</h2>
+					</div>
+					<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
+				</div>
+				<div class="recent_live displayNone">
+					<div class="section-title">
+						<h2>관리목록 라이브</h2>
+					</div>
+					<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
+				</div>
+				<div class="recent_clip displayNone">
+					<div class="section-title">
+						<h2>관리목록 인기클립</h2>
+					</div>
+					<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
+				</div>
+				<%-- 				<div class="section-title">
 					<h2>관리목록 다시보기</h2>
 				</div>
 	
@@ -80,9 +100,8 @@
 						</div>
 					</c:forEach>
 				</div>
-				<div class="service_last_box"></div>
+				<div class="service_last_box"></div> --%>
 			</div>
-			<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
 		</section>
 		<!-- End Services Section -->
 		<script src="${path}/assets/js/home/listvideo.js"></script>
