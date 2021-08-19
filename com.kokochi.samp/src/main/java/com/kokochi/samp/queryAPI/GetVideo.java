@@ -134,19 +134,18 @@ public class GetVideo {
 				JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
 				if(data.size() <= 0) continue; 	// 가져온 비디오 데이터가 없다면 null을 출력
 				
-				TwitchUser c_tu = streamGetter.getUser(client_id, access_token, c_user_id);
+				TwitchUser c_tu = streamGetter.getUser(client_id, access_token, "id="+c_user_id);
 				
 				for(int j=0;j<data.size();j++) {
 //					System.out.println("GetVideo - getRecentVideoFromUsers " + data.get(j).toString() +" "+j+" "+data.size());
 					JSONObject cJson = (JSONObject) parser.parse(data.get(j).toString());
 					Video v = gsonParser.fromJson(cJson.toString(), Video.class);
-					v.setNextPage(pagination.get("cursor").toString());
 					v.setProfile_url(c_tu.getProfile_image_url());
-					if(j == data.size()-1) v.setNextPage(pagination.get("cursor").toString());
+					if(j == data.size()-1  && pagination.containsKey("cursor")) v.setNextPage(pagination.get("cursor").toString());
 					res.add(v);
 				}
 			}
-			Collections.sort(res, (a,b) -> b.getCreated_at().compareTo(a.getCreated_at()));
+//			Collections.sort(res, (a,b) -> b.getCreated_at().compareTo(a.getCreated_at()));
 			return res;
 			
 			
@@ -160,6 +159,7 @@ public class GetVideo {
 	}
 	
 	public ArrayList<Video> getRecentVideoFromUserNext(String client_id, String access_token, String user_id, String query) throws Exception { 
+		System.out.println("getRecentVideoFromUserNext - " + user_id +" " + query);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", access_token);
 		headers.add("Client-id", client_id);
@@ -175,20 +175,23 @@ public class GetVideo {
 			ResponseEntity<String> response = rt.exchange(
 					"https://api.twitch.tv/helix/videos?user_id="
 							+user_id+"&sort=time&"+query, HttpMethod.GET, entity, String.class);
+//			System.out.println("getRecentVideoFromUserNext - " + response.getBody());
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
 			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
 			if(data.size() <= 0) return res; 	// 가져온 비디오 데이터가 없다면 null을 출력
 			
-			TwitchUser c_tu = streamGetter.getUser(client_id, access_token, user_id);
+			TwitchUser c_tu = streamGetter.getUser(client_id, access_token, "id="+user_id);
 			for(int i=0;i<data.size();i++) {
+//				System.out.println("getRecentVideoFromUserNext - " + data.get(i).toString()+" "+i+" "+data.size());
 				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
+				
 				Video v = gsonParser.fromJson(cJson.toString(), Video.class);
-				v.setNextPage(pagination.get("cursor").toString());
 				v.setProfile_url(c_tu.getProfile_image_url());
-				if(i == data.size()-1) v.setNextPage(pagination.get("curosr").toString());
+				if(i == data.size()-1 && pagination.containsKey("cursor")) v.setNextPage(pagination.get("cursor").toString());
 				res.add(v);
 			}
+//			System.out.println("getRecentVideoFromUserNext - res.size :: "+res.size());
 			return res;
 			
 		} catch (HttpStatusCodeException  e) {

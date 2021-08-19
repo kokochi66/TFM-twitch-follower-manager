@@ -103,7 +103,7 @@ public class GetStream {
 		return list;
 	}
 	
-	public TwitchUser getUser(String client_id, String app_access_token, String user_id) throws Exception {
+	public TwitchUser getUser(String client_id, String app_access_token, String query) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);
 		headers.add("Client-id", client_id);
@@ -115,7 +115,7 @@ public class GetStream {
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
-					"https://api.twitch.tv/helix/users?id="+user_id, HttpMethod.GET,
+					"https://api.twitch.tv/helix/users?"+query, HttpMethod.GET,
 					entity, String.class);
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());

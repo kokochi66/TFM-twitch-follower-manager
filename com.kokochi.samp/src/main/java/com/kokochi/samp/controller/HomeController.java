@@ -110,6 +110,7 @@ public class HomeController {
 			for(int i=0;i<service_video.size();i++) {
 				service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
 				JSONObject res_ob = service_video.get(i).parseToJSONObject();
+//				log.info("getMyRecentVideo :: " + res_ob.toJSONString());
 				res_arr.add(res_ob);
 			}
 			if(res_arr.size() <= 0) return null;
@@ -122,36 +123,35 @@ public class HomeController {
 	@ResponseBody
 	public String getMyRecentVideoNext(@RequestBody String body) throws Exception {
 		log.info("/home/request/getMyRecentVideo/next - 나의 관리목록 최신 다시보기 더보기 가져오기 " + body);
-		JSONParser parser = new JSONParser();
-		JSONArray res_arr = new JSONArray();
-		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(!principal.toString().equals("anonymousUser")) {
-			UserDTO user = (UserDTO) principal;
+		try {
+			JSONParser parser = new JSONParser();
+			JSONArray res_arr = new JSONArray();
 			
-			JSONArray service_arr = (JSONArray) parser.parse(body);
-			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
-			String client_id = key.read("client_id").getKey_value();
-			Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
-			List<Video> service_video = new ArrayList<>();
-			service_video = videoGetter.getRecentVideoFromUserNext(client_id, user.getOauth_token(), 
-					service_arr.get(0).toString(), "first=8&after="+service_arr.get(1).toString());
-			JSONArray service_body_video = (JSONArray) parser.parse(service_arr.get(2).toString());
-			
-			for(int i=0;i<service_body_video.size();i++) {
-				Video v = gsonParser.fromJson(service_body_video.get(i).toString(), Video.class);
-				service_video.add(v);
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(!principal.toString().equals("anonymousUser")) {
+				UserDTO user = (UserDTO) principal;
+				
+				JSONArray service_arr = (JSONArray) parser.parse(body);
+				List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
+				String client_id = key.read("client_id").getKey_value();
+				Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+				List<Video> service_video = new ArrayList<>();
+				service_video = videoGetter.getRecentVideoFromUserNext(client_id, user.getOauth_token(), 
+						service_arr.get(0).toString(), "first=8&after="+service_arr.get(1).toString());
+				
+				for(int i=0;i<service_video.size();i++) {
+					service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+					JSONObject res_ob = service_video.get(i).parseToJSONObject();
+					res_arr.add(res_ob);
+				}
+				if(res_arr.size() <= 0) return null;
 			}
-			Collections.sort(service_video, (a,b) -> b.getCreated_at().compareTo(a.getCreated_at()));
+//			log.info(res_arr.toJSONString());
+			return res_arr.toJSONString();
 			
-			for(int i=0;i<service_video.size();i++) {
-				service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
-				JSONObject res_ob = service_video.get(i).parseToJSONObject();
-				res_arr.add(res_ob);
-			}
-			if(res_arr.size() <= 0) return null;
+		} catch(Exception e) {
+			return e.toString();
 		}
-		return res_arr.toJSONString();
 	}
 	
 	@RequestMapping(value="/home/request/getMyLiveVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)

@@ -71,7 +71,7 @@ public class AuthController {
 		String client_id = "client_id="+key.read("client_id").getKey_value()+"&";
 		String redirect_uri = "redirect_uri=http://localhost:8080/auth/login/oauth2/code/twitch&";
 		String response_type = "response_type=code&";
-		String scope = "scope=user:read:follows user:read:subscriptions user:read:email channel:manage:videos&";
+		String scope = "scope=user:read:follows&";
 		String state = "state=/auth/login/twitch";
 		
 		uri += client_id + redirect_uri + response_type + scope + state;
@@ -118,6 +118,8 @@ public class AuthController {
 		
 		String OAuth_token = "Bearer " +oauthToken.get("access_token");
 		TwitchUser user = streamGenereator.getUser(client_id, OAuth_token, "");
+		if(user == null) return "redirect:/";
+//		log.info("/login/oauth2/code/twitch :: " + user.toString());
 		
 		// 회원가입 시 값에서 로그인 아이디 값을 그대로 전달해주면, form에서 임의로 값을 수정하여 디폴트값이 변형이 일어날 수 있기 때문에,
 		// 토큰값을 전달해주어서 로그인값은 표시만 해주고, 실제 인증과 데이터베이스 등록은 토큰을 이용해서 적용하도록 해준다.

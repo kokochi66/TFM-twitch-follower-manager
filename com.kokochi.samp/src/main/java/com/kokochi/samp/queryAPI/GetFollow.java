@@ -40,7 +40,7 @@ public class GetFollow {
 			for(int i=0;i<data.size();i++) {
 				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
 				
-				TwitchUser cUser = streamGetter.getUser(client_id, app_access_token, cJson.get("to_id").toString());
+				TwitchUser cUser = streamGetter.getUser(client_id, app_access_token, "id="+cJson.get("to_id").toString());
 				list.add(cUser);
 			}
 			

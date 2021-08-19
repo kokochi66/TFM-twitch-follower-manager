@@ -136,7 +136,7 @@ public class GetClips {
 				JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
 				
 				if(data.size() <= 0) continue; 	// 가져온 비디오 데이터가 없다면 null을 출력
-				TwitchUser t_user = streamGetter.getUser(client_id, access_Token, c_user_id);
+				TwitchUser t_user = streamGetter.getUser(client_id, access_Token, "id="+c_user_id);
 				for(int j=0;j<data.size();j++) {
 					JSONObject c_json = (JSONObject) parser.parse(data.get(j).toString());
 //					System.out.println(c_json.toJSONString());
@@ -190,7 +190,7 @@ public class GetClips {
 			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
 			
 			if(data.size() <= 0) return null; 	// 가져온 비디오 데이터가 없다면 null을 출력
-			TwitchUser t_user = streamGetter.getUser(client_id, access_Token, user_id);
+			TwitchUser t_user = streamGetter.getUser(client_id, access_Token, "id="+user_id);
 			for(int j=0;j<data.size();j++) {
 				JSONObject c_json = (JSONObject) parser.parse(data.get(j).toString());
 				Clips c = gsonParser.fromJson(c_json.toString(), Clips.class);

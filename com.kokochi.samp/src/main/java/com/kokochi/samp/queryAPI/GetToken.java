@@ -41,6 +41,7 @@ public class GetToken {
 	}
 	
 	public JSONObject GetOauth2AuthorizeToken(String client_id, String client_secret, String code) throws Exception {
+//		System.out.println("GetOauth2AuthorizeToken :: " + client_id + client_secret +" "+code);
 		
 		MultiValueMap<String, String> params  = new LinkedMultiValueMap<>();
 		JSONParser parser = new JSONParser();
@@ -51,16 +52,23 @@ public class GetToken {
 		params.add("grant_type", "authorization_code");
 		params.add("redirect_uri", "http://localhost:8080/auth/login/oauth2/code/twitch");
 		
-		
 		HttpEntity<MultiValueMap<String,String>> entity = new HttpEntity<>(params, headers);
 		
-		RestTemplate rt = new RestTemplate();
-		ResponseEntity<String> response = rt.exchange(
-				"https://id.twitch.tv/oauth2/token", HttpMethod.POST, entity, String.class);
+		try {
+			RestTemplate rt = new RestTemplate();
+			ResponseEntity<String> response = rt.exchange(
+					"https://id.twitch.tv/oauth2/token", HttpMethod.POST, entity, String.class);
+//			System.out.println("GetOauth2AuthorizeToken response :: " + response.getBody());
+			
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+			return jsonfile;
+			
+		} catch (HttpStatusCodeException e) {
+			System.out.println("GetOauth2AuthorizeToken Exception :: " + e.getResponseBodyAsString());
+		}
+
+		return null;
 		
-		JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
-		
-		return jsonfile;
 	}
 	
 	public void requestAppAccessToken() {
