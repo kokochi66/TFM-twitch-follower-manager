@@ -72,7 +72,7 @@ public class AuthController {
 		String redirect_uri = "redirect_uri=http://localhost:8080/auth/login/oauth2/code/twitch&";
 		String response_type = "response_type=code&";
 		String scope = "scope=user:read:follows user:read:subscriptions user:read:email channel:manage:videos&";
-		String state = "state=/auth/login/twitch&";
+		String state = "state=/auth/login/twitch";
 		
 		uri += client_id + redirect_uri + response_type + scope + state;
 		
@@ -82,6 +82,7 @@ public class AuthController {
 	
 	@RequestMapping(value="/login/twitch", method=RequestMethod.GET)
 	public String OAuthTokenProcess(Model model,String OAuthToken, String AuthenticatedUser) throws Exception {
+		log.info("/login/twitch - 트위치 로그인");
 		model.addAttribute("user_id", "OAuth2_authentication");
 		model.addAttribute("user_pwd", OAuthToken);
 		
@@ -109,6 +110,7 @@ public class AuthController {
 	
 	@RequestMapping(value="/login/oauth2/code/twitch", method=RequestMethod.GET)
 	public String OauthTwitch(RedirectAttributes rttr, String code, String scope, String state) throws Exception {
+		log.info("/login/oauth2/code/twitch - 트위치 토큰 받아오기 :: " + code +" "+ scope +" "+ state);
 		
 		String client_id = key.read("client_id").getKey_value();
 		String client_secret = key.read("client_secret").getKey_value();
