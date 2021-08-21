@@ -9,7 +9,9 @@
 <c:set var="path" value="/resources" />
 <c:set var="default_img" value="${path}/assets/img/default_image.jpg" />
 
+<script src="${path}/assets/js/module/manage_function.js"></script>
 <link rel="stylesheet" href="${path}/assets/css/detail/detail.css" />
+
 <!-- Main -->
 <main id="content">
 	<section id="about">

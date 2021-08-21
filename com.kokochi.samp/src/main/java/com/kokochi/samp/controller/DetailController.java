@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.converter.LanguageConverter;
+import com.kokochi.samp.domain.ManagedFollow;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetFollow;
@@ -64,7 +67,7 @@ public class DetailController {
 		
 		LanguageConverter langConverter = new LanguageConverter();
 		
-		TwitchUser stream = streamGetter.getUser(client_id, app_access_token, streams);
+		TwitchUser stream = streamGetter.getUser(client_id, app_access_token, "id="+streams);
 		int stream_total = followGetter.getFollowedTotal(client_id, app_access_token, "to_id="+streams);
 		Channel stream_channel = streamGetter.getChannelInfo(client_id, app_access_token, "broadcaster_id="+streams);
 		stream_channel.setBroadcaster_language(
@@ -76,6 +79,7 @@ public class DetailController {
 		model.addAttribute("stream_channel", stream_channel);
 		return "detail/detail";
 	}
+	// /detail 매핑
 	
 	@RequestMapping(value="/request/live", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
@@ -97,6 +101,7 @@ public class DetailController {
 		JSONObject res = stream.StreamToJSON();
 		return res.toJSONString();
 	}
+	// 라이브 데이터 가져오기 요청
 	
 	@RequestMapping(value="/request/replay", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
@@ -120,6 +125,7 @@ public class DetailController {
 		}
 		return res_arr.toJSONString();
 	}
+	// 다시보기 데이터 가져오기 요청	
 	
 	@RequestMapping(value="/request/clips", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
@@ -142,6 +148,7 @@ public class DetailController {
 		}
 		return res_arr.toJSONString();
 	}
+	// 클립 데이터 가져오기 요청
 	
 	@RequestMapping(value="/request/relative", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
@@ -169,11 +176,12 @@ public class DetailController {
 		}
 		return res_arr.toJSONString();
 	}
+	// 연관 스트리머 데이터 가져오기 요청
 	
 	@RequestMapping(value="/request/getTwitchUserSet", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getTwitchUserDataFromStream(@RequestBody String body) throws Exception {
-		log.info("/detail/request/getTwitchUserSet - 트위치 사용자 데이터 가져오기");
+		log.info("/detail/request/getTwitchUserSet - 트위치 사용자 데이터 가져오기 :: " + body);
 		JSONParser parser = new JSONParser();
 		JSONArray res_arr = new JSONArray();
 		JSONArray service_arr = (JSONArray) parser.parse(body);
@@ -181,13 +189,25 @@ public class DetailController {
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
 		
+		String user_id = "";
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(!principal.toString().equals("anonymousUser")) {
+			UserDTO user = (UserDTO) principal;
+			user_id = user.getUser_id();
+		}
+		
 		for(int i=0;i<service_arr.size();i++) {
 			String c_user_id = service_arr.get(i).toString();
-			TwitchUser t_us = streamGetter.getUser(client_id, app_access_token, c_user_id);
+//			log.info(c_user_id);
+			TwitchUser t_us = streamGetter.getUser(client_id, app_access_token, "id="+c_user_id);
+			
+			t_us.setManaged(follow_service.isManagedFollow(new ManagedFollow(user_id, t_us.getId())));
 			JSONObject j = t_us.TwitchUserToJSON();
 			res_arr.add(j);
 		}
 
 		return res_arr.toJSONString();
 	}
+	// TwitchUser 포맷 요청
+
 }

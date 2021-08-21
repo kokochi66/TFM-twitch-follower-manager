@@ -43,7 +43,7 @@
 							<div class="user_id">${follow.id}</div>
 							<div class="check">
 								<input type="checkbox" class="form-check-input checkInput"
-									name="" id="" ${follow.checking_managed ? "checked" : ""}>
+									name="" id="" ${follow.isManaged ? "checked" : ""}>
 							</div>
 						</div>
 					</div>

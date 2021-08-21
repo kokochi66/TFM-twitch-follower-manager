@@ -7,6 +7,7 @@
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="/resources" />
 <c:set var="default_img" value="${path}/assets/img/default_image.jpg" />
+<script src="${path}/assets/js/module/manage_function.js"></script>
 
 <!-- Main -->
 <main id="content">

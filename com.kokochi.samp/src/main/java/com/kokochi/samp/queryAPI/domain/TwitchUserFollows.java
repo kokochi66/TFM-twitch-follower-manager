@@ -12,12 +12,12 @@ import lombok.ToString;
 @ToString @NoArgsConstructor
 @AllArgsConstructor
 public class TwitchUserFollows {
-	private String from_id;
-	private String from_login;
-	private String from_name;
-	private String to_id;
-	private String to_name;
-	private Date followed_at;
-	private int total;
-	private String nextPage;
+	private String from_id = "";
+	private String from_login = "";
+	private String from_name = "";
+	private String to_id = "";
+	private String to_name = "";
+	private Date followed_at = new Date();
+	private int total = 0;
+	private String nextPage = "";
 }

@@ -70,9 +70,9 @@ public class MenuController {
 			// 가져오기에 실패하면, 토큰을 재발급받아 다시 시도한다.
 			
 			for(int i=0;i<follow_list.size();i++) {
-				follow_list.get(i).setChecking_managed(follow_service.isManagedFollow(
+				follow_list.get(i).setManaged(follow_service.isManagedFollow(
 						new ManagedFollow(user.getUser_id(), follow_list.get(i).getId())));
-				if(follow_list.get(i).isChecking_managed()) {
+				if(follow_list.get(i).isManaged()) {
 					follow_list.add(0, follow_list.remove(i)); // 관리체크된 값들은 맨위로 올라오도록 리스트 위치를 조정해준다.
 				}
 			}

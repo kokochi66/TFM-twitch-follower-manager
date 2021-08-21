@@ -1,4 +1,19 @@
-window.onload = () => {
+function detailInit(){
+    // 0 - 라이브, 1 - 다시보기, 2 - 클립 , 3 - 연관 스트리머
+    let user_id = document.querySelector('#about .profile .user_id').innerHTML;
+    let live_box = document.querySelector('#services .live-box')
+
+    let replay_detail_box = document.querySelector('#services .replay-detail-box')
+    let replay_detail_addMore = document.querySelector('#services .replay-detail-box .addMore')
+
+    let clip_box = document.querySelector('#services .clip-box')
+    let clip_box_addMore = document.querySelector('#services .clip-box .addMore')
+
+    let relative_box = document.querySelector('#services .relative-box')
+    let relative_box_addMore = document.querySelector('#services .relative-box .addMore')
+    let relative_file = {}
+    let relative_file_num = 0;
+
     function addVideo_iconBox(data) {
         let row_box = document.createElement('div')
         row_box.className = 'row icon-set';
@@ -23,7 +38,7 @@ window.onload = () => {
         }
         replay_detail_box.insertBefore(row_box, replay_detail_addMore);
         replay_detail_addMore.addEventListener('click', replay_addEvent)
-    }
+    }   // 다시보기 HTML 추가하기
     function addClips_iconBox(data) {
         let row_box = document.createElement('div')
         row_box.className = 'row icon-set';
@@ -48,7 +63,7 @@ window.onload = () => {
         }
         clip_box.insertBefore(row_box, clip_box_addMore);
         clip_box_addMore.addEventListener('click', clips_addEvent)
-    }
+    }   // 클립 HTML 추가하기
     function addRelative_iconBox(data) {
         let row_box = document.createElement('div')
         row_box.className = 'row icon-set';
@@ -68,7 +83,7 @@ window.onload = () => {
                         <div class="desc">${data[i].description}</div>
                         <div class="user_id displayNone">${data[i].id}</div>
                         <div class="check">
-                            <input type="checkbox" class="form-check-input checkInput"/>
+                            <input type="checkbox" class="form-check-input checkInput" ${data[i].isManaged ? 'checked' : ''}/>
                         </div>
                     </div>
                 </div>
@@ -76,29 +91,38 @@ window.onload = () => {
             row_box.appendChild(col_box)
         }
         relative_box.insertBefore(row_box, relative_box_addMore);
-        relative_box.removeChild(loading_box)
+        relative_box.removeChild(relative_box.querySelector('.loading'))
         relative_file_num += 8;
+
+        let relative_user_id_set = row_box.querySelectorAll('.user_id')
+        let relative_checkInput = row_box.querySelectorAll('.check .checkInput')
+        relative_checkInput.forEach((elem, idx) => {
+            elem.addEventListener('change', () => {
+                console.log(relative_user_id_set[idx].innerHTML)
+                manageFollowToggle(relative_user_id_set[idx].innerHTML);
+            })
+        })
+
         relative_box_addMore.addEventListener('click', relative_addEvent)
-    }
+    }   // 연관 스트리머 HTML 추가하기
     
     function replay_addEvent() {
         replay_detail_addMore.removeEventListener('click', replay_addEvent)
         let replay_detail_row = replay_detail_box.querySelectorAll('.row')
         let replay_detail_last_next = replay_detail_row[replay_detail_row.length-1].querySelector('.next_page').innerHTML
         setting_replay_req("after="+replay_detail_last_next+"&");
-    }
+    }   // 다시보기 추가 버튼 이벤트
     function clips_addEvent() {
         clip_box_addMore.removeEventListener('click', clips_addEvent)
         let clip_box_row = clip_box.querySelectorAll('.row')
         let clip_box_last_next = clip_box_row[clip_box_row.length-1].querySelector('.next_page').innerHTML
         setting_clip_req("after="+clip_box_last_next+"&");
-    }
+    }   // 클립 추가 버튼 이벤트
     function relative_addEvent() {
         relative_box_addMore.removeEventListener('click', relative_addEvent)
-        relative_box.insertBefore(loading_box, relative_box_addMore)
-        relative_format_twitchUserSet(relative_file.slice(
-            relative_file_num, relative_file_num+8))
-    }
+        relative_box.insertBefore(createLoadingBox(), relative_box_addMore)
+        relative_format_twitchUserSet(relative_file.slice(relative_file_num, relative_file_num+8))
+    }   // 연관 스트리머 추가 버튼 이벤트
 
     let setting_live_req = function() {
         let response = fetch('/detail/request/live', { // 서버 자체에 POST 요청을 보냄.
@@ -143,7 +167,7 @@ window.onload = () => {
             console.log('catch res :: ' , res)
             // 에러가 발생한 경우에는 아무런 값이 뷰에 추가되지 않음.
         })
-    }
+    }   // 라이브 데이터 가져오기 요청
     let setting_replay_req = function(next) {
         let body_data = {
             "login": user_id,
@@ -157,7 +181,7 @@ window.onload = () => {
             body: JSON.stringify(body_data)    // 요청 body에 id값을 넣음
         }).then(function(res){ 
             res.json().then(result => { // 결과값을 json 객체로 받아옴
-                console.log('then :: ' + result)
+                // console.log('then :: ' + result)
                 if(result !== 'error') addVideo_iconBox(result)
             }).catch(resB => console.log(resB));
         }).catch(function(res){ 
@@ -165,7 +189,7 @@ window.onload = () => {
             // 에러가 발생한 경우에는 아무런 값이 뷰에 추가되지 않음.
         })
 
-    }
+    }   // 다시보기 데이터 가져오기 요청
     let setting_clip_req = function(next) {
         let body_data = {
             "login": user_id,
@@ -186,9 +210,9 @@ window.onload = () => {
             console.log('catch res :: ' , res)
             // 에러가 발생한 경우에는 아무런 값이 뷰에 추가되지 않음.
         })
-    }
+    }   // 클립 데이터 가져오기 요청
     let setting_relative_req = function(left, right) {
-        relative_box.insertBefore(loading_box, relative_box_addMore)
+        relative_box.insertBefore(createLoadingBox(), relative_box_addMore)
         let response = fetch('/detail/request/relative', { // 서버 자체에 POST 요청을 보냄.
             method: 'POST', 
             headers: {
@@ -208,7 +232,7 @@ window.onload = () => {
             console.log('catch res :: ' , res)
             // 에러가 발생한 경우에는 아무런 값이 뷰에 추가되지 않음.
         })
-    }
+    }   // 연관 스트리머 데이터 가져오기 요청
     let relative_format_twitchUserSet = function(data) {
         let response = fetch('/detail/request/getTwitchUserSet', { // 서버 자체에 POST 요청을 보냄.
             method: 'POST', 
@@ -225,26 +249,8 @@ window.onload = () => {
             console.log('catch res :: ' , res)
             // 에러가 발생한 경우에는 아무런 값이 뷰에 추가되지 않음.
         })
-    }
+    }   // twitchUser 포맷 요청
 
-    let tab_select_btn = document.querySelectorAll('#tab .menu-box')
-    let service_boxes = document.querySelectorAll('#services .container > div')
-    let selected_btn_idx = 0;
-
-    // 0 - 라이브, 1 - 다시보기, 2 - 클립 , 3 - 연관 스트리머
-    let user_id = document.querySelector('#about .profile .user_id').innerHTML;
-    let live_box = document.querySelector('#services .live-box')
-
-    let replay_detail_box = document.querySelector('#services .replay-detail-box')
-    let replay_detail_addMore = document.querySelector('#services .replay-detail-box .addMore')
-
-    let clip_box = document.querySelector('#services .clip-box')
-    let clip_box_addMore = document.querySelector('#services .clip-box .addMore')
-
-    let relative_box = document.querySelector('#services .relative-box')
-    let relative_box_addMore = document.querySelector('#services .relative-box .addMore')
-    let relative_file = {}
-    let relative_file_num = 0;
 
     setting_live_req();
     setting_replay_req('');
@@ -253,6 +259,11 @@ window.onload = () => {
     let req_arr = [setting_live_req, setting_replay_req, setting_clip_req, setting_relative_req];
 
 
+}
+function detail_TabInit() {
+    let tab_select_btn = document.querySelectorAll('#tab .menu-box')
+    let service_boxes = document.querySelectorAll('#services .container > div')
+    let selected_btn_idx = 0;
     tab_select_btn.forEach((elem,idx) => {
         elem.addEventListener('click', () => {
             tab_select_btn[selected_btn_idx].classList.remove('active')
@@ -261,7 +272,7 @@ window.onload = () => {
             tab_select_btn[selected_btn_idx].classList.add('active')
             service_boxes[selected_btn_idx].classList.remove('displayNone')
         })
-    })
+    })  // 탭 버튼 클릭 이벤트
 }
-
-
+detailInit();
+detail_TabInit();

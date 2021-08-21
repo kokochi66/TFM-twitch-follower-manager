@@ -55,6 +55,7 @@ function request_getLiveVideo() {
       }
   }).then(function(res){ 
       res.json().then(result => { // 결과값을 json 객체로 받아옴
+          // console.log(result)
           if(result !== 'error') addLiveVideo(result)
       }).catch(resB => console.log(resB));
   }).catch(function(res){ 

@@ -1,0 +1,737 @@
+<html lang="ko">
+
+<head>
+    <title>TFM - 트위치 팔로우 관리자 : 메인 페이지</title>
+
+
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <!-- Favicons -->
+    <!-- <link href="assets/img/favicon.png" rel="icon"> -->
+    <!-- <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon"> -->
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/swiper-bundle.min.css" rel="stylesheet">
+    <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+
+    <script src="assets/js/script.js"></script>
+</head>
+
+<body>
+
+
+
+
+    <!-- ======= Top Bar ======= -->
+    <section id="topbar" class="d-lg-block">
+        <div class="container d-flex">
+            <div class="logo mr-auto">
+                <h1 class="text-light">
+                    <a href="/" title="홈페이지의 메인 타이틀입니다."><span>TFM</span></a>
+                </h1>
+            </div>
+            <div class="social-links">
+                <a href="https://www.twitch.tv/" class="twitch" target="_blank"><i class="icofont-twitch"
+                        title="트위치 홈페이지로 이동하는 링크"></i></a>
+
+                <div class="dropdown d-inline">
+                    <a href="#" class="login dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown"
+                        aria-expanded="false"><i class="icofont-user-alt-7" title="사용자의 로그인 상태를 표시해줌"></i></a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+                        <li><button class="dropdown-item" type="button">꼬꼬치꼬치님</button></li>
+                        <li>
+                            <form action="/auth/logout" method="post">
+                                <input type="submit" class="dropdown-item" value="로그아웃">
+                            </form>
+                        </li>
+
+
+
+                        <li><button class="dropdown-item" type="button"
+                                onclick="location.href='/menu/setting'">설정</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="location.href='/menu/managefollow'">팔로우
+                                채널 관리</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="location.href='/menu/replayvideo'">다시보기
+                                찜 관리</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="location.href='/test/form'">폼
+                                테스트</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+    <!-- HeadSlider -->
+    <section id="headslider">
+        <div id="headslider-container"
+            class="swiper-container swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events">
+            <div class="swiper-wrapper" id="swiper-wrapper-b6d9d497475870be" aria-live="polite"
+                style="transition-duration: 0ms; transform: translate3d(333.667px, 0px, 0px);">
+
+
+                <div class="swiper-slide swiper-slide-active" role="group" aria-label="1 / 5" style="width: 333.667px;">
+                    <div class="imageBox">
+                        <a href="https://www.twitch.tv/handongsuk" class="linkBox" target="_blank">
+                            <div class="img">
+                                <img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_handongsuk-400x250.jpg"
+                                    alt="방송이미지" width="100%">
+                            </div>
+                        </a>
+                        <div class="info">
+                            <div class="profile_img">
+                                <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/c5a2baa2-74ed-4b72-b047-8326572c9bfa-profile_image-300x300.png"
+                                    alt="" width="100%">
+                            </div>
+                            <div class="user_name">한동숙(handongsuk)</div>
+                            <div class="stream_game">Art</div>
+                            <div class="viewer_count">시청자 11816명</div>
+                            <div class="started_date">Sat Aug 21 16:43:04 KST 2021</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide swiper-slide-next" role="group" aria-label="2 / 5" style="width: 333.667px;">
+                    <div class="imageBox">
+                        <a href="https://www.twitch.tv/hanryang1125" class="linkBox" target="_blank">
+                            <div class="img">
+                                <img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_hanryang1125-400x250.jpg"
+                                    alt="방송이미지" width="100%">
+                            </div>
+                        </a>
+                        <div class="info">
+                            <div class="profile_img">
+                                <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/hanryang1125-profile_image-58261d78af47d249-300x300.jpeg"
+                                    alt="" width="100%">
+                            </div>
+                            <div class="user_name">풍월량(hanryang1125)</div>
+                            <div class="stream_game">Just Chatting</div>
+                            <div class="viewer_count">시청자 8095명</div>
+                            <div class="started_date">Sat Aug 21 20:02:22 KST 2021</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide" role="group" aria-label="3 / 5" style="width: 333.667px;">
+                    <div class="imageBox">
+                        <a href="https://www.twitch.tv/kimdoe" class="linkBox" target="_blank">
+                            <div class="img">
+                                <img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_kimdoe-400x250.jpg"
+                                    alt="방송이미지" width="100%">
+                            </div>
+                        </a>
+                        <div class="info">
+                            <div class="profile_img">
+                                <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/kimdoe-profile_image-354ecea9a42c41e9-300x300.png"
+                                    alt="" width="100%">
+                            </div>
+                            <div class="user_name">김도(kimdoe)</div>
+                            <div class="stream_game">Night Book</div>
+                            <div class="viewer_count">시청자 7774명</div>
+                            <div class="started_date">Sat Aug 21 16:41:57 KST 2021</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide" role="group" aria-label="4 / 5" style="width: 333.667px;">
+                    <div class="imageBox">
+                        <a href="https://www.twitch.tv/pacific8815" class="linkBox" target="_blank">
+                            <div class="img">
+                                <img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_pacific8815-400x250.jpg"
+                                    alt="방송이미지" width="100%">
+                            </div>
+                        </a>
+                        <div class="info">
+                            <div class="profile_img">
+                                <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/481c81b7-573b-4d8e-a06e-2b5b91464e56-profile_image-300x300.jpg"
+                                    alt="" width="100%">
+                            </div>
+                            <div class="user_name">쌍베(pacific8815)</div>
+                            <div class="stream_game">LOST ARK</div>
+                            <div class="viewer_count">시청자 7405명</div>
+                            <div class="started_date">Sat Aug 21 15:12:39 KST 2021</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide" role="group" aria-label="5 / 5" style="width: 333.667px;">
+                    <div class="imageBox">
+                        <a href="https://www.twitch.tv/sonycast_" class="linkBox" target="_blank">
+                            <div class="img">
+                                <img src="https://static-cdn.jtvnw.net/previews-ttv/live_user_sonycast_-400x250.jpg"
+                                    alt="방송이미지" width="100%">
+                            </div>
+                        </a>
+                        <div class="info">
+                            <div class="profile_img">
+                                <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/sonycast_-profile_image-ebca8b2445bd0c66-300x300.png"
+                                    alt="" width="100%">
+                            </div>
+                            <div class="user_name">소니쇼(sonycast_)</div>
+                            <div class="stream_game">Art</div>
+                            <div class="viewer_count">시청자 7395명</div>
+                            <div class="started_date">Sat Aug 21 17:16:54 KST 2021</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="hero-pagination" class="swiper-pagination swiper-pagination-bullets"><span
+                    class="swiper-pagination-bullet swiper-pagination-bullet-active"></span><span
+                    class="swiper-pagination-bullet"></span><span class="swiper-pagination-bullet"></span><span
+                    class="swiper-pagination-bullet"></span><span class="swiper-pagination-bullet"></span></div>
+            <div class="swiper-button-prev swiper-button-disabled" tabindex="-1" role="button"
+                aria-label="Previous slide" aria-controls="swiper-wrapper-b6d9d497475870be" aria-disabled="true"></div>
+            <div class="swiper-button-next" tabindex="0" role="button" aria-label="Next slide"
+                aria-controls="swiper-wrapper-b6d9d497475870be" aria-disabled="false"></div>
+            <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+        </div>
+
+    </section>
+    <!-- Vendor JS Files -->
+    <script src="assets/js/swiper-bundle.min.js"></script>
+    <!-- End HeadSlider -->
+    <script src="assets/js/home/headSlider.js"></script>
+
+
+
+
+
+    <link href="assets/css/module/searchBar.css" rel="stylesheet">
+    <section id="searchbar" class="searchbar">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6" style="margin: 0 auto;">
+                    <div class="input-group mb-3 mt-3">
+                        <input type="text" class="form-control" id="searchBar_text" placeholder="스트리머 찾기">
+                        <button class="searchBar_btn" id="searchBar_btn">
+                            <i class="icofont-ui-search icon"></i>
+                        </button>
+                    </div>
+                    <div class="input-preview"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="assets/js/module/searchBar.js"></script>
+
+
+
+
+
+
+
+    <script src="assets/js/module/manage_function.js"></script>
+
+    <!-- Main -->
+    <main id="content">
+
+
+
+
+        <!-- Sort Button List -->
+        <section id="about" class="about">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-4 btn-danger p-3 text-sm-center listBtn" title="관리목록 다시보기">관리목록 다시보기</div>
+                    <div class="col-4 btn-dark p-3 text-sm-center listBtn" title="팔로우 다시보기">관리목록 라이브</div>
+                    <div class="col-4 btn-primary p-3 text-sm-center listBtn" title="관리목록 인기클립">관리목록 인기클립</div>
+                </div>
+
+            </div>
+        </section>
+        <!-- End About Section -->
+
+        <!-- Video List -->
+        <section id="services" class="services">
+            <div class="container">
+                <div class="recent_video">
+                    <div class="section-title">
+                        <h2>관리목록 다시보기</h2>
+                    </div>
+                    <div class="row icon-set">
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/videos/1124994092" class="linkBox" target="_blank">
+                                    <img alt="" src="assets/img/default_image.jpg" width="100%">
+                                </a>
+                                <div class="video-follow-box plus">
+                                    <i class="icofont-plus"></i>
+                                </div>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/ee387ddb-7abc-45f3-9208-c5f909f26a98-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">[김뚜띠] </div>
+                                <div class="name text">김뚜띠_</div>
+                                <div class="user_id displayNone">148934000</div>
+                                <div class="video_id displayNone">1124994092</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/videos/1124810326" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/728ef05c5e5949d5d4eb_bbonge__39852407035_1629518929//thumb/thumb0-300x200.jpg"
+                                        width="100%">
+                                </a>
+                                <div class="video-follow-box plus">
+                                    <i class="icofont-minus"></i>
+                                </div>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/1885f8ff-2f1e-4b5b-8e21-dfe56698640f-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">뿡) 토요일입니다?</div>
+                                <div class="name text">김뿡_</div>
+                                <div class="user_id displayNone">148871475</div>
+                                <div class="video_id displayNone">1124810326</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/videos/1124726431" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/cf_vods/d1m7jfoe9zdc1j/a81aced141e0d9b78017_9ambler_43357225949_1629513109//thumb/thumb0-300x200.jpg"
+                                        width="100%">
+                                </a>
+                                <div class="video-follow-box plus">
+                                    <i class="icofont-minus"></i>
+                                </div>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/29059451-a201-4422-b421-041e49d456f5-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">~(' u')~</div>
+                                <div class="name text">감블러</div>
+                                <div class="user_id displayNone">130445097</div>
+                                <div class="video_id displayNone">1124726431</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/videos/1124635614" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/cf_vods/dgeft87wbj63p/be45493d9b6f0f5c9b35_nanayango3o_43016805836_1629507785//thumb/thumb0-300x200.jpg"
+                                        width="100%">
+                                </a>
+                                <div class="video-follow-box plus">
+                                    <i class="icofont-plus"></i>
+                                </div>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/e3890eab-54e6-4123-af61-253db796b55a-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">((⭐)) 숨돌리기~ </div>
+                                <div class="name text">나나양</div>
+                                <div class="user_id displayNone">137640527</div>
+                                <div class="video_id displayNone">1124635614</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/videos/1124558585" class="linkBox" target="_blank">
+                                    <img alt="" src="assets/img/default_image.jpg" width="100%">
+                                </a>
+                                <div class="video-follow-box plus">
+                                    <i class="icofont-plus"></i>
+                                </div>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/d48767c9-fef7-48cf-9e10-e3baffefbb19-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">[ 지누 ]</div>
+                                <div class="name text">김진우</div>
+                                <div class="user_id displayNone">131925215</div>
+                                <div class="video_id displayNone">1124558585</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/videos/1124099403" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/cf_vods/d1m7jfoe9zdc1j/8e1d9a670dd366175abc_kimdduddi_43348784669_1629471524//thumb/thumb0-300x200.jpg"
+                                        width="100%">
+                                </a>
+                                <div class="video-follow-box plus">
+                                    <i class="icofont-plus"></i>
+                                </div>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/ee387ddb-7abc-45f3-9208-c5f909f26a98-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">[김뚜띠] </div>
+                                <div class="name text">김뚜띠_</div>
+                                <div class="user_id displayNone">148934000</div>
+                                <div class="video_id displayNone">1124099403</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/videos/1124012973" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/cf_vods/dgeft87wbj63p/0a07376617ddb01c4a66_nanayango3o_43009712092_1629463402//thumb/thumb0-300x200.jpg"
+                                        width="100%">
+                                </a>
+                                <div class="video-follow-box plus">
+                                    <i class="icofont-plus"></i>
+                                </div>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/e3890eab-54e6-4123-af61-253db796b55a-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">((⭐)) 대회 스크림! 팀 존씨나 (딩셉션,씨랙) </div>
+                                <div class="name text">나나양</div>
+                                <div class="user_id displayNone">137640527</div>
+                                <div class="video_id displayNone">1124012973</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/videos/1123967692" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/cf_vods/dgeft87wbj63p/5507f416337785c04949_nanayango3o_43009185436_1629458111//thumb/thumb0-300x200.jpg"
+                                        width="100%">
+                                </a>
+                                <div class="video-follow-box plus">
+                                    <i class="icofont-minus"></i>
+                                </div>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/e3890eab-54e6-4123-af61-253db796b55a-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">((⭐)) 대회 스크림! 팀 존씨나 (딩셉션,씨랙) </div>
+                                <div class="name text">나나양</div>
+                                <div class="user_id displayNone">137640527</div>
+                                <div class="video_id displayNone">1123967692</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
+                </div>
+                <div class="recent_live displayNone">
+                    <div class="section-title">
+                        <h2>관리목록 라이브</h2>
+                    </div>
+                    <div class="row icon-set">
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/jinu6734" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/previews-ttv/live_user_jinu6734-300x200.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/d48767c9-fef7-48cf-9e10-e3baffefbb19-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">[ 지누 ]</div>
+                                <div class="name text">김진우</div>
+                                <div class="user_id displayNone">131925215</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/leechunhyang" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/previews-ttv/live_user_leechunhyang-300x200.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">[이춘향] ✿꽃이 피네✿</div>
+                                <div class="name text">이춘향</div>
+                                <div class="user_id displayNone">138391313</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://www.twitch.tv/kimdduddi" class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/previews-ttv/live_user_kimdduddi-300x200.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/ee387ddb-7abc-45f3-9208-c5f909f26a98-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">[김뚜띠] </div>
+                                <div class="name text">김뚜띠_</div>
+                                <div class="user_id displayNone">148934000</div>
+                                <div class="next_page displayNone"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
+                </div>
+                <div class="recent_clip displayNone">
+                    <div class="section-title">
+                        <h2>관리목록 인기클립</h2>
+                    </div>
+                    <div class="row icon-set">
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://clips.twitch.tv/AbnegateTangibleHamburgerRickroll-b4JliQWP5-WeLlRk"
+                                    class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://clips-media-assets2.twitch.tv/AT-cm%7C1294050018-preview-480x272.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">강밑플</div>
+                                <div class="name text">이춘향</div>
+                                <div class="user_id displayNone">138391313</div>
+                                <div class="next_page displayNone">null</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://clips.twitch.tv/WonderfulBashfulJellyfishPeteZarollTie-mUOVpUXX2KIr97FC"
+                                    class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://clips-media-assets2.twitch.tv/AT-cm%7C1295278432-preview-480x272.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/dbd6b07a-ac47-4b61-85dc-3f6710f6e0c6-profile_image-300x300.png"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">탬파이트!</div>
+                                <div class="name text">탬탬버린</div>
+                                <div class="user_id displayNone">133923936</div>
+                                <div class="next_page displayNone">null</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://clips.twitch.tv/TangentialPreciousPenguinRaccAttack-BVvhJG3ACdt28oiB"
+                                    class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://clips-media-assets2.twitch.tv/AT-cm%7C1290830878-preview-480x272.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">구하러 왔구나!</div>
+                                <div class="name text">이춘향</div>
+                                <div class="user_id displayNone">138391313</div>
+                                <div class="next_page displayNone">null</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://clips.twitch.tv/ConcernedBloodySalsifyYee-uamgWuxtt6pDK3v0"
+                                    class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://clips-media-assets2.twitch.tv/AT-cm%7C1294048529-preview-480x272.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">춘선생 레이드교실</div>
+                                <div class="name text">이춘향</div>
+                                <div class="user_id displayNone">138391313</div>
+                                <div class="next_page displayNone">null</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://clips.twitch.tv/GiftedBlindingKangarooOSsloth-8mmmiDloKCMJaDn5"
+                                    class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://clips-media-assets2.twitch.tv/AT-cm%7C1295363532-preview-480x272.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">놀려먹는 울매뿡</div>
+                                <div class="name text">이춘향</div>
+                                <div class="user_id displayNone">138391313</div>
+                                <div class="next_page displayNone">null</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://clips.twitch.tv/WonderfulMushyMushroomDatBoi-TFFmZQVaAnWLwtY3"
+                                    class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://clips-media-assets2.twitch.tv/AT-cm%7C1294035215-preview-480x272.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">갑자기 행복 할 뻔 했던 쭈냥</div>
+                                <div class="name text">이춘향</div>
+                                <div class="user_id displayNone">138391313</div>
+                                <div class="next_page displayNone">null</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://clips.twitch.tv/BraveSpeedyParrotFloof-wds-ZVWOtMDesaNE"
+                                    class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://clips-media-assets2.twitch.tv/AT-cm%7C1295137396-preview-480x272.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">기만책</div>
+                                <div class="name text">이춘향</div>
+                                <div class="user_id displayNone">138391313</div>
+                                <div class="next_page displayNone">null</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
+                            <div class="icon-box" title="방송목록">
+                                <a href="https://clips.twitch.tv/CoyAggressiveWhaleCclamChamp-Ai42YjDf2W89cbHy"
+                                    class="linkBox" target="_blank">
+                                    <img alt=""
+                                        src="https://clips-media-assets2.twitch.tv/AT-cm%7C1290471662-preview-480x272.jpg"
+                                        width="100%">
+                                </a>
+                            </div>
+                            <div class="icon-info">
+                                <div class="profile">
+                                    <img alt=""
+                                        src="https://static-cdn.jtvnw.net/jtv_user_pictures/21af3d33e8fdcfe9-profile_image-300x300.jpeg"
+                                        width="100%" height="100%">
+                                </div>
+                                <div class="title text">힐 있어!</div>
+                                <div class="name text">이춘향</div>
+                                <div class="user_id displayNone">138391313</div>
+                                <div class="next_page displayNone">null</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
+                </div>
+            </div>
+        </section>
+        <!-- End Services Section -->
+        <script src="assets/js/home/listvideo.js"></script>
+
+    </main>
+    <!-- End #main -->
+
+
+
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer">
+        <div class="container">
+            <div class="copyright">
+                © Copyright <strong><span>kokochikochi</span></strong>. All Rights Reserved
+            </div>
+            <div class="credits">
+                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+            </div>
+        </div>
+    </footer><!-- End Footer -->
+    <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+
+
+    <!-- Bootstrap JS File -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>

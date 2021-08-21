@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.domain.ManagedFollow;
+import com.kokochi.samp.domain.ManagedVideo;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetStream;
@@ -48,24 +49,22 @@ public class HomeController {
 	private UserMapper usermapper;
 	
 	@Autowired
-	private ManagedService follow_service;
-	
-	private JSONParser parser = new JSONParser();
+	private ManagedService managed_service;
 	
 	private GetStream streamGetter = new GetStream();
 	private GetVideo videoGetter = new GetVideo();
 	private GetClips clipGetter = new GetClips();
 	
 	@RequestMapping(value="/")
-	public String home(Model model) throws Exception { // 메인 home 화면 매핑
+	public String home(Model model) throws Exception { // 
 		log.info("/ - 메인경로 이동");
-		
 		return "homes";
 	}
+	// /home 매핑
 	
 	@RequestMapping(value="/home/request/getLiveVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
-	public String getLiveVideo() throws Exception {
+	public String getLiveVideo() throws Exception { 
 		log.info("/home/request/getLiveVideo - 라이브 비디오 가져오기 :: ");
 		
 		String client_id = key.read("client_id").getKey_value();
@@ -88,6 +87,7 @@ public class HomeController {
 //		log.info(res_arr.toJSONString());
 		return res_arr.toJSONString();
 	}
+	// 라이브 비디오 가져오기
 	
 	@RequestMapping(value="/home/request/getMyRecentVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
@@ -100,7 +100,7 @@ public class HomeController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			
-			List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
+			List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			List<Video> service_video = new ArrayList<>();
 //			log.info("getMyRecentVideo");
@@ -109,6 +109,8 @@ public class HomeController {
 			
 			for(int i=0;i<service_video.size();i++) {
 				service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+				service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideo(user.getUser_id(), 
+						service_video.get(i).getId())));
 				JSONObject res_ob = service_video.get(i).parseToJSONObject();
 //				log.info("getMyRecentVideo :: " + res_ob.toJSONString());
 				res_arr.add(res_ob);
@@ -118,6 +120,7 @@ public class HomeController {
 //		log.info(res_arr.toJSONString());
 		return res_arr.toJSONString();
 	}
+	// 관리목록 최신 다시보기 
 	
 	@RequestMapping(value="/home/request/getMyRecentVideo/next", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
@@ -132,7 +135,7 @@ public class HomeController {
 				UserDTO user = (UserDTO) principal;
 				
 				JSONArray service_arr = (JSONArray) parser.parse(body);
-				List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
+				List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
 				String client_id = key.read("client_id").getKey_value();
 				Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
 				List<Video> service_video = new ArrayList<>();
@@ -141,6 +144,8 @@ public class HomeController {
 				
 				for(int i=0;i<service_video.size();i++) {
 					service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+					service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideo(user.getUser_id(), 
+							service_video.get(i).getId())));
 					JSONObject res_ob = service_video.get(i).parseToJSONObject();
 					res_arr.add(res_ob);
 				}
@@ -153,6 +158,7 @@ public class HomeController {
 			return e.toString();
 		}
 	}
+	// 관리목록 최신 다시보기 더보기
 	
 	@RequestMapping(value="/home/request/getMyLiveVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
@@ -163,7 +169,7 @@ public class HomeController {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
-			List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
+			List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			
 			for(int i=0;i<follow_list.size();i++) {
@@ -181,6 +187,7 @@ public class HomeController {
 		
 		return res_arr.toJSONString();
 	}
+	// 관리목록 라이브
 	
 	@RequestMapping(value="/home/request/getMyClipVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
@@ -192,7 +199,7 @@ public class HomeController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			
-			List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
+			List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			List<Clips> service_clip = clipGetter.getClipsRecentByUsers(follow_list, client_id, user.getOauth_token(), "first=8");
 			
@@ -206,11 +213,13 @@ public class HomeController {
 		}
 		return res_arr.toJSONString();
 	}
+	// 관리목록 인기클립
 	
 	@RequestMapping(value="/home/request/getMyClipVideo/next", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
 	public String getMyClipVideoNext(@RequestBody String body) throws Exception {
 		log.info("/home/request/getMyClipVideo/next - 나의 관리목록 클립 가져오기 Next " + body);
+		JSONParser parser = new JSONParser();
 		JSONArray res_arr = new JSONArray();
 
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -218,7 +227,7 @@ public class HomeController {
 			UserDTO user = (UserDTO) principal;
 
 			JSONArray service_arr = (JSONArray) parser.parse(body);
-			List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
+			List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			List<Clips> service_clip = clipGetter.getClipsRecentByUser(client_id, user.getOauth_token(), service_arr.get(0).toString()
 					, "after="+service_arr.get(1).toString()+"&first=8");
@@ -232,4 +241,5 @@ public class HomeController {
 //		log.info(res_arr.toJSONString());
 		return res_arr.toJSONString();
 	}
+	// 관리목록 인기클립 더보기
 }

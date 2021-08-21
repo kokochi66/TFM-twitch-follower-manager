@@ -15,17 +15,8 @@
 		let btn = document.querySelector('.btn')
 		let wrap = document.querySelector('#wrap')
 		btn.addEventListener('click', btnEvent)
-		function btnEvent() {
-			let add_page = document.createElement('div')
-			add_page.innerHTML = `
-			<div class="header">
-				<div class="name">나의 헤더</div>
-				<div class="info">
-					<div class="img">이미지</div>
-					<div class="date">날짜</div>
-				</div>
-			</div>`;
-			wrap.appendChild(add_page);
+		function btnEvent(target) {
+			console.log(target)
 		}
 	</script>
 </body>

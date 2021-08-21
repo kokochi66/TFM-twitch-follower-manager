@@ -12,18 +12,18 @@ import lombok.ToString;
 @ToString
 public class TwitchUser {
 	
-	private String broadcaster_type;
-	private String description;
-	private String display_name;
-	private String id;
-	private String login;
-	private String offline_image_url;
-	private String profile_image_url;
-	private String type;
-	private int view_count;
-	private String email;
-	private Date created_at;
-	private boolean checking_managed;
+	private String broadcaster_type = "";
+	private String description = "";
+	private String display_name = "";
+	private String id = "";
+	private String login = "";
+	private String offline_image_url = "";
+	private String profile_image_url = "";
+	private String type = "";
+	private int view_count = 0;
+	private String email = "";
+	private Date created_at = new Date();
+	private boolean isManaged = false;
 	
 	public JSONObject TwitchUserToJSON() {
 		JSONObject j = new JSONObject();
@@ -37,7 +37,7 @@ public class TwitchUser {
 		j.put("view_count", this.view_count);
 		j.put("email", this.email);
 		j.put("created_at", this.created_at.toString());
-		j.put("checking_managed", this.checking_managed);
+		j.put("isManaged", this.isManaged);
 		return j;
 	}
 }

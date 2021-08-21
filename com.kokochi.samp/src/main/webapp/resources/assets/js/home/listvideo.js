@@ -30,9 +30,8 @@ function listVideo() {
         request_getMyRecentVideoNext(JSON.stringify(next_body))
       }
     }
-    addService_IconSet(recent_video_data.slice(0, 8), recent_video_box, recent_video_addBtn)
+    add_MyRecentVideo(recent_video_data.slice(0, 8), recent_video_box, recent_video_addBtn)
     recent_video_data = recent_video_data.slice(8, recent_video_data.length);
-    console.log(recent_video_data);
   })
   recent_live_addBtn.addEventListener('click', () => {
     recent_live_box.insertBefore(createLoadingBox(), recent_live_addBtn)
@@ -71,10 +70,10 @@ function listVideo() {
         res.json()
         .then(result => { // 결과값을 json 객체로 받아옴
             if(result !== 'error') {
-              console.log(result)
+              // console.log(result)
               recent_video_data = result;
               recent_video_data.sort((a,b) => {return Date.parse(b.created_at) < Date.parse(a.created_at) ? -1 : 1})
-              addService_IconSet(recent_video_data.slice(0, 8), recent_video_box, recent_video_addBtn)
+              add_MyRecentVideo(recent_video_data.slice(0, 8), recent_video_box, recent_video_addBtn)
               recent_video_data = recent_video_data.slice(8, recent_video_data.length);
             }
         })
@@ -208,8 +207,62 @@ function listVideo() {
     target.insertBefore(s_row, last);
     target.removeChild(target.querySelector('.loading'));
   }
+
+  function add_MyRecentVideo(data, target, last) {
+    let s_row = document.createElement('div');
+    s_row.className = 'row icon-set';
+  
+    for(let i=0;i<data.length;i++) {
+      let s_col_box = document.createElement('div');
+      s_col_box.className = 'col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5';
+      s_col_box.innerHTML = `
+        <div class="icon-box" title="방송목록">
+          <a href="${data[i].url}" class="linkBox" target="_blank">
+            <img alt="" src="${data[i].thumbnail_url ? data[i].thumbnail_url : default_img}" width="100%">
+          </a>
+          <div class="video-follow-box plus">
+            ${data[i].isManaged ? '<i class="icofont-minus"></i>' : '<i class="icofont-plus"></i>'}
+          </div>
+        </div>
+        <div class="icon-info">
+          <div class="profile">
+            <img alt="" src="${data[i].profile_url ? data[i].profile_url : default_img}" width="100%" height="100%">
+          </div>
+          <div class="title text">${data[i].title}</div>
+          <div class="name text">${data[i].user_name}</div>
+          <div class="user_id displayNone">${data[i].user_id}</div>
+          <div class="video_id displayNone">${data[i].id}</div>
+          <div class="next_page displayNone">${data[i].nextPage}</div>
+        </div>
+      `;
+      s_row.appendChild(s_col_box)
+    }
+    target.insertBefore(s_row, last);
+
+    let recent_video_iconInfo = document.querySelectorAll('#services .recent_video .icon-info')
+    let recent_video_manageBtn = document.querySelectorAll('#services .recent_video .video-follow-box')
+    recent_video_manageBtn.forEach((elem, idx) => {
+      elem.addEventListener('click', () => {
+        manageVideoToggle(recent_video_iconInfo[idx].querySelector('.video_id').innerHTML)
+        if(elem.classList.contains('plus')) {
+          elem.className = 'video-follow-box minus';
+          elem.innerHTML = `<i class="icofont-minus"></i>`
+        }
+        else {
+          elem.className = 'video-follow-box plus';
+          elem.innerHTML = `<i class="icofont-plus"></i>`
+        }
+        })
+    })
+
+
+    target.removeChild(target.querySelector('.loading'));
+  }
   request_getMyRecentVideo('none')
   request_getMyLiveVideo('none')
   request_getMyClipVideo('none')
+
+
+
 }
 listVideo();
