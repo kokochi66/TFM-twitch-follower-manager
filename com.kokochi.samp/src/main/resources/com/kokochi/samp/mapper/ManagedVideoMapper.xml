@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kokochi.samp.mapper.ManagedVideoMapper">
+
+	
+	<select id="isManagedVideo" resultType="ManagedVideo">
+		SELECT user_id, to_video
+		FROM managed_video
+		WHERE user_id = #{user_id} AND to_user = #{to_video}
+	</select>
+	
+	<insert id="addManageVideo">
+		INSERT INTO managed_video(user_id, to_video)
+		VALUES(#{user_id}, #{to_video})
+	</insert>
+	
+	<delete id="deleteManageVideo">
+		DELETE FROM managed_video
+		WHERE user_id = #{user_id} AND to_video = #{to_video}
+	</delete>
+	
+	<select id="listVideo" resultType="ManagedVideo">
+		SELECT user_id, to_video
+		FROM managed_video
+		WHERE user_id = #{user_id}
+	</select>
+	
+	<select id="list_numVideo" resultType="ManagedVideo">
+		SELECT user_id, to_video
+		FROM managed_video
+		WHERE user_id = #{user_id}
+		ORDER BY to_video
+		LIMIT #{left}, #{right}
+	</select>
+	
+</mapper>

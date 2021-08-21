@@ -31,7 +31,7 @@ import com.kokochi.samp.queryAPI.domain.Clips;
 import com.kokochi.samp.queryAPI.domain.Stream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.queryAPI.domain.Video;
-import com.kokochi.samp.service.ManagedFollowService;
+import com.kokochi.samp.service.ManagedService;
 import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class DetailController {
 	private UserMapper usermapper;
 	
 	@Autowired
-	private ManagedFollowService follow_service;
+	private ManagedService follow_service;
 	
 	private GetStream streamGetter = new GetStream();
 	private GetFollow followGetter = new GetFollow();

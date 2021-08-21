@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.kokochi.samp.domain.ManagedFollow;
-import com.kokochi.samp.service.ManagedFollowService;
+import com.kokochi.samp.service.ManagedService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,13 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 public class TestController {
 	
 	@Autowired
-	private ManagedFollowService follow_service;
+	private ManagedService follow_service;
 	
 	@RequestMapping(value="/followtest", method=RequestMethod.GET)
 	public String formTest(Model model) throws Exception {
 		log.info("TestController - form GET");
 		
-		List<ManagedFollow> follow_list_limit = follow_service.list_num("kokochi", 0, 8);
+		List<ManagedFollow> follow_list_limit = follow_service.list_numFollow("kokochi", 0, 8);
 		
 		return "test/formTest";
 	}

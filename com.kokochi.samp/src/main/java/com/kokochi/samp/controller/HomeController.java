@@ -32,7 +32,7 @@ import com.kokochi.samp.queryAPI.domain.Clips;
 import com.kokochi.samp.queryAPI.domain.Stream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.queryAPI.domain.Video;
-import com.kokochi.samp.service.ManagedFollowService;
+import com.kokochi.samp.service.ManagedService;
 import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class HomeController {
 	private UserMapper usermapper;
 	
 	@Autowired
-	private ManagedFollowService follow_service;
+	private ManagedService follow_service;
 	
 	private JSONParser parser = new JSONParser();
 	
@@ -100,7 +100,7 @@ public class HomeController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			
-			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
+			List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			List<Video> service_video = new ArrayList<>();
 //			log.info("getMyRecentVideo");
@@ -132,7 +132,7 @@ public class HomeController {
 				UserDTO user = (UserDTO) principal;
 				
 				JSONArray service_arr = (JSONArray) parser.parse(body);
-				List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
+				List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
 				String client_id = key.read("client_id").getKey_value();
 				Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
 				List<Video> service_video = new ArrayList<>();
@@ -163,7 +163,7 @@ public class HomeController {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
-			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
+			List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			
 			for(int i=0;i<follow_list.size();i++) {
@@ -192,7 +192,7 @@ public class HomeController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			
-			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
+			List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			List<Clips> service_clip = clipGetter.getClipsRecentByUsers(follow_list, client_id, user.getOauth_token(), "first=8");
 			
@@ -218,7 +218,7 @@ public class HomeController {
 			UserDTO user = (UserDTO) principal;
 
 			JSONArray service_arr = (JSONArray) parser.parse(body);
-			List<ManagedFollow> follow_list = follow_service.list(user.getUser_id());
+			List<ManagedFollow> follow_list = follow_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKey_value();
 			List<Clips> service_clip = clipGetter.getClipsRecentByUser(client_id, user.getOauth_token(), service_arr.get(0).toString()
 					, "after="+service_arr.get(1).toString()+"&first=8");

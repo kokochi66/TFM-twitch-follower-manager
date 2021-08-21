@@ -25,7 +25,7 @@ import com.kokochi.samp.domain.ManagedFollow;
 import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetVideo;
 import com.kokochi.samp.queryAPI.domain.Clips;
-import com.kokochi.samp.service.ManagedFollowService;
+import com.kokochi.samp.service.ManagedService;
 import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class QueryController {
 	private TwitchKeyService key;
 	
 	@Autowired
-	private ManagedFollowService follow_service;
+	private ManagedService follow_service;
 	
 	private GetVideo videoGetter = new GetVideo();
 	private GetFollow followGetter = new GetFollow();
@@ -53,7 +53,7 @@ public class QueryController {
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
 		
-		List<ManagedFollow> managedFollow_list = follow_service.list(user_id);
+		List<ManagedFollow> managedFollow_list = follow_service.listFollow(user_id);
 		
 		HashSet<String> follow_set = new HashSet<>();
 		List<String> follow_list = followGetter.getAllFollowedList(client_id, app_access_token, "from_id="+twitch_user_id);
@@ -63,7 +63,7 @@ public class QueryController {
 		for(ManagedFollow mf : managedFollow_list) {
 			if(!follow_set.contains(mf.getTo_user())) {
 				log.info("/query/request/initFollow - ManagedFollow 제거 :: " + mf.getTo_user());
-				follow_service.remove(mf);
+				follow_service.removeFollow(mf);
 			}
 		}
 		return "success";

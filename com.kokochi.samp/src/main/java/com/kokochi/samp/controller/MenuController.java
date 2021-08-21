@@ -17,7 +17,7 @@ import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
-import com.kokochi.samp.service.ManagedFollowService;
+import com.kokochi.samp.service.ManagedService;
 import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class MenuController {
 	private TwitchKeyService key;
 	
 	@Autowired
-	private ManagedFollowService follow_service;
+	private ManagedService follow_service;
 	
 	private GetStream streamGenerator = new GetStream();
 	private GetFollow followGetter = new GetFollow();
@@ -70,7 +70,7 @@ public class MenuController {
 			// 가져오기에 실패하면, 토큰을 재발급받아 다시 시도한다.
 			
 			for(int i=0;i<follow_list.size();i++) {
-				follow_list.get(i).setChecking_managed(follow_service.isManaged(
+				follow_list.get(i).setChecking_managed(follow_service.isManagedFollow(
 						new ManagedFollow(user.getUser_id(), follow_list.get(i).getId())));
 				if(follow_list.get(i).isChecking_managed()) {
 					follow_list.add(0, follow_list.remove(i)); // 관리체크된 값들은 맨위로 올라오도록 리스트 위치를 조정해준다.
@@ -102,7 +102,7 @@ public class MenuController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			if(user.getUser_id().equals(user_id)) {
-				follow_service.create(new ManagedFollow(user_id, to_user));
+				follow_service.createFollow(new ManagedFollow(user_id, to_user));
 				return "success";
 			}	// 현재 로그인된 값과 전달하는 아이디가 일치해야만 값을 적용하게 됨
 		}
@@ -119,7 +119,7 @@ public class MenuController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			if(user.getUser_id().equals(user_id)) {
-				follow_service.remove(new ManagedFollow(user_id, to_user));
+				follow_service.removeFollow(new ManagedFollow(user_id, to_user));
 				return "success";
 			}
 		}

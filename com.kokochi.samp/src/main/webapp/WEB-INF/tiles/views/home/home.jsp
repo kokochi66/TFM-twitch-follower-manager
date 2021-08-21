@@ -75,32 +75,6 @@
 					</div>
 					<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
 				</div>
-				<%-- 				<div class="section-title">
-					<h2>관리목록 다시보기</h2>
-				</div>
-	
-				<div class="row icon-set">
-					<c:forEach items="${replay_video_list}" var="replay_video">
-						<div class="col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5">
-							<div class="icon-box" title="방송목록">
-								<a href="${replay_video.url}" class="linkBox" target="_blank">
-									<img alt="" src="${replay_video.thumbnail_url == null || replay_video.thumbnail_url.equals("") ? default_img : replay_video.thumbnail_url}" 
-										width="100%" />
-								</a>
-							</div>
-							<div class="icon-info">
-								<div class="profile">
-									<img alt="" src="${replay_video.profile_url == null || replay_video.profile_url.equals("") ? default_img : replay_video.profile_url}" width="100%" height="100%"/>
-								</div>
-								<div class="title text">${replay_video.title}</div>
-								<div class="name text">${replay_video.user_name}</div>
-								<div class="user_id displayNone">${replay_video.user_id}</div>
-								<div class="next_page displayNone">${replay_video.nextPage}</div>
-							</div>
-						</div>
-					</c:forEach>
-				</div>
-				<div class="service_last_box"></div> --%>
 			</div>
 		</section>
 		<!-- End Services Section -->
