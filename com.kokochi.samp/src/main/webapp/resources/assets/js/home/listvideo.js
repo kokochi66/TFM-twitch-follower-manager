@@ -32,7 +32,7 @@ function listVideo() {
     }
     add_MyRecentVideo(recent_video_data.slice(0, 8), recent_video_box, recent_video_addBtn)
     recent_video_data = recent_video_data.slice(8, recent_video_data.length);
-  })
+  })  // 관리목록 다시보기 더보기 버튼 이벤트
   recent_live_addBtn.addEventListener('click', () => {
     recent_live_box.insertBefore(createLoadingBox(), recent_live_addBtn)
     let next_body = [],
@@ -46,7 +46,7 @@ function listVideo() {
       next_body[i][1] = recent_live_rowBox_last_nextPage[i].innerHTML
     }
     request_getMyLiveVideo(JSON.stringify(next_body))
-  })
+  })  // 관리목록 라이브 더보기 버튼 이벤트
   recent_clip_addBtn.addEventListener('click', () => {
     recent_clip_box.insertBefore(createLoadingBox(), recent_clip_addBtn)
     for(let i=0;i<8;i++) {
@@ -57,7 +57,7 @@ function listVideo() {
     }
     addService_IconSet(recent_clip_data.slice(0, 8), recent_clip_box, recent_clip_addBtn)
     recent_clip_data = recent_clip_data.slice(8, recent_clip_data.length);
-  })
+  })  // 관리목록 인기클립 더보기 버튼 이벤트
 
   function request_getMyRecentVideo(body) {
     let response = fetch('/home/request/getMyRecentVideo', {
@@ -83,7 +83,7 @@ function listVideo() {
     }).catch(function(res){ 
         console.log('catch res :: ' , res)
     })
-  }
+  } // 관리목록 다시보기 데이터 요청
   async function request_getMyRecentVideoNext(body) {
     let response = fetch('/home/request/getMyRecentVideo/next', {
         method: 'POST', 
@@ -106,7 +106,7 @@ function listVideo() {
     }).catch(function(res){ 
         console.log('catch res :: ' , res)
     })
-  }
+  } // 관리목록 다시보기 더보기 데이터 요청
   function request_getMyLiveVideo() {
     let response = fetch('/home/request/getMyLiveVideo', { // 서버 자체에 POST 요청을 보냄.
         method: 'POST', 
@@ -127,7 +127,7 @@ function listVideo() {
     }).catch(function(res){ 
         console.log('catch res :: ' , res)
     })
-  }
+  } // 관리목록 라이브 데이터 요청
   function request_getMyClipVideo(body) {
     let response = fetch('/home/request/getMyClipVideo', { // 서버 자체에 POST 요청을 보냄.
         method: 'POST', 
@@ -151,7 +151,7 @@ function listVideo() {
     }).catch(function(res){ 
         console.log('catch res :: ' , res)
     })
-  }
+  } // 관리목록 인기클립 데이터 요청
   async function request_getMyClipVideoNext(body) {
     let response = fetch('/home/request/getMyClipVideo/next', { // 서버 자체에 POST 요청을 보냄.
         method: 'POST', 
@@ -177,7 +177,7 @@ function listVideo() {
     }).catch(function(res){ 
         console.log('catch res :: ' , res)
     })
-  }
+  } // 관리목록 인기클립 더보기 데이터 요청
   function addService_IconSet(data, target, last) {
     let s_row = document.createElement('div');
     s_row.className = 'row icon-set';
@@ -206,7 +206,7 @@ function listVideo() {
 
     target.insertBefore(s_row, last);
     target.removeChild(target.querySelector('.loading'));
-  }
+  } /// IconSet 추가하기
 
   function add_MyRecentVideo(data, target, last) {
     let s_row = document.createElement('div');
@@ -220,7 +220,7 @@ function listVideo() {
           <a href="${data[i].url}" class="linkBox" target="_blank">
             <img alt="" src="${data[i].thumbnail_url ? data[i].thumbnail_url : default_img}" width="100%">
           </a>
-          <div class="video-follow-box plus">
+          <div class="video-follow-box ${data[i].isManaged ? 'minus' : 'plus'}">
             ${data[i].isManaged ? '<i class="icofont-minus"></i>' : '<i class="icofont-plus"></i>'}
           </div>
         </div>
@@ -228,7 +228,7 @@ function listVideo() {
           <div class="profile">
             <img alt="" src="${data[i].profile_url ? data[i].profile_url : default_img}" width="100%" height="100%">
           </div>
-          <div class="title text">${data[i].title}</div>
+          <div class="title text" title="${data[i].title}">${data[i].title}</div>
           <div class="name text">${data[i].user_name}</div>
           <div class="user_id displayNone">${data[i].user_id}</div>
           <div class="video_id displayNone">${data[i].id}</div>
@@ -257,7 +257,7 @@ function listVideo() {
 
 
     target.removeChild(target.querySelector('.loading'));
-  }
+  } // 관리목록 다시보기 HTML 추가하기
   request_getMyRecentVideo('none')
   request_getMyLiveVideo('none')
   request_getMyClipVideo('none')

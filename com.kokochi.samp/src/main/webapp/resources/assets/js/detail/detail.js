@@ -3,18 +3,19 @@ function detailInit(){
     let user_id = document.querySelector('#about .profile .user_id').innerHTML;
     let live_box = document.querySelector('#services .live-box')
 
-    let replay_detail_box = document.querySelector('#services .replay-detail-box')
-    let replay_detail_addMore = document.querySelector('#services .replay-detail-box .addMore')
+    let recent_video = document.querySelector('#services .recent_video')
+    let recent_video_addMore = document.querySelector('#services .recent_video .addMore')
 
-    let clip_box = document.querySelector('#services .clip-box')
-    let clip_box_addMore = document.querySelector('#services .clip-box .addMore')
+    let recent_clip = document.querySelector('#services .recent_clip')
+    let recent_clip_addMore = document.querySelector('#services .recent_clip .addMore')
 
-    let relative_box = document.querySelector('#services .relative-box')
-    let relative_box_addMore = document.querySelector('#services .relative-box .addMore')
+    let relative_box = document.querySelector('#services .relative_box')
+    let relative_box_addMore = document.querySelector('#services .relative_box .addMore')
     let relative_file = {}
     let relative_file_num = 0;
 
     function addVideo_iconBox(data) {
+        console.log(data)
         let row_box = document.createElement('div')
         row_box.className = 'row icon-set';
     
@@ -22,22 +23,41 @@ function detailInit(){
             let col_box = document.createElement('div')
             col_box.className = 'col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5';
             col_box.innerHTML = `
-                <div class="icon-box">
+                <div class="icon-box" title="방송목록">
                     <a href="${data[i].url}" class="linkBox" target="_blank">
-                        <img src="${data[i].thumbnail_url ? data[i].thumbnail_url : default_img}" width="100%">
+                    <img alt="" src="${data[i].thumbnail_url ? data[i].thumbnail_url : default_img}" width="100%">
                     </a>
+                    <div class="video-follow-box ${data[i].isManaged ? 'minus' : 'plus'}">
+                    ${data[i].isManaged ? '<i class="icofont-minus"></i>' : '<i class="icofont-plus"></i>'}
+                    </div>
                 </div>
                 <div class="icon-info">
-                    <div class="title">${data[i].title}</div>
+                    <div class="title" title="${data[i].title}">${data[i].title}</div>
                     <div class="view_count">${data[i].view_count}</div>
                     <div class="created_at">${data[i].created_at}</div>
+                    <div class="video_id displayNone">${data[i].id}</div>
                     <div class="next_page displayNone">${data[i].nextPage}</div>
-                </div
+                </div>
             `;
             row_box.appendChild(col_box)
         }
-        replay_detail_box.insertBefore(row_box, replay_detail_addMore);
-        replay_detail_addMore.addEventListener('click', replay_addEvent)
+        recent_video.insertBefore(row_box, recent_video_addMore);
+        recent_video_addMore.addEventListener('click', replay_addEvent)
+        let recent_video_iconInfo = document.querySelectorAll('#services .recent_video .icon-info')
+        let recent_video_manageBtn = document.querySelectorAll('#services .recent_video .video-follow-box')
+        recent_video_manageBtn.forEach((elem, idx) => {
+            elem.addEventListener('click', () => {
+                if(elem.classList.contains('plus')) {
+                    elem.className = 'video-follow-box minus';
+                    elem.innerHTML = `<i class="icofont-minus"></i>`
+                }
+                else {
+                    elem.className = 'video-follow-box plus';
+                    elem.innerHTML = `<i class="icofont-plus"></i>`
+                }
+                manageVideoToggle(recent_video_iconInfo[idx].querySelector('.video_id').innerHTML)
+            })
+        })
     }   // 다시보기 HTML 추가하기
     function addClips_iconBox(data) {
         let row_box = document.createElement('div')
@@ -61,8 +81,8 @@ function detailInit(){
             `;
             row_box.appendChild(col_box)
         }
-        clip_box.insertBefore(row_box, clip_box_addMore);
-        clip_box_addMore.addEventListener('click', clips_addEvent)
+        recent_clip.insertBefore(row_box, recent_clip_addMore);
+        recent_clip_addMore.addEventListener('click', clips_addEvent)
     }   // 클립 HTML 추가하기
     function addRelative_iconBox(data) {
         let row_box = document.createElement('div')
@@ -107,16 +127,16 @@ function detailInit(){
     }   // 연관 스트리머 HTML 추가하기
     
     function replay_addEvent() {
-        replay_detail_addMore.removeEventListener('click', replay_addEvent)
-        let replay_detail_row = replay_detail_box.querySelectorAll('.row')
-        let replay_detail_last_next = replay_detail_row[replay_detail_row.length-1].querySelector('.next_page').innerHTML
-        setting_replay_req("after="+replay_detail_last_next+"&");
+        recent_video_addMore.removeEventListener('click', replay_addEvent)
+        let recent_video_row = recent_video.querySelectorAll('.row')
+        let recent_video_last_next = recent_video_row[recent_video_row.length-1].querySelector('.next_page').innerHTML
+        setting_replay_req("after="+recent_video_last_next+"&");
     }   // 다시보기 추가 버튼 이벤트
     function clips_addEvent() {
-        clip_box_addMore.removeEventListener('click', clips_addEvent)
-        let clip_box_row = clip_box.querySelectorAll('.row')
-        let clip_box_last_next = clip_box_row[clip_box_row.length-1].querySelector('.next_page').innerHTML
-        setting_clip_req("after="+clip_box_last_next+"&");
+        recent_clip_addMore.removeEventListener('click', clips_addEvent)
+        let recent_clip_row = recent_clip.querySelectorAll('.row')
+        let recent_clip_last_next = recent_clip_row[recent_clip_row.length-1].querySelector('.next_page').innerHTML
+        setting_clip_req("after="+recent_clip_last_next+"&");
     }   // 클립 추가 버튼 이벤트
     function relative_addEvent() {
         relative_box_addMore.removeEventListener('click', relative_addEvent)
@@ -256,9 +276,6 @@ function detailInit(){
     setting_replay_req('');
     setting_clip_req('');
     setting_relative_req(relative_file_num,relative_file_num + 8);
-    let req_arr = [setting_live_req, setting_replay_req, setting_clip_req, setting_relative_req];
-
-
 }
 function detail_TabInit() {
     let tab_select_btn = document.querySelectorAll('#tab .menu-box')

@@ -68,11 +68,11 @@
     content: ''; position: absolute; top: 0px; left: 0;
     width: 30px; height: 30px; background-color: #eee;
     background-size: cover; cursor: pointer; z-index: 1000;
-    display: none;
+    display: none; text-align: center;
 }
 #services .recent_video .icon-set .icon-box:hover .video-follow-box {display: block;}
 #services .recent_video .icon-set .video-follow-box:hover {background-color: #bbb;}
-#services .recent_video .icon-set .video-follow-box i {font-size: 25px; text-align: center; line-height: 30px;}
+#services .recent_video .icon-set .video-follow-box i {font-size: 25px; line-height: 30px;}
 
 @media (min-width: 0px) {
     #headslider-container {width: 100%;}

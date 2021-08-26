@@ -77,13 +77,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="replay-detail-box displayNone">
+			<div class="recent_video displayNone">
 				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
-			<div class="clip-box displayNone">
+			<div class="recent_clip displayNone">
 				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
-			<div class="relative-box displayNone">
+			<div class="relative_box displayNone">
 				<div class="addMore btn-danger col-2 m-auto text-center p-3">더 보기</div>
 			</div>
 		</div>

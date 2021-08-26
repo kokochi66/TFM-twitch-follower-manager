@@ -128,7 +128,7 @@ public class GetFollow {
 	
 	public boolean getRelativeFollow(Map<String, Integer> res, String client_id, String access_token, String to_id, String next, int count) throws Exception {
 		if(count >= 1) return true;
-		System.out.println("getRelativeFollow - count :: " + count);
+//		System.out.println("getRelativeFollow - count :: " + count);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", access_token);
 		headers.add("Client-id", client_id);

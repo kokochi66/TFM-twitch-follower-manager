@@ -11,8 +11,8 @@
 
 <!-- Header -->
 <section id="breadcrumbs" class="breadcrumbs">
-	<!-- SearchBar  -->
-	<section id="searchbar" class="searchbar p-0">
+	<link href="${path}/assets/css/module/searchBar.css" rel="stylesheet">
+	<section id="searchbar" class="searchbar">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-6" style="margin: 0 auto;">
@@ -23,10 +23,11 @@
 							<i class="icofont-ui-search icon"></i>
 						</button>
 					</div>
+					<div class="input-preview"></div>
 				</div>
 			</div>
 		</div>
 	</section>
-
+	<script src="${path}/assets/js/module/searchBar.js"></script>
 </section>
 <!-- Header -->

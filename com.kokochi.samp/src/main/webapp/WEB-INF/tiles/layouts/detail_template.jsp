@@ -11,7 +11,8 @@
   <tiles:insertAttribute name="style" />
 </head> 
 <body>
-	<tiles:insertAttribute name="topbar" />
+		
+	<tiles:insertAttribute name="topbar"/>
 	
 	<tiles:insertAttribute name="header" />
 	<tiles:insertAttribute name="content" />

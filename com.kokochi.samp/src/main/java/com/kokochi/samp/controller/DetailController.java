@@ -15,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.converter.LanguageConverter;
 import com.kokochi.samp.domain.ManagedFollow;
+import com.kokochi.samp.domain.ManagedVideo;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetFollow;
@@ -111,6 +111,13 @@ public class DetailController {
 		if(body.equals("") || body == null) return "error";
 		JSONObject body_json = (JSONObject) parser.parse(body);
 		
+		String user_id = "";
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(!principal.toString().equals("anonymousUser")) {
+			UserDTO user = (UserDTO) principal;
+			user_id = user.getUser_id();
+		}	// 로그인 상태라면, user_id가 로그인값으로 변경됨.
+		
 		String client_id = key.read("client_id").getKey_value();
 		String app_access_token = key.read("app_access_token").getKey_value();
 		ArrayList<Video> replay_list = videoGetter.getVideoFromId(client_id, app_access_token, 
@@ -120,6 +127,9 @@ public class DetailController {
 		JSONArray res_arr = new JSONArray();
 		for(int i=0;i<replay_list.size();i++) {
 			replay_list.get(i).setThumbnail_url(replay_list.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+			replay_list.get(i).setManaged(follow_service.isManagedVideo(
+					new ManagedVideo(user_id, replay_list.get(i).getId())));
+			
 			JSONObject j = replay_list.get(i).parseToJSONObject();
 			res_arr.add(j);
 		}

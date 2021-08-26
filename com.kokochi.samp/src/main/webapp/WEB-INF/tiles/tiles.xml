@@ -26,6 +26,7 @@
 		<put-attribute name="footer" value="/WEB-INF/tiles/module/main/footer.jsp" />
 		<put-attribute name="style" value="/WEB-INF/tiles/module/main/style.jsp" />
 		<put-attribute name="script" value="/WEB-INF/tiles/module/main/script.jsp" />
+		<put-attribute name="searchBar" value="/WEB-INF/tiles/module/search/searchBar.jsp" />
 	</definition>
 	
 	<definition name="homes" extends="home-template">
