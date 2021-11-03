@@ -31,14 +31,14 @@ public class TokenController {
 	public String create_app_access_token() throws Exception {
 		log.info("app_access_token generated");
 		
-		String client_id = key.read("client_id").getKey_value();
-		String client_secret = key.read("client_secret").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String client_secret = key.read("client_secret").getKeyValue();
 		
 		TwitchKey twitchkey = new TwitchKey();
-		twitchkey.setKey_name("app_access_token");
+		twitchkey.setKeyName("app_access_token");
 		JSONObject getToken = tokenGenerator.GetAppAccessToken(client_id, client_secret);
 		String app_access_token = "Bearer"+" "+getToken.get("access_token");
-		twitchkey.setKey_value(app_access_token);
+		twitchkey.setKeyValue(app_access_token);
 		key.modify(twitchkey);
 		return "Success";
 	}

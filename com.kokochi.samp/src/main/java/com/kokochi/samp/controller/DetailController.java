@@ -62,8 +62,8 @@ public class DetailController {
 	public String detail(Model model, @RequestParam("streams")String streams) throws Exception { // 메인 home 화면 매핑
 		log.info("/detail - 스트리머 상세보기 페이지 :: " + streams);
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		LanguageConverter langConverter = new LanguageConverter();
 		
@@ -86,8 +86,8 @@ public class DetailController {
 	public String getLiveDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/live - 라이브 데이터 가져오기 :: " + body);
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String app_access_token = key.read("app_access_token").getKeyValue();
 		Stream stream = streamGetter.getLiveStream(client_id, app_access_token, body, "");
 		if(stream == null) {
 			JSONObject res = new JSONObject();
@@ -118,8 +118,8 @@ public class DetailController {
 			user_id = user.getUser_id();
 		}	// 로그인 상태라면, user_id가 로그인값으로 변경됨.
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String app_access_token = key.read("app_access_token").getKeyValue();
 		ArrayList<Video> replay_list = videoGetter.getVideoFromId(client_id, app_access_token, 
 				"user_id="+body_json.get("login").toString()+"&"+body_json.get("next").toString(), 8);
 		if(replay_list == null || replay_list.size() == 0) return "error";
@@ -145,8 +145,8 @@ public class DetailController {
 		if(body.equals("") || body == null) return "error";
 		JSONObject body_json = (JSONObject) parser.parse(body);
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String app_access_token = key.read("app_access_token").getKeyValue();
 		List<Clips> replay_list = clipGetter.getClipsByUserId(client_id, app_access_token, 
 				"broadcaster_id="+body_json.get("login").toString()+"&"+body_json.get("next").toString(), 8);
 		if(replay_list == null || replay_list.size() == 0) return "error";
@@ -165,8 +165,8 @@ public class DetailController {
 	public String getRelativeDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/relative - 연관 스트리머 데이터 가져오기 :: " + body);
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		Map<String, Integer> relative = new HashMap<>();
 		followGetter.getRelativeFollow(relative, client_id, app_access_token, "to_id="+body+"&", "", 0);
@@ -196,8 +196,8 @@ public class DetailController {
 		JSONArray res_arr = new JSONArray();
 		JSONArray service_arr = (JSONArray) parser.parse(body);
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		String user_id = "";
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

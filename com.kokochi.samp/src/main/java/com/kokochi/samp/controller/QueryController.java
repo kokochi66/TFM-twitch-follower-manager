@@ -50,8 +50,8 @@ public class QueryController {
 			@RequestHeader(value="twitch_user_id")String twitch_user_id) throws Exception {
 		log.info("/query/request/initFollow - 팔로우 목록 초기화 및 동기화 ");
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		List<ManagedFollow> managedFollow_list = follow_service.listFollow(user_id);
 		
@@ -74,8 +74,8 @@ public class QueryController {
 	public String getSearchStream(@RequestBody String query) throws Exception {
 		log.info("/query/request/searchStreams - 검색창 쿼리 :: " + query);
 		
-		String client_id = key.read("client_id").getKey_value();	// 데이터베이스에서 client_id값을 가져옴
-		String app_access_token = key.read("app_access_token").getKey_value(); // 데이터베이스에서 인증된 app_access_token 값을 가져옴
+		String client_id = key.read("client_id").getKeyValue();	// 데이터베이스에서 client_id값을 가져옴
+		String app_access_token = key.read("app_access_token").getKeyValue(); // 데이터베이스에서 인증된 app_access_token 값을 가져옴
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);

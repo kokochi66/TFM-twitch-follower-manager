@@ -21,9 +21,9 @@
 	<!-- 데이터 소스의 빈을 hikariConfig로 정의한다. -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3307/tfm?characterEncoding=UTF-8&amp;" />
-		<property name="username" value="kkalchang" />
-		<property name="password" value="QeqE2$#5" />
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/tfm?characterEncoding=UTF-8&amp;" />
+		<property name="username" value="root" />
+		<property name="password" value="rmeka5!95@95#9" />
 	</bean>
 	
  	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">

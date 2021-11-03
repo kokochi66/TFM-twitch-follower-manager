@@ -68,7 +68,7 @@ public class AuthController {
 		// 트위치 아이디를 인증하여 연동하는 계정을 생성하거나, 일반 아이디를 생성하는 두가지 선택지를 주어야함.
 		// 우선 기본 디폴트로 트위치 아이디를 인증하여 연동하는 계정을 생성하는 것을 구현함.
 		String uri = "https://id.twitch.tv/oauth2/authorize?";
-		String client_id = "client_id="+key.read("client_id").getKey_value()+"&";
+		String client_id = "client_id="+key.read("client_id").getKeyValue()+"&";
 		String redirect_uri = "redirect_uri=http://localhost:8080/auth/login/oauth2/code/twitch&";
 		String response_type = "response_type=code&";
 		String scope = "scope=user:read:follows&";
@@ -95,7 +95,7 @@ public class AuthController {
 		// 트위치 아이디를 인증하여 연동하는 계정을 생성하거나, 일반 아이디를 생성하는 두가지 선택지를 주어야함.
 		// 우선 기본 디폴트로 트위치 아이디를 인증하여 연동하는 계정을 생성하는 것을 구현함.
 		String uri = "https://id.twitch.tv/oauth2/authorize?";
-		String client_id = "client_id="+key.read("client_id").getKey_value()+"&";
+		String client_id = "client_id="+key.read("client_id").getKeyValue()+"&";
 		String redirect_uri = "redirect_uri=http://localhost:8080/auth/login/oauth2/code/twitch&";
 		String response_type = "response_type=code&";
 		String scope = "scope=user:read:follows user:read:subscriptions user:read:email channel:manage:videos&";
@@ -112,8 +112,8 @@ public class AuthController {
 	public String OauthTwitch(RedirectAttributes rttr, String code, String scope, String state) throws Exception {
 		log.info("/login/oauth2/code/twitch - 트위치 토큰 받아오기 :: " + code +" "+ scope +" "+ state);
 		
-		String client_id = key.read("client_id").getKey_value();
-		String client_secret = key.read("client_secret").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String client_secret = key.read("client_secret").getKeyValue();
 		JSONObject oauthToken = tokenGenerator.GetOauth2AuthorizeToken(client_id, client_secret, code);
 		
 		String OAuth_token = "Bearer " +oauthToken.get("access_token");
@@ -141,7 +141,7 @@ public class AuthController {
 	public String registerPro(Model model, Member member, String authtoken) throws Exception {
 		log.info("/auth/register POST - 회원가입 처리");
 		
-		String client_id = key.read("client_id").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
 		TwitchUser user = streamGenereator.getUser(client_id, authtoken, "");
 		member.setTwitch_user_id(user.getLogin());
 		

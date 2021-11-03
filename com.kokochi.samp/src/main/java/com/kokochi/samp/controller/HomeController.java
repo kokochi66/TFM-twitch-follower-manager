@@ -67,8 +67,8 @@ public class HomeController {
 	public String getLiveVideo() throws Exception { 
 		log.info("/home/request/getLiveVideo - 라이브 비디오 가져오기 :: ");
 		
-		String client_id = key.read("client_id").getKey_value();
-		String app_access_token = key.read("app_access_token").getKey_value();
+		String client_id = key.read("client_id").getKeyValue();
+		String app_access_token = key.read("app_access_token").getKeyValue();
 		List<Stream> headslide_list = streamGetter.getLiveStreams(client_id, app_access_token, 5);
 		if(headslide_list == null) headslide_list = streamGetter.getLiveStreams(client_id, app_access_token, 5);
 		// 토큰 오류시에는 토큰 초기화 후에 재접근, 재접근해도 값을 가져올 수 없으면 오류임
@@ -101,7 +101,7 @@ public class HomeController {
 			UserDTO user = (UserDTO) principal;
 			
 			List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
-			String client_id = key.read("client_id").getKey_value();
+			String client_id = key.read("client_id").getKeyValue();
 			List<Video> service_video = new ArrayList<>();
 //			log.info("getMyRecentVideo");
 			service_video = videoGetter.getRecentVideoFromUsers(client_id, user.getOauth_token(), follow_list, "first=8");
@@ -136,7 +136,7 @@ public class HomeController {
 				
 				JSONArray service_arr = (JSONArray) parser.parse(body);
 				List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
-				String client_id = key.read("client_id").getKey_value();
+				String client_id = key.read("client_id").getKeyValue();
 				Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
 				List<Video> service_video = new ArrayList<>();
 				service_video = videoGetter.getRecentVideoFromUserNext(client_id, user.getOauth_token(), 
@@ -170,7 +170,7 @@ public class HomeController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
-			String client_id = key.read("client_id").getKey_value();
+			String client_id = key.read("client_id").getKeyValue();
 			
 			for(int i=0;i<follow_list.size();i++) {
 				Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), follow_list.get(i).getTo_user(), "");
@@ -200,7 +200,7 @@ public class HomeController {
 			UserDTO user = (UserDTO) principal;
 			
 			List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
-			String client_id = key.read("client_id").getKey_value();
+			String client_id = key.read("client_id").getKeyValue();
 			List<Clips> service_clip = clipGetter.getClipsRecentByUsers(follow_list, client_id, user.getOauth_token(), "first=8");
 			
 			for(int i=0;i<service_clip.size();i++) {
@@ -228,7 +228,7 @@ public class HomeController {
 
 			JSONArray service_arr = (JSONArray) parser.parse(body);
 			List<ManagedFollow> follow_list = managed_service.listFollow(user.getUser_id());
-			String client_id = key.read("client_id").getKey_value();
+			String client_id = key.read("client_id").getKeyValue();
 			List<Clips> service_clip = clipGetter.getClipsRecentByUser(client_id, user.getOauth_token(), service_arr.get(0).toString()
 					, "after="+service_arr.get(1).toString()+"&first=8");
 			for(int i=0;i<service_clip.size();i++) {

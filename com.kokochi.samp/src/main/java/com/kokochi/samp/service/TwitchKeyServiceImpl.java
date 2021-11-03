@@ -28,8 +28,8 @@ public class TwitchKeyServiceImpl implements TwitchKeyService {
 		
 		if(key == null) {
 			key = new TwitchKey();
-			key.setKey_name(key_name);
-			key.setKey_value("");	// 해당하는 키의 값을 받아올 수 있도록 하는 로직이 필요함.
+			key.setKeyName(key_name);
+			key.setKeyValue("");	// 해당하는 키의 값을 받아올 수 있도록 하는 로직이 필요함.
 			register(key);
 		}
 		return key;

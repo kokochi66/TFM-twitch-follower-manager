@@ -62,8 +62,8 @@ public class MenuController {
 			
 			UserDTO user = (UserDTO) principal;
 			postQuery.initManagedFollow(user.getTwitch_user_id(), user.getUser_id());
-			String client_id = key.read("client_id").getKey_value();
-			String app_access_token = key.read("app_access_token").getKey_value();
+			String client_id = key.read("client_id").getKeyValue();
+			String app_access_token = key.read("app_access_token").getKeyValue();
 			
 			List<TwitchUser> follow_list =  followGetter.getFollowedList(client_id, app_access_token, "from_id="+user.getTwitch_user_id()+"&", "first=40&");
 			if(follow_list == null) return "redirect:/token/app_access_token";

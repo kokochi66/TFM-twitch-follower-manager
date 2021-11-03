@@ -38,7 +38,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			// 들어온 토큰으로 API처리를 이용해서 사용자 정보를 가져와서, 이를 이용해서 Service에서 값을 가져옴
 			GetStream streamGenerator = new GetStream();
 			try {
-				String client_id = service.getKey("client_id").getKey_value();
+				String client_id = service.getKey("client_id").getKeyValue();
 				
 				TwitchUser tuser = streamGenerator.getUser(client_id, user_pwd, "");
 				UserDTO user = (UserDTO) service.loadUserByTwitchUsername(tuser.getId());
