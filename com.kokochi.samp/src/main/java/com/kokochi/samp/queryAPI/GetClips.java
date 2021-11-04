@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kokochi.samp.domain.ManagedFollow;
+import com.kokochi.samp.domain.ManagedFollowVO;
 import com.kokochi.samp.queryAPI.domain.Clips;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 
@@ -103,7 +102,7 @@ public class GetClips {
 		return null;
 	}
 	
-	public List<Clips> getClipsRecentByUsers(List<ManagedFollow> users, String client_id, String access_Token, String query) throws Exception {
+	public List<Clips> getClipsRecentByUsers(List<ManagedFollowVO> users, String client_id, String access_Token, String query) throws Exception {
 		if(users.size() <= 0) return null; // users의 크기가 1 이상이어야함.
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", access_Token);
@@ -125,7 +124,7 @@ public class GetClips {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		try {
 			for(int i=0;i<users.size();i++) {
-				String c_user_id = users.get(i).getTo_user();
+				String c_user_id = users.get(i).getToUser();
 //				System.out.println(c_user_id);
 				
 				ResponseEntity<String> response = rt.exchange(

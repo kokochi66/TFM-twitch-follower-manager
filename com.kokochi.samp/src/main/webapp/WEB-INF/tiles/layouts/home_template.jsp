@@ -7,8 +7,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <title><spring:message code="main.title"/> <tiles:getAsString name="title" /></title>
-  <tiles:insertAttribute name="style" />
+	<title><spring:message code="main.title"/> <tiles:getAsString name="title" /></title>
+	<tiles:insertAttribute name="style" />
+	<tiles:insertAttribute name="script" />
 </head> 
 <body>
 	<tiles:insertAttribute name="topbar" />
@@ -18,7 +19,6 @@
 	<tiles:insertAttribute name="content" />
 	
 	<tiles:insertAttribute name="footer" />
-	<tiles:insertAttribute name="script" />
 </body>
 
 </html>

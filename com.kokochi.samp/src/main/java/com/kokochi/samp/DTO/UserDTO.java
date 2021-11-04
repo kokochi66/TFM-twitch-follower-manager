@@ -8,8 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.kokochi.samp.domain.Member;
-import com.kokochi.samp.domain.MemberAuth;
+import com.kokochi.samp.domain.MemberVO;
+import com.kokochi.samp.domain.MemberAuthVO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,15 +30,15 @@ public class UserDTO implements UserDetails {
 	private int enable;
 	private List<String> authority;
 	
-	public UserDTO(Member member, List<MemberAuth> authList) {
+	public UserDTO(MemberVO memberVO, List<MemberAuthVO> authList) {
 		
-		this.user_id = member.getUser_id();
-		this.user_pwd = member.getUser_pwd();
-		this.user_nickname = member.getUser_nickname();
-		this.user_email = member.getUser_email();
-		this.twitch_user_id = member.getTwitch_user_id();
-		this.twitch_user_login = member.getTwitch_user_login();
-		this.enable = member.getEnable();
+		this.user_id = memberVO.getUser_id();
+		this.user_pwd = memberVO.getUser_pwd();
+		this.user_nickname = memberVO.getUser_nickname();
+		this.user_email = memberVO.getUser_email();
+		this.twitch_user_id = memberVO.getTwitch_user_id();
+		this.twitch_user_login = memberVO.getTwitch_user_login();
+		this.enable = memberVO.getEnable();
 		this.Oauth_token = null;
 		
 		this.authority = new ArrayList<String>();

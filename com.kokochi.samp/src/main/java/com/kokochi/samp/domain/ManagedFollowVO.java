@@ -7,7 +7,8 @@ import lombok.ToString;
 
 @Getter @Setter
 @ToString @AllArgsConstructor
-public class ManagedFollow {
-	private String user_id;
-	private String to_user;
+public class ManagedFollowVO {
+	private String id;
+	private String userId;
+	private String toUser;
 }

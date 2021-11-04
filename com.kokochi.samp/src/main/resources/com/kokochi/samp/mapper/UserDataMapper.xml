@@ -3,8 +3,9 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kokochi.samp.mapper.UserMapper">
 	
-	<resultMap type="com.kokochi.samp.domain.Member" id="memberMap">
-		<id property="user_id" column="user_id"/>
+	<resultMap type="com.kokochi.samp.domain.MemberVO" id="memberMap">
+		<id property="id" column="id"/>
+		<result property="user_id" column="user_id"/>
 		<result property="user_pwd" column="user_pwd"/>
 		<result property="user_email" column="user_email"/>
 		<result property="user_nickname" column="user_nickname"/>
@@ -12,24 +13,25 @@
 		<result property="twitch_user_login" column="twitch_user_login"/>
 	</resultMap>
 	
-	<resultMap type="com.kokochi.samp.domain.MemberAuth" id="authMap">
+	<resultMap type="com.kokochi.samp.domain.MemberAuthVO" id="authMap">
+		<id property="id" column="id"/>
 		<result property="user_id" column="user_id"/>
 		<result property="authority" column="authority"/>
 	</resultMap>
 	
-	<select id="readUser" resultType="Member">
-		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable
+	<select id="readUser" resultType="MemberVO">
+		SELECT id, user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable
 		FROM user
-		WHERE user_id = #{user_id}
+		WHERE id = #{id}
 	</select>
 	
-	<select id="readUserByTwitchId" resultType="Member">
+	<select id="readUserByTwitchId" resultType="MemberVO">
 		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable
 		FROM user
 		WHERE twitch_user_id = #{twitch_user_id}
 	</select>
 	
-	<select id="readAuth" resultType="MemberAuth">
+	<select id="readAuth" resultType="MemberAuthVO">
 		SELECT user_id, authority
 		FROM user_auth
 		WHERE user_id = #{user_id}
@@ -52,7 +54,7 @@
 		WHERE user_id = #{user_id}
 	</update>
 	
-	<select id="userList" resultType="Member">
+	<select id="userList" resultType="MemberVO">
 		SELECT user_id, user_pwd, user_email, user_nickname, twitch_user_id, twitch_user_login, enable
 		FROM user
 	</select>

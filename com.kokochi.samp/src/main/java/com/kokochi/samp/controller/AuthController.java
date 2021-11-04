@@ -1,23 +1,14 @@
 package com.kokochi.samp.controller;
 
-import java.util.Locale;
-
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AccountExpiredException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.kokochi.samp.domain.Member;
+import com.kokochi.samp.domain.MemberVO;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.GetToken;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
@@ -138,16 +129,16 @@ public class AuthController {
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public String registerPro(Model model, Member member, String authtoken) throws Exception {
+	public String registerPro(Model model, MemberVO memberVO, String authtoken) throws Exception {
 		log.info("/auth/register POST - 회원가입 처리");
 		
 		String client_id = key.read("client_id").getKeyValue();
 		TwitchUser user = streamGenereator.getUser(client_id, authtoken, "");
-		member.setTwitch_user_id(user.getLogin());
+		memberVO.setTwitch_user_id(user.getLogin());
 		
-		log.info("회원가입 사용자 - " + member.toString());
+		log.info("회원가입 사용자 - " + memberVO.toString());
 		
-		detail.userRegister(member);
+		detail.userRegister(memberVO);
 		return "redirect:/auth/login";
 	}
 	

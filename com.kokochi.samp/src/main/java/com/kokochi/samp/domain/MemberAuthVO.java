@@ -1,10 +1,12 @@
 package com.kokochi.samp.domain;
 
-import java.util.List;
-
-import com.kokochi.samp.DTO.UserDTO;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,12 +16,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Member {
+public class MemberAuthVO {
+	private String id;
 	private String user_id;
-	private String user_pwd;
-	private String user_email;
-	private String user_nickname;
-	private String twitch_user_id;
-	private String twitch_user_login;
-	private int enable;
+	private String authority;
+	
 }

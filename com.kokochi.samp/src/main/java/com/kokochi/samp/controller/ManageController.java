@@ -1,23 +1,16 @@
 package com.kokochi.samp.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kokochi.samp.DTO.UserDTO;
-import com.kokochi.samp.domain.ManagedFollow;
-import com.kokochi.samp.domain.ManagedVideo;
-import com.kokochi.samp.queryAPI.domain.Video;
+import com.kokochi.samp.domain.ManagedFollowVO;
+import com.kokochi.samp.domain.ManagedVideoVO;
 import com.kokochi.samp.service.ManagedService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +31,7 @@ public class ManageController {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
-			ManagedVideo mVideo_body = new ManagedVideo(user.getUser_id(), body);
+			ManagedVideoVO mVideo_body = new ManagedVideoVO("exex::", user.getUser_id(), body);
 			if(managed_service.isManagedVideo(mVideo_body)) {
 				managed_service.removeVideo(mVideo_body);
 				return "remove " + body;
@@ -61,9 +54,9 @@ public class ManageController {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
-			ManagedFollow mFollow_body = new ManagedFollow(user.getUser_id(), body);
+			ManagedFollowVO mFollow_body = new ManagedFollowVO("exex::", user.getUser_id(), body);
 			if(managed_service.isManagedFollow(mFollow_body)) {
-				managed_service.removeFollow(mFollow_body);
+				managed_service.removeFollow(mFollow_body.toString());
 				return "remove " + body;
 			}
 			else {

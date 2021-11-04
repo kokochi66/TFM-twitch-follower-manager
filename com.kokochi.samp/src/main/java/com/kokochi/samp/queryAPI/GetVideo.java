@@ -1,12 +1,7 @@
 package com.kokochi.samp.queryAPI;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kokochi.samp.domain.ManagedFollow;
+import com.kokochi.samp.domain.ManagedFollowVO;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.queryAPI.domain.Video;
 
@@ -106,8 +101,8 @@ public class GetVideo {
 		return res;
 	}
 	
-	public ArrayList<Video> getRecentVideoFromUsers(String client_id, String access_token, 
-			List<ManagedFollow> users, String query) throws Exception { 
+	public ArrayList<Video> getRecentVideoFromUsers(String client_id, String access_token,
+                                                    List<ManagedFollowVO> users, String query) throws Exception {
 		if(users.size() <= 0) return null; // users의 크기가 1 이상이어야함.
 		
 		HttpHeaders headers = new HttpHeaders();
@@ -123,7 +118,7 @@ public class GetVideo {
 		
 		try {
 			for(int i=0;i<users.size();i++) {
-				String c_user_id = users.get(i).getTo_user();
+				String c_user_id = users.get(i).getToUser();
 //				System.out.println("GetVideo - userId =  " + c_user_id);
 				ResponseEntity<String> response = rt.exchange(
 						"https://api.twitch.tv/helix/videos?user_id="

@@ -7,7 +7,8 @@ import lombok.ToString;
 
 @Getter @Setter
 @ToString @AllArgsConstructor
-public class ManagedVideo {
+public class ManagedVideoVO {
+	private String id;
 	private String user_id;
 	private String to_video;
 }

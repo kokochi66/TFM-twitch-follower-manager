@@ -1,6 +1,5 @@
 package com.kokochi.samp.controller;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -21,10 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import com.kokochi.samp.domain.ManagedFollow;
+import com.kokochi.samp.domain.ManagedFollowVO;
 import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetVideo;
-import com.kokochi.samp.queryAPI.domain.Clips;
 import com.kokochi.samp.service.ManagedService;
 import com.kokochi.samp.service.TwitchKeyService;
 
@@ -53,17 +51,17 @@ public class QueryController {
 		String client_id = key.read("client_id").getKeyValue();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		
-		List<ManagedFollow> managedFollow_list = follow_service.listFollow(user_id);
+		List<ManagedFollowVO> managedFollow_VO_list = follow_service.listFollow(user_id);
 		
 		HashSet<String> follow_set = new HashSet<>();
 		List<String> follow_list = followGetter.getAllFollowedList(client_id, app_access_token, "from_id="+twitch_user_id);
 		
 		for(String str : follow_list) follow_set.add(str);
 		
-		for(ManagedFollow mf : managedFollow_list) {
-			if(!follow_set.contains(mf.getTo_user())) {
-				log.info("/query/request/initFollow - ManagedFollow 제거 :: " + mf.getTo_user());
-				follow_service.removeFollow(mf);
+		for(ManagedFollowVO mf : managedFollow_VO_list) {
+			if(!follow_set.contains(mf.getToUser())) {
+				log.info("/query/request/initFollow - ManagedFollow 제거 :: " + mf.getToUser());
+				follow_service.removeFollow(mf.getUserId());
 			}
 		}
 		return "success";

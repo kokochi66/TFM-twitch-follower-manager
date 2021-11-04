@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kokochi.samp.DTO.UserDTO;
-import com.kokochi.samp.domain.ManagedFollow;
+import com.kokochi.samp.domain.ManagedFollowVO;
 import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
@@ -71,7 +71,7 @@ public class MenuController {
 			
 			for(int i=0;i<follow_list.size();i++) {
 				follow_list.get(i).setManaged(follow_service.isManagedFollow(
-						new ManagedFollow(user.getUser_id(), follow_list.get(i).getId())));
+						new ManagedFollowVO("exex::", user.getUser_id(), follow_list.get(i).getId())));
 				if(follow_list.get(i).isManaged()) {
 					follow_list.add(0, follow_list.remove(i)); // 관리체크된 값들은 맨위로 올라오도록 리스트 위치를 조정해준다.
 				}
@@ -91,7 +91,7 @@ public class MenuController {
 		log.info("/menu/replayvideo - ReplayVideo Mappin");
 	}
 	
-	
+	// 팔로우 관리목록 추가
 	@RequestMapping(value="/request/managedfollow/add", method = RequestMethod.POST)
 	@ResponseBody
 	public String addfollowed_request(@RequestHeader(value="user_id")String user_id, 
@@ -102,24 +102,26 @@ public class MenuController {
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			if(user.getUser_id().equals(user_id)) {
-				follow_service.createFollow(new ManagedFollow(user_id, to_user));
+				follow_service.createFollow(new ManagedFollowVO("exex::",user_id, to_user));
 				return "success";
 			}	// 현재 로그인된 값과 전달하는 아이디가 일치해야만 값을 적용하게 됨
 		}
 		
 		return "failure";
 	}
-	
+
+	// 팔로우 관리목록 제거
 	@RequestMapping(value="/request/managedfollow/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public String removefollowed_request(@RequestHeader(value="user_id")String user_id, @RequestHeader(value="to_user")String to_user) throws Exception {
+	public String removefollowed_request(@RequestHeader(value="user_id")String user_id,
+										 @RequestHeader(value="to_user")String to_user) throws Exception {
 		log.info("/managedfollow/add - 팔로우 관리목록 제거 " + user_id +" "+to_user);
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
 			if(user.getUser_id().equals(user_id)) {
-				follow_service.removeFollow(new ManagedFollow(user_id, to_user));
+				follow_service.removeFollow("exex::");
 				return "success";
 			}
 		}

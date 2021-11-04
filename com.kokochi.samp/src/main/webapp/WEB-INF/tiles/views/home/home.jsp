@@ -7,7 +7,6 @@
 	uri="http://www.springframework.org/security/tags"%>
 <c:set var="path" value="/resources" />
 <c:set var="default_img" value="${path}/assets/img/default_image.jpg" />
-<script src="${path}/assets/js/module/manage_function.js"></script>
 
 <!-- Main -->
 <main id="content">
@@ -83,3 +82,42 @@
 	</sec:authorize>
 </main>
 <!-- End #main -->
+<script>
+	ajaxAwait('/manage/video/toggle', 'POST', data, (t) => {
+
+	})
+	async function manageVideoToggle(data) {
+		let response = await fetch('/manage/video/toggle', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8'
+			},
+			body : data
+		}).then(res => {
+			res.text().then(text => {
+				console.log(text)
+			})
+		})
+		.catch(res => {
+			console.log('catch res :: ' , res)
+		})
+	}   // 다시보기를 관리목록에 추가/삭제
+
+	async function manageFollowToggle(data) {
+		let response = await fetch('/manage/follow/toggle', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8'
+			},
+			body : data
+		}).then(res => {
+			res.text().then(text => {
+				console.log(text)
+			})
+		})
+				.catch(res => {
+					console.log('catch res :: ' , res)
+				})
+	}   // 스트리머를 관리목록에 추가/삭제
+
+</script>

@@ -4,7 +4,7 @@
 <mapper namespace="com.kokochi.samp.mapper.ManagedVideoMapper">
 
 	
-	<select id="isManagedVideo" resultType="ManagedVideo">
+	<select id="isManagedVideo" resultType="ManagedVideoVO">
 		SELECT user_id, to_video
 		FROM managed_video
 		WHERE user_id = #{user_id} AND to_video = #{to_video}
@@ -20,13 +20,13 @@
 		WHERE user_id = #{user_id} AND to_video = #{to_video}
 	</delete>
 	
-	<select id="listVideo" resultType="ManagedVideo">
+	<select id="listVideo" resultType="ManagedVideoVO">
 		SELECT user_id, to_video
 		FROM managed_video
 		WHERE user_id = #{user_id}
 	</select>
 	
-	<select id="list_numVideo" resultType="ManagedVideo">
+	<select id="list_numVideo" resultType="ManagedVideoVO">
 		SELECT user_id, to_video
 		FROM managed_video
 		WHERE user_id = #{user_id}

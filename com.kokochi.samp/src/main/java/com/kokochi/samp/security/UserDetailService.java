@@ -10,9 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.kokochi.samp.DTO.UserDTO;
-import com.kokochi.samp.domain.Member;
-import com.kokochi.samp.domain.MemberAuth;
-import com.kokochi.samp.domain.TwitchKey;
+import com.kokochi.samp.domain.MemberVO;
+import com.kokochi.samp.domain.MemberAuthVO;
+import com.kokochi.samp.domain.TwitchKeyVO;
 import com.kokochi.samp.mapper.TwitchKeyMapper;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
@@ -30,9 +30,9 @@ public class UserDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String user_id) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		try {
-			Member member = mapper.readUser(user_id);
-			List<MemberAuth> auth = mapper.readAuth(user_id);
-			UserDTO user = new UserDTO(member, auth);
+			MemberVO memberVO = mapper.readUser(user_id);
+			List<MemberAuthVO> auth = mapper.readAuth(user_id);
+			UserDTO user = new UserDTO(memberVO, auth);
 			
 			return user;
 			
@@ -45,22 +45,22 @@ public class UserDetailService implements UserDetailsService {
 	
 	public UserDetails loadUserByTwitchUsername(String twitch_user_id) throws Exception {
 		
-		Member member = mapper.readUserByTwitchId(twitch_user_id);
-		List<MemberAuth> auth = mapper.readAuth(member.getUser_id());
-		UserDTO user = new UserDTO(member, auth);
+		MemberVO memberVO = mapper.readUserByTwitchId(twitch_user_id);
+		List<MemberAuthVO> auth = mapper.readAuth(memberVO.getUser_id());
+		UserDTO user = new UserDTO(memberVO, auth);
 		
 		PostQuery postQuery = new PostQuery();
 		postQuery.initManagedFollow(user.getTwitch_user_id(), user.getUser_id());
 		return user;
 	}
 	
-	public void userRegister(Member member) throws Exception {
+	public void userRegister(MemberVO memberVO) throws Exception {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		member.setUser_pwd(encoder.encode(member.getUser_pwd()));
-		mapper.create(member);
+		memberVO.setUser_pwd(encoder.encode(memberVO.getUser_pwd()));
+		mapper.create(memberVO);
 		
-		MemberAuth auth = new MemberAuth();
-		auth.setUser_id(member.getUser_id());
+		MemberAuthVO auth = new MemberAuthVO();
+		auth.setUser_id(memberVO.getUser_id());
 		auth.setAuthority("ROLE_MEMBER");
 		addAuth(auth);
 	}
@@ -69,23 +69,23 @@ public class UserDetailService implements UserDetailsService {
 		mapper.delete(user_id);
 	}
 	
-	public void userUpdate(Member member) throws Exception {
-		mapper.update(member);
+	public void userUpdate(MemberVO memberVO) throws Exception {
+		mapper.update(memberVO);
 	}
 	
-	public List<Member> userList() throws Exception {
+	public List<MemberVO> userList() throws Exception {
 		return mapper.userList();
 	}
 	
-	public void addAuth(MemberAuth auth) throws Exception {
+	public void addAuth(MemberAuthVO auth) throws Exception {
 		mapper.addAuth(auth);
 	}
 	
-	public void delAuth(MemberAuth auth) throws Exception {
+	public void delAuth(MemberAuthVO auth) throws Exception {
 		mapper.delAuth(auth);
 	}
 	
-	public TwitchKey getKey(String key_name) throws Exception {
+	public TwitchKeyVO getKey(String key_name) throws Exception {
 		return keyMapper.read(key_name);
 	}
 	

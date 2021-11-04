@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.converter.LanguageConverter;
-import com.kokochi.samp.domain.ManagedFollow;
-import com.kokochi.samp.domain.ManagedVideo;
+import com.kokochi.samp.domain.ManagedFollowVO;
+import com.kokochi.samp.domain.ManagedVideoVO;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetFollow;
@@ -128,7 +128,7 @@ public class DetailController {
 		for(int i=0;i<replay_list.size();i++) {
 			replay_list.get(i).setThumbnail_url(replay_list.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
 			replay_list.get(i).setManaged(follow_service.isManagedVideo(
-					new ManagedVideo(user_id, replay_list.get(i).getId())));
+					new ManagedVideoVO("exex::", user_id, replay_list.get(i).getId())));
 			
 			JSONObject j = replay_list.get(i).parseToJSONObject();
 			res_arr.add(j);
@@ -211,7 +211,7 @@ public class DetailController {
 //			log.info(c_user_id);
 			TwitchUser t_us = streamGetter.getUser(client_id, app_access_token, "id="+c_user_id);
 			
-			t_us.setManaged(follow_service.isManagedFollow(new ManagedFollow(user_id, t_us.getId())));
+			t_us.setManaged(follow_service.isManagedFollow(new ManagedFollowVO("exex::", user_id, t_us.getId())));
 			JSONObject j = t_us.TwitchUserToJSON();
 			res_arr.add(j);
 		}

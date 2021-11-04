@@ -3,3 +3,4 @@
 
 <!-- Bootstrap JS File -->
 <script src="${path}/assets/js/bootstrap.bundle.min.js"></script>
+<script src="${path}/assets/js/script.js"></script>

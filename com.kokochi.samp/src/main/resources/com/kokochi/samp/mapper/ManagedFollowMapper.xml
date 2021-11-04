@@ -4,34 +4,51 @@
 <mapper namespace="com.kokochi.samp.mapper.ManagedFollowMapper">
 
 	
-	<select id="isManaged" resultType="ManagedFollow">
-		SELECT user_id, to_user
+	<!--<select id="isManaged" resultType="ManagedFollowVO">
+		SELECT id, user_id, to_user
 		FROM managed_follow
-		WHERE user_id = #{user_id} AND to_user = #{to_user}
+		WHERE id = #{id}
 	</select>
-	
+-->
+	<select id="selectManaged" resultType="ManagedFollowVO">
+		SELECT id, user_id, to_user
+		FROM managed_follow
+		WHERE 1 = 1
+		<if test='id != null'>
+			AND id = #{id}
+		</if>
+		<if test='userId != null'>
+			AND user_id = #{userId}
+		</if>
+		<if test='toUser != null'>
+			AND to_user = #{toUser}
+		</if>
+	</select>
+
 	<insert id="addManage">
-		INSERT INTO managed_follow(user_id, to_user)
-		VALUES(#{user_id}, #{to_user})
+		INSERT INTO managed_follow
+		    (id, user_id, to_user)
+		VALUES
+			(#{id}, #{userId}, #{toUser})
 	</insert>
 	
 	<delete id="deleteManage">
 		DELETE FROM managed_follow
-		WHERE user_id = #{user_id} AND to_user = #{to_user}
+		WHERE id = #{id}
 	</delete>
 	
-	<select id="list" resultType="ManagedFollow">
-		SELECT user_id, to_user
+	<select id="selectManagedListByUserId" resultType="ManagedFollowVO">
+		SELECT id, user_id, to_user
 		FROM managed_follow
-		WHERE user_id = #{user_id}
+		WHERE user_id = #{userId}
 	</select>
 	
-	<select id="list_num" resultType="ManagedFollow">
+<!--	<select id="list_num" resultType="ManagedFollowVO">
 		SELECT user_id, to_user
 		FROM managed_follow
 		WHERE user_id = #{user_id}
 		ORDER BY to_user
 		LIMIT #{left}, #{right}
-	</select>
+	</select>-->
 	
 </mapper>

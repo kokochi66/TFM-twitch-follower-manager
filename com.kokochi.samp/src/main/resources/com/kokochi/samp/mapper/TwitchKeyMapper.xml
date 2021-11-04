@@ -3,18 +3,18 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kokochi.samp.mapper.TwitchKeyMapper">
 	
-	<insert id="create">
+	<insert id="create" parameterType="TwitchKeyVO">
 		INSERT INTO TwitchKey(key_name, key_value)
 		VALUES(#{key_name}, #{key_value})
 	</insert>
 	
-	<select id="read" resultType="TwitchKey">
+	<select id="read" resultType="TwitchKeyVO">
 		SELECT key_name, key_value
 		FROM TwitchKey
 		WHERE key_name = #{key_name}
 	</select>
 	
-	<update id="update">
+	<update id="update" parameterType="TwitchKeyVO">
 		UPDATE TwitchKey
 		SET key_value = #{key_value}
 		WHERE key_name = #{key_name}
@@ -25,7 +25,7 @@
 		WHERE key_name = #{key_name}
 	</delete>
 	
-	<select id="list" resultType="TwitchKey">
+	<select id="list" resultType="TwitchKeyVO">
 		SELECT key_name, key_value
 		FROM TwitchKey
 	</select>

@@ -43,3 +43,4 @@ hs_err_pid*
 secret
 /.metadata/
 key/
+TwitchKeyVO.java
