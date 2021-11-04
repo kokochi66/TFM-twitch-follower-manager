@@ -44,3 +44,4 @@ secret
 /.metadata/
 key/
 TwitchKeyVO.java
+com.kokochi.samp/src/main/java/com/kokochi/samp/domain/TwitchKeyVO.java
