@@ -83,9 +83,7 @@
 </main>
 <!-- End #main -->
 <script>
-	ajaxAwait('/manage/video/toggle', 'POST', data, (t) => {
-
-	})
+	//
 	async function manageVideoToggle(data) {
 		let response = await fetch('/manage/video/toggle', {
 			method: 'POST',

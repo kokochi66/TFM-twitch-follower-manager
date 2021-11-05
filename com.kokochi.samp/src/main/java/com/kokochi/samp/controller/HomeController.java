@@ -3,10 +3,15 @@ package com.kokochi.samp.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kokochi.samp.DTO.Key;
+import com.kokochi.samp.domain.TwitchKeyVO;
+import com.kokochi.samp.queryAPI.GetToken;
+import com.kokochi.samp.service.UserService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +37,10 @@ import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 @Controller
 @Slf4j
 public class HomeController {
@@ -40,7 +49,7 @@ public class HomeController {
 	private TwitchKeyService key;
 	
 	@Autowired
-	private UserMapper usermapper;
+	private UserMapper userMapper;
 	
 	@Autowired
 	private ManagedService managed_service;
@@ -48,40 +57,61 @@ public class HomeController {
 	private GetStream streamGetter = new GetStream();
 	private GetVideo videoGetter = new GetVideo();
 	private GetClips clipGetter = new GetClips();
-	
+	private GetToken tokenGetter = new GetToken();
+	private Key twitchKey = new Key();		// 키값이 저장된 객체
+
+	// / 홈 매핑
 	@RequestMapping(value="/")
 	public String home(Model model) throws Exception { // 
 		log.info("/ - 메인경로 이동");
 		return "homes";
 	}
-	// /home 매핑
-	
+
+	// /home/request/getLiveVideo POST - 라이브 비디오 가져오기
 	@RequestMapping(value="/home/request/getLiveVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
-	public String getLiveVideo() throws Exception { 
+	public String getLiveVideo(HttpServletRequest req) throws Exception {
 		log.info("/home/request/getLiveVideo - 라이브 비디오 가져오기 :: ");
-		
-		String client_id = key.read("client_id").getKeyValue();
-		String app_access_token = key.read("app_access_token").getKeyValue();
-		List<Stream> headslide_list = streamGetter.getLiveStreams(client_id, app_access_token, 5);
-		if(headslide_list == null) headslide_list = streamGetter.getLiveStreams(client_id, app_access_token, 5);
-		// 토큰 오류시에는 토큰 초기화 후에 재접근, 재접근해도 값을 가져올 수 없으면 오류임
-		
-//		log.info("headslide_list :: 가져옴 - " + headslide_list.size());
-		
 		JSONArray res_arr = new JSONArray();
-		for(int i=0;i<headslide_list.size();i++) {
-//			log.info("service_video :: " + service_video.get(i).toString());
-			headslide_list.get(i).setThumbnail_url(headslide_list.get(i).getThumbnail_url().replace("{width}", "400").replace("{height}", "250"));
-			
-			JSONObject res_ob = headslide_list.get(i).StreamToJSON();
-			res_arr.add(res_ob);
+		try {
+			// 선언부
+			HttpSession session = req.getSession();
+			String client_id = twitchKey.getClientId();
+			String client_secret = twitchKey.getCleintSecret();
+			String app_access_token = (String) session.getAttribute("App_Access_Token");
+			if(app_access_token == null) {
+				app_access_token = key.read("App_Access_Token").getKeyValue();
+				session.setAttribute("App_Access_Token", app_access_token);
+			}
+//			log.info("TEST :: getLiveVideo :: 토큰 선언 :: " + client_id +" " +client_secret +" " + app_access_token);
+
+
+			// 라이브 스트리머 리스트 가져오기
+			List<Stream> headslide_list = streamGetter.getLiveStreams(client_id, app_access_token, 5);
+			if(headslide_list == null) {
+				app_access_token = tokenGetter.requestAppAccessToken(client_id, client_secret);
+				key.modify(new TwitchKeyVO("App_Access_Token", app_access_token));
+				session.setAttribute("App_Access_Token", app_access_token);
+				headslide_list = streamGetter.getLiveStreams(client_id, app_access_token, 5);
+			}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
+
+
+			// 리스트 썸네일 설정하기
+			for(int i=0;i<headslide_list.size();i++) {
+//			log.info("TEST :: headslide_list :: " + headslide_list.get(i).toString());
+				headslide_list.get(i).setThumbnail_url(headslide_list.get(i).getThumbnail_url().replace("{width}", "400").replace("{height}", "250"));
+				JSONObject res_ob = headslide_list.get(i).StreamToJSON();
+				res_arr.add(res_ob);
+			}
+			if(res_arr.size() <= 0) return null;
+//			log.info("TEST :: headslide_list :: " + res_arr.toJSONString());
+			return res_arr.toJSONString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
 		}
-		if(res_arr.size() <= 0) return null;
-//		log.info(res_arr.toJSONString());
-		return res_arr.toJSONString();
+
 	}
-	// 라이브 비디오 가져오기
 	
 	@RequestMapping(value="/home/request/getMyRecentVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
@@ -93,25 +123,24 @@ public class HomeController {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(!principal.toString().equals("anonymousUser")) {
 			UserDTO user = (UserDTO) principal;
-			
 			List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKeyValue();
 			List<Video> service_video = new ArrayList<>();
-//			log.info("getMyRecentVideo");
+			log.info("TEST :: getMyRecentVideo");
 			service_video = videoGetter.getRecentVideoFromUsers(client_id, user.getOauth_token(), follow_list, "first=8");
-//			log.info("getMyRecentVideo :: " + service_video.size());
+			log.info("TEST :: getMyRecentVideo :: " + service_video.size());
 			
 			for(int i=0;i<service_video.size();i++) {
 				service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
 				service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideoVO("exex::", user.getUser_id(),
 						service_video.get(i).getId())));
 				JSONObject res_ob = service_video.get(i).parseToJSONObject();
-//				log.info("getMyRecentVideo :: " + res_ob.toJSONString());
+				log.info("getMyRecentVideo :: " + res_ob.toJSONString());
 				res_arr.add(res_ob);
 			}
 			if(res_arr.size() <= 0) return null;
 		}
-//		log.info(res_arr.toJSONString());
+		log.info("TEST :: getMyRecentVideo :: " + res_arr.toJSONString());
 		return res_arr.toJSONString();
 	}
 	// 관리목록 최신 다시보기 

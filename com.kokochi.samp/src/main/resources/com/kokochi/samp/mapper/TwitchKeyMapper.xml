@@ -2,32 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kokochi.samp.mapper.TwitchKeyMapper">
-	
+
+	<resultMap id="TwitchKeyVOMap" type="TwitchKeyVO">
+		<result property="keyName" column="key_name"/>
+		<result property="keyValue" column="key_value"/>
+	</resultMap>
+
+
+	<!-- 키 생성하기 -->
 	<insert id="create" parameterType="TwitchKeyVO">
 		INSERT INTO TwitchKey(key_name, key_value)
-		VALUES(#{key_name}, #{key_value})
+		VALUES(#{keyName}, #{keyValue})
 	</insert>
-	
-	<select id="read" resultType="TwitchKeyVO">
+
+	<!-- 키 가져오기 -->
+	<select id="read" resultMap="TwitchKeyVOMap" parameterType="String">
 		SELECT key_name, key_value
 		FROM TwitchKey
-		WHERE key_name = #{key_name}
+		WHERE key_name = #{keyName}
 	</select>
-	
+
+	<!-- 전체 키 가져오기 -->
+	<select id="list" resultMap="TwitchKeyVOMap">
+		SELECT key_name, key_value
+		FROM TwitchKey
+	</select>
+
+	<!-- 키의 값 수정하기 -->
 	<update id="update" parameterType="TwitchKeyVO">
 		UPDATE TwitchKey
-		SET key_value = #{key_value}
-		WHERE key_name = #{key_name}
+		SET key_value = #{keyValue}
+		WHERE key_name = #{keyName}
 	</update>
-	
+
+
+	<!-- 키 제거하기 -->
 	<delete id="delete">
 		DELETE FROM TwitchKey
-		WHERE key_name = #{key_name}
+		WHERE key_name = #{keyName}
 	</delete>
-	
-	<select id="list" resultType="TwitchKeyVO">
-		SELECT key_name, key_value
-		FROM TwitchKey
-	</select>
-	
+
 </mapper>

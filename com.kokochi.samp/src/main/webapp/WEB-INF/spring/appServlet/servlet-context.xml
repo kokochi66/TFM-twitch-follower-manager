@@ -54,5 +54,7 @@
 	<context:component-scan base-package="com.kokochi.samp.service" />
 	<context:component-scan base-package="com.kokochi.samp.mapper" />
 	<context:component-scan base-package="com.kokochi.samp.domain" />
-	
+	<context:component-scan base-package="com.kokochi.samp.security" />
+	<context:component-scan base-package="com.kokochi.samp.queryAPI" />
+
 </beans:beans>

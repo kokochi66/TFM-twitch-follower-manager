@@ -17,6 +17,8 @@ import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Resource;
+
 @Controller
 @RequestMapping(value="/auth")
 @Slf4j
@@ -25,8 +27,8 @@ public class AuthController {
 	@Autowired
 	private TwitchKeyService key;
 	
-	@Autowired
-	private UserDetailService detail;
+	@Resource(name = "userDetailService")
+	private UserDetailService userDetailService;
 	
 	private GetToken tokenGenerator = new GetToken();
 	private GetStream streamGenereator = new GetStream();
@@ -138,7 +140,7 @@ public class AuthController {
 		
 		log.info("회원가입 사용자 - " + memberVO.toString());
 		
-		detail.userRegister(memberVO);
+		userDetailService.userRegister(memberVO);
 		return "redirect:/auth/login";
 	}
 	

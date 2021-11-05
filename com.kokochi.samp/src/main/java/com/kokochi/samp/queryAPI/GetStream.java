@@ -3,6 +3,8 @@ package com.kokochi.samp.queryAPI;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.kokochi.samp.DTO.Key;
+import com.kokochi.samp.domain.TwitchKeyVO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -50,8 +52,7 @@ public class GetStream {
 			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
 			
 			if(exceptionMessage.get("status").toString().equals("401")) {
-				GetToken tokenGetter = new GetToken();
-				tokenGetter.requestAppAccessToken();
+				return null;
 			}
 		}
 		
@@ -95,8 +96,7 @@ public class GetStream {
 			System.out.println("getLiveStreams :: " + e); 
 			
 			if(exceptionMessage.get("status").toString().equals("401")) {
-				GetToken tokenGetter = new GetToken();
-				tokenGetter.requestAppAccessToken();
+				return null;
 			}
 		}
 		

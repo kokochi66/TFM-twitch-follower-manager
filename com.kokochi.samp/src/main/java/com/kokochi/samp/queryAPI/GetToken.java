@@ -1,5 +1,6 @@
 package com.kokochi.samp.queryAPI;
 
+import com.kokochi.samp.domain.TwitchKeyVO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -17,8 +19,11 @@ import com.kokochi.samp.queryAPI.domain.Stream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.service.TwitchKeyService;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 public class GetToken {
-	
+
+	// App Access Token 생성하기
 	public JSONObject GetAppAccessToken(String client_id, String client_secret) throws Exception {
 		
 		JSONParser parser = new JSONParser();
@@ -39,7 +44,8 @@ public class GetToken {
 		
 		return jsonfile;
 	}
-	
+
+	// OAuth2 사용자 인증토큰 가져오기
 	public JSONObject GetOauth2AuthorizeToken(String client_id, String client_secret, String code) throws Exception {
 //		System.out.println("GetOauth2AuthorizeToken :: " + client_id + client_secret +" "+code);
 		
@@ -66,20 +72,32 @@ public class GetToken {
 		} catch (HttpStatusCodeException e) {
 			System.out.println("GetOauth2AuthorizeToken Exception :: " + e.getResponseBodyAsString());
 		}
-
 		return null;
-		
 	}
+
 	
-	public void requestAppAccessToken() {
-		System.out.println("tokenGetter - requestAppAccessToken");
+	public String requestAppAccessToken(String clientId, String clientSecret) throws Exception {
+		MultiValueMap<String, String> params  = new LinkedMultiValueMap<>();
+		JSONParser parser = new JSONParser();
 		HttpHeaders headers = new HttpHeaders();
-		HttpEntity entity = new HttpEntity(headers);
+		params.add("client_id", clientId);
+		params.add("client_secret", clientSecret);
+		params.add("grant_type", "client_credentials");
+
+		HttpEntity<MultiValueMap<String,String>> entity = new HttpEntity<>(params, headers);
 		RestTemplate rt = new RestTemplate();
 		try {
 			ResponseEntity<String> response = rt.exchange(
-					"/token//app_access_token", HttpMethod.POST, entity, String.class);
-		} catch (HttpStatusCodeException  e) {}
+					"https://id.twitch.tv/oauth2/token", HttpMethod.POST, entity, String.class);
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+//			System.out.println("TEST :: jsonfile = " + jsonfile.toString());
+			return "Bearer " + jsonfile.get("access_token").toString();
+
+		} catch (HttpStatusCodeException e) {
+			e.printStackTrace();
+//			System.out.println("GetOauth2AuthorizeToken Exception :: " + e.getResponseBodyAsString());
+		}
+		return "error";
 	}
 
 }

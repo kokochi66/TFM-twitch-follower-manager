@@ -1,14 +1,17 @@
-package com.kokochi.samp.service;
+package com.kokochi.samp.service.impl;
 
 import java.util.List;
 
+import com.kokochi.samp.service.TwitchKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kokochi.samp.domain.TwitchKeyVO;
 import com.kokochi.samp.mapper.TwitchKeyMapper;
 
-@Service
+import javax.annotation.Resource;
+
+@Service("twitchKeyService")
 public class TwitchKeyServiceImpl implements TwitchKeyService {
 	
 	@Autowired
@@ -21,14 +24,14 @@ public class TwitchKeyServiceImpl implements TwitchKeyService {
 	}
 
 	@Override
-	public TwitchKeyVO read(String key_name) throws Exception {
+	public TwitchKeyVO read(String keyName) throws Exception {
 		// TODO Auto-generated method stub
-		
-		TwitchKeyVO key = mapper.read(key_name);
-		
+		System.out.println("TEST :: twitchKeyVO read ==");
+		TwitchKeyVO key = mapper.read(keyName);
+		System.out.println("TEST :: twitchkeyVO read :: " + key.getKeyName() +" " + key.getKeyValue());
 		if(key == null) {
 			key = new TwitchKeyVO();
-			key.setKeyName(key_name);
+			key.setKeyName(keyName);
 			key.setKeyValue("");	// 해당하는 키의 값을 받아올 수 있도록 하는 로직이 필요함.
 			register(key);
 		}
