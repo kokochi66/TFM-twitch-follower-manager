@@ -1,5 +1,6 @@
 package com.kokochi.samp.security;
 
+import com.kokochi.samp.DTO.Key;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,11 +27,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		// TODO Auto-generated method stub
+		System.out.println("CustomAuthenticationProvider - authenticate :: 진입");
 		
 		String user_id = (String) authentication.getPrincipal();
 		String user_pwd = (String) authentication.getCredentials();
 		UsernamePasswordAuthenticationToken authToken = null;
-//		System.out.println("CustomAuthenticationProvider - authenticate :: " + user_id + " " + user_pwd);
+		System.out.println("CustomAuthenticationProvider - authenticate :: " + user_id + " " + user_pwd);
 		
 		if(user_id.equals("OAuth2_authentication")) {
 			// OAuth2 토큰이 들어온 경우의 로그인 처리 (로그인 된 것으로 처리해야함)
@@ -38,8 +40,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			// 들어온 토큰으로 API처리를 이용해서 사용자 정보를 가져와서, 이를 이용해서 Service에서 값을 가져옴
 			GetStream streamGenerator = new GetStream();
 			try {
-				String client_id = service.getKey("client_id").getKeyValue();
-				
+				String client_id = new Key().getClientId();
+
 				TwitchUser tuser = streamGenerator.getUser(client_id, user_pwd, "");
 				UserDTO user = (UserDTO) service.loadUserByTwitchUsername(tuser.getId());
 				user.setUser_pwd("");	// 비밀번호는 객체에 적용하지 않음
@@ -47,7 +49,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 				
 				Object returnUser = user;
 				authToken = new UsernamePasswordAuthenticationToken(returnUser, user_pwd, user.getAuthorities());
-//				System.out.println("CustomAuthenticationProvider - authenticated :: " + user.toString());
+				System.out.println("CustomAuthenticationProvider - authenticated :: " + user.toString());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -57,8 +59,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			// 일반 로그인 처리
 			UserDTO user = (UserDTO) service.loadUserByUsername(user_id);
 			
-//			System.out.println("AuthController - authenticate :: enable = " + user.isEnabled());
-			
+			System.out.println("AuthController - authenticate :: enable = " + user.isEnabled());
 			if(user == null) throw new UsernameNotFoundException(user_id);
 			if(!passwordEncoder.matches(user_pwd, user.getPassword())) throw new BadCredentialsException(user_id);
 			if(!user.isEnabled()) throw new DisabledException(user_id);

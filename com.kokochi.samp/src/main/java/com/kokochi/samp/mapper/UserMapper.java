@@ -6,11 +6,11 @@ import com.kokochi.samp.domain.MemberVO;
 import com.kokochi.samp.domain.MemberAuthVO;
 
 public interface UserMapper {
-	public MemberVO readUser(String user_id) throws Exception;
-	
+	public MemberVO readUser(String id) throws Exception;
+
+	public MemberVO readUserByUserId(String user_id) throws Exception;
+
 	public MemberVO readUserByTwitchId(String twitch_user_id) throws Exception;
-	
-	public List<MemberAuthVO> readAuth(String user_id) throws Exception;
 	
 	public void create(MemberVO memberVO) throws Exception;
 	
@@ -19,6 +19,8 @@ public interface UserMapper {
 	public void update(MemberVO memberVO) throws Exception;
 	
 	public List<MemberVO> userList() throws Exception;
+
+	public List<MemberAuthVO> readAuthList(String user_id) throws Exception;
 	
 	public void addAuth(MemberAuthVO auth) throws Exception;
 	

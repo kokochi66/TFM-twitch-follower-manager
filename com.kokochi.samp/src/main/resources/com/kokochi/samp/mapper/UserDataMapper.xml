@@ -9,6 +9,8 @@
 		<result property="user_pwd" column="user_pwd"/>
 		<result property="user_email" column="user_email"/>
 		<result property="user_nickname" column="user_nickname"/>
+		<result property="enable" column="enable"/>
+		<result property="OAuth2_token" column="OAuth2_token"/>
 		<result property="twitch_user_id" column="twitch_user_id"/>
 		<result property="twitch_user_login" column="twitch_user_login"/>
 	</resultMap>
@@ -20,53 +22,68 @@
 	</resultMap>
 	
 	<select id="readUser" resultType="MemberVO">
-		SELECT id, user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable
+		SELECT id, user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable, OAuth2_token
 		FROM user
 		WHERE id = #{id}
 	</select>
-	
+
+	<select id="readUserByUserId" resultType="MemberVO">
+		SELECT id, user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable, OAuth2_token
+		FROM user
+		WHERE user_id = #{user_id}
+	</select>
+
 	<select id="readUserByTwitchId" resultType="MemberVO">
-		SELECT user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable
+		SELECT id, user_id, user_pwd, user_nickname, user_email, twitch_user_id, twitch_user_login, enable, OAuth2_token
 		FROM user
 		WHERE twitch_user_id = #{twitch_user_id}
 	</select>
 	
-	<select id="readAuth" resultType="MemberAuthVO">
-		SELECT user_id, authority
-		FROM user_auth
-		WHERE user_id = #{user_id}
-	</select>
-	
 	<insert id="create">
-		INSERT INTO user(user_id, user_pwd, user_email, user_nickname, twitch_user_id, twitch_user_login)
-		VALUES(#{user_id}, #{user_pwd}, #{user_email}, #{user_nickname}, #{twitch_user_id}, #{twitch_user_login})
+		INSERT INTO user(id, user_id, user_pwd, user_email, user_nickname, twitch_user_id, twitch_user_login)
+		VALUES(#{id}, #{user_id}, #{user_pwd}, #{user_email}, #{user_nickname}, #{twitch_user_id}, #{twitch_user_login})
 	</insert>
 	
 	<delete id="delete">
 		DELETE FROM user
-		WHERE user_id = #{user_id}
+		WHERE id = #{id}
 	</delete>
 	
 	<update id="update">
 		UPDATE user
-		SET user_pwd = #{user_pwd}, user_email = #{user_email}, user_nickname = #{user_nickname}, 
-			twitch_user_id = #{twitch_user_id}, twitch_user_login = #{twitch_user_login}, enable = #{enable}
-		WHERE user_id = #{user_id}
+		SET
+		<trim prefix="set" prefixOverrides=",">
+			<if test="user_id			!=null">, user_id = #{user_id}</if>
+			<if test="user_pwd			!=null">, user_pwd = #{user_pwd}</if>
+			<if test="user_email		!=null">, user_email = #{user_email}</if>
+			<if test="user_nickname		!=null">, user_nickname = #{user_nickname}</if>
+			<if test="twitch_user_id	!=null">, twitch_user_id = #{twitch_user_id}</if>
+			<if test="twitch_user_login	!=null">, twitch_user_login = #{twitch_user_login}</if>
+			<if test="enable     		!=null">, enable = #{enable}</if>
+			<if test="OAuth2_token     	!=null">, OAuth2_token = #{OAuth2_token}</if>
+		</trim>
+		WHERE id = #{id}
 	</update>
 	
 	<select id="userList" resultType="MemberVO">
-		SELECT user_id, user_pwd, user_email, user_nickname, twitch_user_id, twitch_user_login, enable
+		SELECT user_id, user_pwd, user_email, user_nickname, twitch_user_id, twitch_user_login, enable, OAuth2_token
 		FROM user
+	</select>
+
+	<select id="readAuthList" resultType="MemberAuthVO">
+		SELECT id, user_id, authority
+		FROM user_auth
+		WHERE user_id = #{user_id}
 	</select>
 	
 	<insert id="addAuth">
-		INSERT INTO user_auth(user_id, authority)
-		VALUES(#{user_id}, #{authority})
+		INSERT INTO user_auth(id, user_id, authority)
+		VALUES(#{id}, #{user_id}, #{authority})
 	</insert>
 	
 	<delete id="delAuth">
 		DELETE FROM user_auth
-		WHERE user_id = #{user_id} AND authority = #{authority}
+		WHERE id = #{id}
 	</delete>
 	
 </mapper>

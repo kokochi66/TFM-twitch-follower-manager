@@ -1,9 +1,11 @@
 package com.kokochi.samp.controller;
 
+import com.kokochi.samp.DTO.Key;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -18,6 +20,7 @@ import com.kokochi.samp.service.TwitchKeyService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value="/auth")
@@ -32,7 +35,8 @@ public class AuthController {
 	
 	private GetToken tokenGenerator = new GetToken();
 	private GetStream streamGenereator = new GetStream();
-	
+
+	// /auth/login GET :: 로그인 페이지
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public void login(Model model, String errMsg) { // 메인 home 화면 매핑
 		log.info("/auth/login - Login Mapping");
@@ -51,17 +55,17 @@ public class AuthController {
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public void loginPage(Model model) {
 		log.info("login POST Mapping");
-		
-		
 	}
-	
+
+	// /auth/login/gettoken :: 트위치 로그인 토큰 가져오기 요청
 	@RequestMapping(value="/login/gettoken", method=RequestMethod.GET)
 	public String loginTwitch() throws Exception {
+		Key twitchKey = new Key();		// 키값이 저장된 객체
 		
 		// 트위치 아이디를 인증하여 연동하는 계정을 생성하거나, 일반 아이디를 생성하는 두가지 선택지를 주어야함.
 		// 우선 기본 디폴트로 트위치 아이디를 인증하여 연동하는 계정을 생성하는 것을 구현함.
 		String uri = "https://id.twitch.tv/oauth2/authorize?";
-		String client_id = "client_id="+key.read("client_id").getKeyValue()+"&";
+		String client_id = "client_id="+twitchKey.getClientId()+"&";
 		String redirect_uri = "redirect_uri=http://localhost:8080/auth/login/oauth2/code/twitch&";
 		String response_type = "response_type=code&";
 		String scope = "scope=user:read:follows&";
@@ -72,7 +76,8 @@ public class AuthController {
 		// state값을 이용해서 반환 페이지를 확인해준다.
 		return "redirect:" +uri;
 	}
-	
+
+	// /auth/login/twitch GET :: 트위치 로그인
 	@RequestMapping(value="/login/twitch", method=RequestMethod.GET)
 	public String OAuthTokenProcess(Model model,String OAuthToken, String AuthenticatedUser) throws Exception {
 		log.info("/login/twitch - 트위치 로그인");
@@ -81,14 +86,16 @@ public class AuthController {
 		
 		return "auth/hiddenLogin";
 	}
-	
+
+	// /auth/register/gettoken GET :: 트위치 인증 토큰 받아오기 요청
 	@RequestMapping(value="/register/gettoken", method=RequestMethod.GET)
 	public String register() throws Exception {
+		Key twitchKey = new Key();		// 키값이 저장된 객체
 		
 		// 트위치 아이디를 인증하여 연동하는 계정을 생성하거나, 일반 아이디를 생성하는 두가지 선택지를 주어야함.
 		// 우선 기본 디폴트로 트위치 아이디를 인증하여 연동하는 계정을 생성하는 것을 구현함.
 		String uri = "https://id.twitch.tv/oauth2/authorize?";
-		String client_id = "client_id="+key.read("client_id").getKeyValue()+"&";
+		String client_id = "client_id="+twitchKey.getClientId()+"&";
 		String redirect_uri = "redirect_uri=http://localhost:8080/auth/login/oauth2/code/twitch&";
 		String response_type = "response_type=code&";
 		String scope = "scope=user:read:follows user:read:subscriptions user:read:email channel:manage:videos&";
@@ -100,13 +107,14 @@ public class AuthController {
 		return "redirect:" +uri;
 	}
 
-	
+	// /auth/login/oauth2/codie/twitch GET :: 트위치 사용자 코드를 받아오는 redirect URL
 	@RequestMapping(value="/login/oauth2/code/twitch", method=RequestMethod.GET)
 	public String OauthTwitch(RedirectAttributes rttr, String code, String scope, String state) throws Exception {
 		log.info("/login/oauth2/code/twitch - 트위치 토큰 받아오기 :: " + code +" "+ scope +" "+ state);
-		
-		String client_id = key.read("client_id").getKeyValue();
-		String client_secret = key.read("client_secret").getKeyValue();
+		Key twitchKey = new Key();		// 키값이 저장된 객체
+
+		String client_id = twitchKey.getClientId();
+		String client_secret = twitchKey.getCleintSecret();
 		JSONObject oauthToken = tokenGenerator.GetOauth2AuthorizeToken(client_id, client_secret, code);
 		
 		String OAuth_token = "Bearer " +oauthToken.get("access_token");
@@ -122,22 +130,26 @@ public class AuthController {
 		// 전달해주는 상태값을 곧 redirect 경로로 사용함.
 		return "redirect:"+state;
 	}
-	
+
+	// /auth/registerForm GET :: 회원가입 폼
 	@RequestMapping(value="/registerForm", method=RequestMethod.GET)
 	public void registerForm(Model model,String OAuthToken, String AuthenticatedUser) throws Exception {
 		log.info("/auth/registerForm GET - 회원가입 폼");
 		model.addAttribute("AuthenticatedUser", AuthenticatedUser);
 		model.addAttribute("OAuthToken", OAuthToken);
 	}
-	
+
+	// /auth/register POST :: 회원가입 처리
 	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public String registerPro(Model model, MemberVO memberVO, String authtoken) throws Exception {
+	public String registerPro(Model model, @ModelAttribute MemberVO memberVO, String authtoken) throws Exception {
 		log.info("/auth/register POST - 회원가입 처리");
+		Key twitchKey = new Key();		// 키값이 저장된 객체
 		
-		String client_id = key.read("client_id").getKeyValue();
+		String client_id = twitchKey.getClientId();
 		TwitchUser user = streamGenereator.getUser(client_id, authtoken, "");
-		memberVO.setTwitch_user_id(user.getLogin());
-		
+		memberVO.setId(UUID.randomUUID().toString());
+		memberVO.setTwitch_user_id(user.getId());
+		memberVO.setTwitch_user_login(user.getLogin());
 		log.info("회원가입 사용자 - " + memberVO.toString());
 		
 		userDetailService.userRegister(memberVO);

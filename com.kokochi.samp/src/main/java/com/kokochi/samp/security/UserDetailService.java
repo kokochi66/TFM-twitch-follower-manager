@@ -1,6 +1,7 @@
 package com.kokochi.samp.security;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,12 +29,12 @@ public class UserDetailService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String user_id) throws UsernameNotFoundException {
-		// TODO Auto-generated method stub
+		System.out.println("UserDetailService - loadUserByUsername :: 진입 :: " + user_id);
 		try {
-			MemberVO memberVO = mapper.readUser(user_id);
-			List<MemberAuthVO> auth = mapper.readAuth(user_id);
+			MemberVO memberVO = mapper.readUserByUserId(user_id);
+			List<MemberAuthVO> auth = mapper.readAuthList(user_id);
 			UserDTO user = new UserDTO(memberVO, auth);
-			
+			System.out.println("UserDetailService - loadUserByUsername :: 데이터 가져옴 :: " + user.getUser_id() +" " + user.getTwitch_user_id() +" " + auth.size());
 			return user;
 			
 		} catch (Exception e) {
@@ -44,11 +45,11 @@ public class UserDetailService implements UserDetailsService {
 	}
 	
 	public UserDetails loadUserByTwitchUsername(String twitch_user_id) throws Exception {
-		
+		System.out.println("UserDetailService - loadUserByTwitchUsername :: 진입 :: " + twitch_user_id);
 		MemberVO memberVO = mapper.readUserByTwitchId(twitch_user_id);
-		List<MemberAuthVO> auth = mapper.readAuth(memberVO.getUser_id());
+		List<MemberAuthVO> auth = mapper.readAuthList(memberVO.getUser_id());
 		UserDTO user = new UserDTO(memberVO, auth);
-		
+		System.out.println("UserDetailService - loadUserByUsername :: 데이터 가져옴 :: " + user.getUser_id() +" " + user.getTwitch_user_id() +" " + auth.size());
 		PostQuery postQuery = new PostQuery();
 		postQuery.initManagedFollow(user.getTwitch_user_id(), user.getUser_id());
 		return user;
@@ -60,7 +61,8 @@ public class UserDetailService implements UserDetailsService {
 		mapper.create(memberVO);
 		
 		MemberAuthVO auth = new MemberAuthVO();
-		auth.setUser_id(memberVO.getUser_id());
+		auth.setId(UUID.randomUUID().toString());
+		auth.setUser_id(memberVO.getId());
 		auth.setAuthority("ROLE_MEMBER");
 		addAuth(auth);
 	}

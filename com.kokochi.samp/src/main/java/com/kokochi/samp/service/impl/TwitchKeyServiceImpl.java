@@ -26,9 +26,7 @@ public class TwitchKeyServiceImpl implements TwitchKeyService {
 	@Override
 	public TwitchKeyVO read(String keyName) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("TEST :: twitchKeyVO read ==");
 		TwitchKeyVO key = mapper.read(keyName);
-		System.out.println("TEST :: twitchkeyVO read :: " + key.getKeyName() +" " + key.getKeyValue());
 		if(key == null) {
 			key = new TwitchKeyVO();
 			key.setKeyName(keyName);

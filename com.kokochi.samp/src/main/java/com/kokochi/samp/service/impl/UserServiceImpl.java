@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<MemberAuthVO> readAuth(String user_id) throws Exception {
-        return mapper.readAuth(user_id);
+        return mapper.readAuthList(user_id);
     }
 
     @Override
