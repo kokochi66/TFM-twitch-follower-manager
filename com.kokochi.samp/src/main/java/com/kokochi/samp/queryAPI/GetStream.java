@@ -129,7 +129,6 @@ public class GetStream {
 			
 		} catch (HttpStatusCodeException  e) {
 			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
-			
 			if(exceptionMessage.get("status").toString().equals("401")) return null;
 		}
 		

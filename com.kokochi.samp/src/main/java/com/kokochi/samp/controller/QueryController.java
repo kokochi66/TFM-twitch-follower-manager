@@ -59,9 +59,9 @@ public class QueryController {
 		for(String str : follow_list) follow_set.add(str);
 		
 		for(ManagedFollowVO mf : managedFollow_VO_list) {
-			if(!follow_set.contains(mf.getToUser())) {
-				log.info("/query/request/initFollow - ManagedFollow 제거 :: " + mf.getToUser());
-				follow_service.removeFollow(mf.getUserId());
+			if(!follow_set.contains(mf.getTo_user())) {
+				log.info("/query/request/initFollow - ManagedFollow 제거 :: " + mf.getTo_user());
+				follow_service.removeFollow(mf.getUser_id());
 			}
 		}
 		return "success";

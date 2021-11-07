@@ -19,7 +19,8 @@ import lombok.ToString;
 @Getter @Setter
 @ToString
 public class UserDTO implements UserDetails {
-	
+
+	private String id;
 	private String user_id;
 	private String user_pwd;
 	private String user_nickname;
@@ -31,7 +32,7 @@ public class UserDTO implements UserDetails {
 	private List<String> authority;
 	
 	public UserDTO(MemberVO memberVO, List<MemberAuthVO> authList) {
-		
+		this.id = memberVO.getId();
 		this.user_id = memberVO.getUser_id();
 		this.user_pwd = memberVO.getUser_pwd();
 		this.user_nickname = memberVO.getUser_nickname();
@@ -40,7 +41,6 @@ public class UserDTO implements UserDetails {
 		this.twitch_user_login = memberVO.getTwitch_user_login();
 		this.enable = memberVO.getEnable();
 		this.Oauth_token = null;
-		
 		this.authority = new ArrayList<String>();
 		
 		for(int i=0;i<authList.size();i++)	authority.add(authList.get(i).getAuthority());

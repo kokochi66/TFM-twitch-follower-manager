@@ -23,5 +23,5 @@ public class MemberVO {
 	private String twitch_user_id;
 	private String twitch_user_login;
 	private String OAuth2_token;
-	private int enable;
+	private Integer enable;
 }

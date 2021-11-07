@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kokochi.samp.mapper.UserFollowMapper">
+
+    <select id="read" resultType="UserFollowVO" parameterType="UserFollowVO">
+        SELECT id, from_id, to_id, followed_at
+        FROM user_follow
+        WHERE  id = #{id}
+    </select>
+
+    <select id="readList" resultType="UserFollowVO" parameterType="UserFollowVO">
+        SELECT id, from_id, to_id, followed_at
+        FROM user_follow
+        WHERE 1=1
+        <if test="from_id	!=null">AND from_id = #{from_id}</if>
+        <if test="to_id	    !=null">AND to_id = #{to_id}</if>
+    </select>
+
+    <insert id="create" parameterType="UserFollowVO">
+        INSERT INTO user_follow(id, from_id, to_id, followed_at)
+        VALUES(#{id}, #{from_id}, #{to_id}, #{followed_at})
+    </insert>
+
+    <delete id="deleteById" parameterType="String">
+        DELETE FROM user_follow
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

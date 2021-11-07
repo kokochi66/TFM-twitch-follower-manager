@@ -118,7 +118,7 @@ public class GetVideo {
 		
 		try {
 			for(int i=0;i<users.size();i++) {
-				String c_user_id = users.get(i).getToUser();
+				String c_user_id = users.get(i).getTo_user();
 //				System.out.println("GetVideo - userId =  " + c_user_id);
 				ResponseEntity<String> response = rt.exchange(
 						"https://api.twitch.tv/helix/videos?user_id="

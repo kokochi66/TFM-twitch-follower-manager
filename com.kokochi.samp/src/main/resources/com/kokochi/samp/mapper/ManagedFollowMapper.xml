@@ -17,11 +17,11 @@
 		<if test='id != null'>
 			AND id = #{id}
 		</if>
-		<if test='userId != null'>
-			AND user_id = #{userId}
+		<if test='user_id != null'>
+			AND user_id = #{user_id}
 		</if>
-		<if test='toUser != null'>
-			AND to_user = #{toUser}
+		<if test='to_user != null'>
+			AND to_user = #{to_user}
 		</if>
 	</select>
 
@@ -29,7 +29,7 @@
 		INSERT INTO managed_follow
 		    (id, user_id, to_user)
 		VALUES
-			(#{id}, #{userId}, #{toUser})
+			(#{id}, #{user_id}, #{to_user})
 	</insert>
 	
 	<delete id="deleteManage">
@@ -40,7 +40,7 @@
 	<select id="selectManagedListByUserId" resultType="ManagedFollowVO">
 		SELECT id, user_id, to_user
 		FROM managed_follow
-		WHERE user_id = #{userId}
+		WHERE user_id = #{user_id}
 	</select>
 	
 <!--	<select id="list_num" resultType="ManagedFollowVO">

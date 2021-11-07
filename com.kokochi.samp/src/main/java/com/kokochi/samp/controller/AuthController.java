@@ -1,6 +1,7 @@
 package com.kokochi.samp.controller;
 
 import com.kokochi.samp.DTO.Key;
+import com.kokochi.samp.domain.UserTwitchVO;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -110,7 +111,7 @@ public class AuthController {
 	// /auth/login/oauth2/codie/twitch GET :: 트위치 사용자 코드를 받아오는 redirect URL
 	@RequestMapping(value="/login/oauth2/code/twitch", method=RequestMethod.GET)
 	public String OauthTwitch(RedirectAttributes rttr, String code, String scope, String state) throws Exception {
-		log.info("/login/oauth2/code/twitch - 트위치 토큰 받아오기 :: " + code +" "+ scope +" "+ state);
+//		log.info("/login/oauth2/code/twitch - 트위치 토큰 받아오기 :: " + code +" "+ scope +" "+ state);
 		Key twitchKey = new Key();		// 키값이 저장된 객체
 
 		String client_id = twitchKey.getClientId();
@@ -150,9 +151,11 @@ public class AuthController {
 		memberVO.setId(UUID.randomUUID().toString());
 		memberVO.setTwitch_user_id(user.getId());
 		memberVO.setTwitch_user_login(user.getLogin());
-		log.info("회원가입 사용자 - " + memberVO.toString());
-		
+//		log.info("회원가입 사용자 - " + memberVO.toString());
+		UserTwitchVO userTwitchVO = user.toUserTwitchVO();
+		userDetailService.addUserTwitch(userTwitchVO);
 		userDetailService.userRegister(memberVO);
+
 		return "redirect:/auth/login";
 	}
 	

@@ -124,7 +124,7 @@ public class GetClips {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		try {
 			for(int i=0;i<users.size();i++) {
-				String c_user_id = users.get(i).getToUser();
+				String c_user_id = users.get(i).getTo_user();
 //				System.out.println(c_user_id);
 				
 				ResponseEntity<String> response = rt.exchange(

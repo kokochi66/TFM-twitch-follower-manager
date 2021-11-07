@@ -3,6 +3,7 @@ package com.kokochi.samp.queryAPI;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.kokochi.samp.domain.UserFollowVO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -39,20 +40,14 @@ public class GetFollow {
 			
 			for(int i=0;i<data.size();i++) {
 				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
-				
 				TwitchUser cUser = streamGetter.getUser(client_id, app_access_token, "id="+cJson.get("to_id").toString());
 				list.add(cUser);
 			}
-			
 			return list;
-			
-			
 		} catch (HttpStatusCodeException  e) {
 			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
-			
 			if(exceptionMessage.get("status").toString().equals("401")) return null;
 		}
-		
 		return null;
 	}
 	
@@ -86,17 +81,53 @@ public class GetFollow {
 					list.add(cJson.get("to_id").toString());
 				}
 			} while(pagination.containsKey("cursor"));
-
-			
 			return list;
-			
-			
 		} catch (HttpStatusCodeException  e) {
 			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
-			
 			if(exceptionMessage.get("status").toString().equals("401")) return null;
 		}
-		
+		return null;
+	}
+
+
+	public ArrayList<UserFollowVO> getAllFollowedListToFollowVO(String client_id, String app_access_token, String user_id) throws Exception {
+		// 특정 유저의 모든 팔로우 목록을 조회하는 쿼리이다.
+		// 한번에 쿼리로 찾을 수 있는 팔로우 수는 100개까지이므로, 모든 팔로우 목록을 찾을 때 까지 nextPage를 반복하여 찾아야한다.
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", app_access_token);
+		headers.add("Client-id", client_id);
+
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+
+		ArrayList<UserFollowVO> list = new ArrayList<>();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+		try {
+			JSONObject pagination = new JSONObject();
+			String nextPage = "";
+			do {
+				ResponseEntity<String> response = rt.exchange(
+						"https://api.twitch.tv/helix/users/follows?"+user_id+"&first=100&"+nextPage, HttpMethod.GET,
+						entity, String.class);
+				JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+				JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+				pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
+				if(pagination.containsKey("cursor")) nextPage = "after="+pagination.get("cursor").toString();
+
+				for(int i=0;i<data.size();i++) {
+					JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
+					UserFollowVO userFollowVO = gsonParser.fromJson(cJson.toString(), UserFollowVO.class);
+//					System.out.println("TEST :: 팔로우 데이터 :: " + userFollowVO.toString());
+					list.add(userFollowVO);
+				}
+			} while(pagination.containsKey("cursor"));
+			return list;
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+			if(exceptionMessage.get("status").toString().equals("401")) return null;
+		}
 		return null;
 	}
 	

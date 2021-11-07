@@ -3,6 +3,13 @@ package com.kokochi.samp.security;
 import java.util.List;
 import java.util.UUID;
 
+import com.kokochi.samp.DTO.Key;
+import com.kokochi.samp.domain.*;
+import com.kokochi.samp.mapper.UserFollowMapper;
+import com.kokochi.samp.mapper.UserTwitchMapper;
+import com.kokochi.samp.queryAPI.GetStream;
+import com.kokochi.samp.queryAPI.GetToken;
+import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,12 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.kokochi.samp.DTO.UserDTO;
-import com.kokochi.samp.domain.MemberVO;
-import com.kokochi.samp.domain.MemberAuthVO;
-import com.kokochi.samp.domain.TwitchKeyVO;
 import com.kokochi.samp.mapper.TwitchKeyMapper;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
+
+import javax.servlet.http.HttpSession;
 
 @Service("userDetailService")
 public class UserDetailService implements UserDetailsService {
@@ -26,15 +32,21 @@ public class UserDetailService implements UserDetailsService {
 	
 	@Autowired
 	private TwitchKeyMapper keyMapper;
+
+	@Autowired
+	private UserTwitchMapper userTwitchMapper;
+
+	@Autowired
+	private UserFollowMapper userFollowMapper;
 	
 	@Override
 	public UserDetails loadUserByUsername(String user_id) throws UsernameNotFoundException {
-		System.out.println("UserDetailService - loadUserByUsername :: 진입 :: " + user_id);
+//		System.out.println("UserDetailService - loadUserByUsername :: 진입 :: " + user_id);
 		try {
 			MemberVO memberVO = mapper.readUserByUserId(user_id);
-			List<MemberAuthVO> auth = mapper.readAuthList(user_id);
+			List<MemberAuthVO> auth = mapper.readAuthList(memberVO.getId());
 			UserDTO user = new UserDTO(memberVO, auth);
-			System.out.println("UserDetailService - loadUserByUsername :: 데이터 가져옴 :: " + user.getUser_id() +" " + user.getTwitch_user_id() +" " + auth.size());
+//			System.out.println("UserDetailService - loadUserByUsername :: 데이터 가져옴 :: " + user.getUser_id() +" " + user.getTwitch_user_id() +" " + auth.size());
 			return user;
 			
 		} catch (Exception e) {
@@ -45,11 +57,11 @@ public class UserDetailService implements UserDetailsService {
 	}
 	
 	public UserDetails loadUserByTwitchUsername(String twitch_user_id) throws Exception {
-		System.out.println("UserDetailService - loadUserByTwitchUsername :: 진입 :: " + twitch_user_id);
+//		System.out.println("UserDetailService - loadUserByTwitchUsername :: 진입 :: " + twitch_user_id);
 		MemberVO memberVO = mapper.readUserByTwitchId(twitch_user_id);
-		List<MemberAuthVO> auth = mapper.readAuthList(memberVO.getUser_id());
+		List<MemberAuthVO> auth = mapper.readAuthList(memberVO.getId());
 		UserDTO user = new UserDTO(memberVO, auth);
-		System.out.println("UserDetailService - loadUserByUsername :: 데이터 가져옴 :: " + user.getUser_id() +" " + user.getTwitch_user_id() +" " + auth.size());
+//		System.out.println("UserDetailService - loadUserByUsername :: 데이터 가져옴 :: " + user.getUser_id() +" " + user.getTwitch_user_id() +" " + auth.size());
 		PostQuery postQuery = new PostQuery();
 		postQuery.initManagedFollow(user.getTwitch_user_id(), user.getUser_id());
 		return user;
@@ -90,7 +102,84 @@ public class UserDetailService implements UserDetailsService {
 	public TwitchKeyVO getKey(String key_name) throws Exception {
 		return keyMapper.read(key_name);
 	}
-	
-	
+
+
+	public UserTwitchVO readUserTwitch(UserTwitchVO userTwitchVO) throws Exception {
+		return userTwitchMapper.read(userTwitchVO);
+	}
+
+	// 특정 사용자의 팔로우 목록 가져오기
+	public List<UserTwitchVO> readUserTwitchFollowList(String from_id) throws Exception {
+		return userTwitchMapper.readFollowList(from_id);
+	}
+
+	public void addUserTwitch(UserTwitchVO userTwitchVO) throws Exception {
+		UserTwitchVO temp = readUserTwitch(userTwitchVO);
+		if(temp == null) userTwitchMapper.create(userTwitchVO);
+		else updateUserTwitch(userTwitchVO);
+		// 값이 없다면 새로운 값을 추가하고, 값이 있다면 기존 값을 수정해준다.
+	}
+
+	public void deleteUserTwitchById(String id) throws Exception {
+		userTwitchMapper.deleteById(id);
+	}
+
+	public void deleteUserTwitchByLogin(String login) throws Exception {
+		userTwitchMapper.deleteByLogin(login);
+	}
+
+	public void updateUserTwitch(UserTwitchVO userTwitchVO) throws Exception {
+		userTwitchMapper.update(userTwitchVO);
+	}
+
+
+	public UserFollowVO readUserFollow(UserFollowVO userFollowVO) throws Exception {
+		return userFollowMapper.read(userFollowVO);
+	}
+
+	public List<UserFollowVO> readUserFollowList(UserFollowVO userFollowVO) throws Exception {
+		return userFollowMapper.readList(userFollowVO);
+	}
+
+	public void addUserFollow(UserFollowVO userFollowVO) throws Exception {
+		UserTwitchVO read = new UserTwitchVO();
+		read.setId(userFollowVO.getFrom_id());
+		UserTwitchVO temp = readUserTwitch(read);
+		Key key = new Key();
+
+		// db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
+		if(temp == null) {
+			TwitchUser user = new GetStream().getUser(key.getClientId(), keyMapper.read("App_Access_Token").getKeyValue(), "id=" + userFollowVO.getFrom_id());
+			if(user == null) {
+				String app_access_token = new GetToken().requestAppAccessToken(key.getClientId(), key.getCleintSecret());
+				keyMapper.update(new TwitchKeyVO("App_Access_Token", app_access_token));
+				user = new GetStream().getUser(key.getClientId(), keyMapper.read("App_Access_Token").getKeyValue(), "id=" + userFollowVO.getFrom_id());
+			}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
+			UserTwitchVO userTwitchVO = user.toUserTwitchVO();
+			addUserTwitch(userTwitchVO);
+		}
+
+		read.setId(userFollowVO.getTo_id());
+		temp = readUserTwitch(read);
+		// db에 팔로우 대상 사용자가 없으면 추가해준다.
+		if(temp == null) {
+			TwitchUser user = new GetStream().getUser(key.getClientId(), keyMapper.read("App_Access_Token").getKeyValue(), "id=" + userFollowVO.getTo_id());
+			if(user == null) {
+				String app_access_token = new GetToken().requestAppAccessToken(key.getClientId(), key.getCleintSecret());
+				keyMapper.update(new TwitchKeyVO("App_Access_Token", app_access_token));
+				user = new GetStream().getUser(key.getClientId(), keyMapper.read("App_Access_Token").getKeyValue(), "id=" + userFollowVO.getTo_id());
+			}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
+			UserTwitchVO userTwitchVO = user.toUserTwitchVO();
+			addUserTwitch(userTwitchVO);
+		}
+
+		// 마지막으로 팔로우 데이터를 DB에 추가한다.
+		userFollowVO.setId(UUID.randomUUID().toString());
+		userFollowMapper.create(userFollowVO);
+	}
+
+	public void deleteUserFollow(String id) throws Exception {
+		userFollowMapper.deleteById(id);
+	}
 
 }

@@ -6,12 +6,10 @@ import java.util.List;
 import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.TwitchKeyVO;
 import com.kokochi.samp.queryAPI.GetToken;
-import com.kokochi.samp.service.UserService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +35,6 @@ import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -78,11 +75,7 @@ public class HomeController {
 			HttpSession session = req.getSession();
 			String client_id = twitchKey.getClientId();
 			String client_secret = twitchKey.getCleintSecret();
-			String app_access_token = (String) session.getAttribute("App_Access_Token");
-			if(app_access_token == null) {
-				app_access_token = key.read("App_Access_Token").getKeyValue();
-				session.setAttribute("App_Access_Token", app_access_token);
-			}
+			String app_access_token = key.read("App_Access_Token").getKeyValue();
 //			log.info("TEST :: getLiveVideo :: 토큰 선언 :: " + client_id +" " +client_secret +" " + app_access_token);
 
 
@@ -126,21 +119,20 @@ public class HomeController {
 			List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getUser_id());
 			String client_id = key.read("client_id").getKeyValue();
 			List<Video> service_video = new ArrayList<>();
-			log.info("TEST :: getMyRecentVideo");
 			service_video = videoGetter.getRecentVideoFromUsers(client_id, user.getOauth_token(), follow_list, "first=8");
-			log.info("TEST :: getMyRecentVideo :: " + service_video.size());
+//			log.info("TEST :: getMyRecentVideo :: " + service_video.size());
 			
 			for(int i=0;i<service_video.size();i++) {
 				service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
 				service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideoVO("exex::", user.getUser_id(),
 						service_video.get(i).getId())));
 				JSONObject res_ob = service_video.get(i).parseToJSONObject();
-				log.info("getMyRecentVideo :: " + res_ob.toJSONString());
+//				log.info("getMyRecentVideo :: " + res_ob.toJSONString());
 				res_arr.add(res_ob);
 			}
 			if(res_arr.size() <= 0) return null;
 		}
-		log.info("TEST :: getMyRecentVideo :: " + res_arr.toJSONString());
+//		log.info("TEST :: getMyRecentVideo :: " + res_arr.toJSONString());
 		return res_arr.toJSONString();
 	}
 	// 관리목록 최신 다시보기 
@@ -195,7 +187,7 @@ public class HomeController {
 			String client_id = key.read("client_id").getKeyValue();
 			
 			for(int i=0;i<follow_list.size();i++) {
-				Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), follow_list.get(i).getToUser(), "");
+				Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), follow_list.get(i).getTo_user(), "");
 				if(s != null) {
 //					log.info("service_getLive :: " + s.toString() +" " + i +" " + follow_list.size())s;
 					s.setThumbnail_url(s.getThumbnail_url().replace("{width}", "300").replace("{height}", "200"));

@@ -49,11 +49,9 @@
 		WHERE id = #{id}
 	</delete>
 	
-	<update id="update">
+	<update id="update" parameterType="MemberVO">
 		UPDATE user
-		SET
 		<trim prefix="set" prefixOverrides=",">
-			<if test="user_id			!=null">, user_id = #{user_id}</if>
 			<if test="user_pwd			!=null">, user_pwd = #{user_pwd}</if>
 			<if test="user_email		!=null">, user_email = #{user_email}</if>
 			<if test="user_nickname		!=null">, user_nickname = #{user_nickname}</if>
@@ -62,7 +60,9 @@
 			<if test="enable     		!=null">, enable = #{enable}</if>
 			<if test="OAuth2_token     	!=null">, OAuth2_token = #{OAuth2_token}</if>
 		</trim>
-		WHERE id = #{id}
+		WHERE 1 = 1
+		<if test="id				!=null">AND id = #{id}</if>
+		<if test="user_id			!=null">AND user_id = #{user_id}</if>
 	</update>
 	
 	<select id="userList" resultType="MemberVO">

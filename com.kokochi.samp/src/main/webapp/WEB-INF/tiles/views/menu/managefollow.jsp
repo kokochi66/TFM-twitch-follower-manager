@@ -33,14 +33,15 @@
 			</div>
 			<c:forEach items="${follow_list}" var="follow">
 				<div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch mb-5">
-					<div class="follow-box ${follow.checking_managed ? "mylist" : ""}">
+					<div class="follow-box ${follow.isManaged ? "mylist" : ""}">
 						<div class="profile_img"
 							style="background-image: url('${follow.profile_image_url}');"></div>
 						<div class="info">
 							<div class="name">${follow.display_name}<span class="login">(${follow.login})</span>
 							</div>
 							<div class="desc">${follow.description}</div>
-							<div class="user_id">${follow.id}</div>
+							<div class="user_id displayNone">${follow.id}</div>
+							<div class="managed_id displayNone">${follow.managed_id}</div>
 							<div class="check">
 								<input type="checkbox" class="form-check-input checkInput"
 									name="" id="" ${follow.isManaged ? "checked" : ""}>
@@ -52,4 +53,32 @@
 		</div>
 </section>
 <!-- End Blog Section -->
+<%--
 <script src="${path}/assets/js/menu/managefollow.js"></script>
+--%>
+<script>
+	document.addEventListener("DOMContentLoaded", function(){
+		let followBoxes = document.querySelectorAll('#content .follow-box'),
+				followBtn = document.querySelectorAll('#content .follow-box .checkInput');
+
+		followBtn.forEach((elem, idx) => {
+			elem.addEventListener('change', (e) => {
+                if(elem.checked) {
+					console.log('추가하기 요청')
+                    ajaxSubmit('/menu/request/managedfollow/add', 'POST', followBoxes[idx].querySelector('.user_id').innerHTML, (res) => {
+                        // console.log('라이브 비디오 가져오기 선언')
+                        if(res !== 'error') console.log(res);
+						location.reload();
+                    })
+                } else {
+                    ajaxSubmit('/menu/request/managedfollow/remove', 'POST', followBoxes[idx].querySelector('.managed_id').innerHTML, (res) => {
+                        // console.log('라이브 비디오 가져오기 선언')
+                        if(res !== 'error') console.log(res);
+						location.reload();
+                    })
+                }
+			})
+		})
+
+	});
+</script>
