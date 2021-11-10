@@ -26,6 +26,12 @@ public class VideoTwitchServiceImpl implements VideoTwitchService {
     public List<VideoTwitchVO> readList(VideoTwitchVO videoTwitchVO) throws Exception {
         return videoTwitchMapper.readList(videoTwitchVO);
     }
+
+    @Override
+    public List<VideoTwitchVO> readRecentFollowList(VideoTwitchVO videoTwitchVO) throws Exception {
+        return videoTwitchMapper.readRecentFollowList(videoTwitchVO);
+    }
+
     @Override
     public void create(VideoTwitchVO videoTwitchVO) throws Exception {
         videoTwitchMapper.create(videoTwitchVO);
@@ -37,9 +43,5 @@ public class VideoTwitchServiceImpl implements VideoTwitchService {
     @Override
     public void deleteByUserId(String user_id) throws Exception {
         videoTwitchMapper.deleteByUserId(user_id);
-    }
-    @Override
-    public void update(VideoTwitchVO videoTwitchVO) throws Exception {
-        videoTwitchMapper.update(videoTwitchVO);
     }
 }

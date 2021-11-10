@@ -57,24 +57,22 @@
 		<!-- Video List -->
 		<section id="services" class="services">
 			<div class="container">
-				<div class="recent_video">
-					<div class="section-title">
+				<div class="recent_video videoList">
+					<div id="recent_video" class="section-title">
 						<h2>관리목록 다시보기</h2>
 					</div>
-					<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
 				</div>
-				<div class="recent_live displayNone">
+				<div class="recent_live videoList displayNone">
 					<div class="section-title">
 						<h2>관리목록 라이브</h2>
 					</div>
-					<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
 				</div>
-				<div class="recent_clip displayNone">
+				<div class="recent_clip videoList displayNone">
 					<div class="section-title">
 						<h2>관리목록 인기클립</h2>
 					</div>
-					<div class="col-3 btn-danger p-3 text-sm-center addMore m-auto">더 보기</div>
 				</div>
+				<div id="addMore" class="col-3 btn-danger p-3 text-sm-center addMore m-auto" label-videoIdx="0">더 보기</div>
 			</div>
 		</section>
 	</sec:authorize>
@@ -84,37 +82,48 @@
 
 	document.addEventListener("DOMContentLoaded", function(){
 
-		// 관리목록 다시보기 데이터 요청
-		async function request_getMyRecentVideoNext(body) {
-			// 메인 헤드 슬라이더의 데이터 값 가져오기
-			ajaxAwait('/home/request/getMyRecentVideo', 'POST', body, (res) => {
-				// console.log('라이브 비디오 가져오기 선언')
-				console.log('관리목록 다시보기 데이터 요청')
-				console.log(JSON.parse(res))
+		// 더보기 버튼 및
+		let addMoreBtn = document.querySelector('#addMore');
+		// 리스트 버튼 클릭 이벤트
+		let videoList = document.querySelectorAll('#services .videoList');
+		document.querySelectorAll('#about .listBtn').forEach((elem, idx) => {
+			elem.addEventListener('click',(e)=> {
+				videoList.forEach(elem => {if(!elem.classList.contains('displayNone')) elem.classList.add('displayNone')})
+				videoList[idx].classList.remove('displayNone')
+				addMoreBtn.setAttribute("label-videoIdx", idx);
+				// 클릭한 목록 활성화
 			})
+		})
+
+		let addMoreFlage = 1;
+		addMoreBtn.addEventListener('click', (e) => {
+			if(addMoreFlage === 1) return false;
+			addMoreFlage = 1;
+			if(e.target.getAttribute('label-videoIdx') === '0') request_getMyRecentVideoNext(videoList[0].querySelector('.section-title').lastChild.lastChild.querySelector('.created_at').innerText);
+		})
 
 
-/*			let response = fetch('/home/request/getMyRecentVideo/next', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json;charset=utf-8'
-				},
-				body : body
-			}).then(function(res){
-				res.json()
-						.then(result => { // 결과값을 json 객체로 받아옴
-							// console.log(result)
-							if(result !== 'error') {
-								for(let i=0;i<result.length;i++) recent_video_data.push(result[i])
-								recent_video_data.sort((a,b) => {return Date.parse(b.created_at) < Date.parse(a.created_at) ? -1 : 1})
-							}
-						})
-						.catch(resB => {
-							console.log('catch :: ', resB);
-						})
-			}).catch(function(res){
-				console.log('catch res :: ' , res)
-			})*/
+		// 관리목록 다시보기 데이터 요청
+		let recentVideoFlag = 0;
+		async function request_getMyRecentVideoNext(body) {
+			console.log('다시보기 가져오기 함수실행')
+			if(recentVideoFlag === 1) return false;
+			recentVideoFlag = 1;
+			// 메인 헤드 슬라이더의 데이터 값 가져오기
+			ajaxAwait('<c:url value="/home/request/getMyRecentVideo" />', 'POST', body, (res) => {
+				// console.log('라이브 비디오 가져오기 선언')
+				try {
+					console.log(JSON.parse(res))
+					addService_IconSet(JSON.parse(res), document.getElementById('recent_video'), addMoreBtn);
+					recentVideoFlag = 0;
+					addMoreFlage = 0;
+				} catch(e) {
+					recentVideoFlag = 0;
+					addMoreFlage = 0;
+					console.log(e)
+					return e;
+				}
+			})
 		} // 관리목록 다시보기 더보기 데이터 요청
 		request_getMyRecentVideoNext('none');
 
@@ -124,40 +133,39 @@
 
 		// 관리목록 인기클립 데이터 요청
 
+
+
+		function addService_IconSet(data, target, last) {
+			let s_row = document.createElement('div');
+			s_row.className = 'row icon-set';
+
+			for(let i=0;i<data.length;i++) {
+				let s_col_box = document.createElement('div');
+				s_col_box.className = 'col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5';
+				s_col_box.innerHTML = `
+					<div class="icon-box" title="방송목록">
+					  <a href="\${data[i].url}" class="linkBox" target="_blank">
+						<img alt="" src="\${data[i].thumbnail_url ? data[i].thumbnail_url : default_img}" width="100%">
+					  </a>
+					</div>
+					<div class="icon-info">
+					  <div class="profile">
+						<img alt="" src="\${data[i].profile_image_url ? data[i].profile_image_url : default_img}" width="100%" height="100%">
+					  </div>
+					  <div class="title text">\${data[i].title}</div>
+					  <div class="name text">\${data[i].user_name}</div>
+					  <div class="user_id displayNone">\${data[i].user_id}</div>
+					  <div class="next_page displayNone">\${data[i].nextPage}</div>
+					  <div class="created_at displayNone">\${data[i].created_at}</div>
+					</div>
+				  `;
+				s_row.appendChild(s_col_box)
+			}
+
+			target.appendChild(s_row)
+			// target.removeChild(target.querySelector('.loading'));
+		} /// IconSet 추가하기
 	});
 	//
-/*	async function manageVideoToggle(data) {
-		let response = await fetch('/manage/video/toggle', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8'
-			},
-			body : data
-		}).then(res => {
-			res.text().then(text => {
-				console.log(text)
-			})
-		})
-		.catch(res => {
-			console.log('catch res :: ' , res)
-		})
-	}   // 다시보기를 관리목록에 추가/삭제
-
-	async function manageFollowToggle(data) {
-		let response = await fetch('/manage/follow/toggle', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8'
-			},
-			body : data
-		}).then(res => {
-			res.text().then(text => {
-				console.log(text)
-			})
-		})
-				.catch(res => {
-					console.log('catch res :: ' , res)
-				})
-	}   // 스트리머를 관리목록에 추가/삭제*/
 
 </script>

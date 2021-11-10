@@ -1,5 +1,6 @@
 package com.kokochi.samp.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,24 +143,24 @@ public class HomeController {
 							} else break;
 						}
 					}
-
 				}
 
 				// DB추가가 끝나면, DB에서 최신순으로 조회한다.
-
-				// 조회한 결과값을 리턴한다.
-
-//			log.info("TEST :: getMyRecentVideo :: " + service_video.size());
-
-/*				for(int i=0;i<service_video.size();i++) {
-					service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
-					service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideoVO("exex::", user.getUser_id(),
-							service_video.get(i).getId())));
-					JSONObject res_ob = service_video.get(i).parseToJSONObject();
-//				log.info("getMyRecentVideo :: " + res_ob.toJSONString());
-					res_arr.add(res_ob);
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+				VideoTwitchVO searchVTO = new VideoTwitchVO();
+				searchVTO.setUser_id(user.getId());
+				searchVTO.setLimit(12);
+				if(!body.equals("none")) searchVTO.setCreated_at(format.parse(body));
+				List<VideoTwitchVO> videoTwitchVOS = videoTwitchService.readRecentFollowList(searchVTO);
+				for (VideoTwitchVO videoTwitchVO : videoTwitchVOS) {
+					if(videoTwitchVO != null)  {
+						videoTwitchVO.setThumbnail_url(videoTwitchVO.getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+						JSONObject res_ob = videoTwitchVO.parseToJSON();
+						res_arr.add(res_ob);
+					}
 				}
-				if(res_arr.size() <= 0) return null;*/
+//			log.info("TEST :: getMyRecentVideo :: " + service_video.size());
+				if(res_arr.size() <= 0) return null;
 			}
 //		log.info("TEST :: getMyRecentVideo :: " + res_arr.toJSONString());
 			return res_arr.toJSONString();

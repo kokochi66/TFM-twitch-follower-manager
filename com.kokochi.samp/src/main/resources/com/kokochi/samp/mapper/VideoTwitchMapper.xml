@@ -20,17 +20,16 @@
         <if test="user_name  !=null">AND user_name = #{user_name}</if>
     </select>
 
-    <!-- 팔로우 목록의 비디오 가져오기 -->
-    <select id="readFollowList" resultType="VideoTwitchVO" parameterType="String">
-        SELECT ut.id ID, ut.login LOGIN, ut.display_name display_name, ut.type type, ut.broadcaster_type broadcaster_type,
-               ut.description description , ut.offline_image_url offline_image_url, ut.profile_image_url profile_image_url,
-               ut.view_count view_count, ut.created_at created_at, mf.id managed_id, (mf.id is not null) isManaged
-        FROM user_follow uf
-                 left join user_twitch ut on ut.id = uf.to_id
-                 left join user u on u.twitch_user_id = uf.from_id
-                 left join managed_follow mf on u.id = mf.user_id and ut.id = mf.to_user
-        WHERE uf.from_id = #{from_id}
-        ORDER BY isManaged DESC
+    <!-- 관리 목록의 비디오 가져오기 -->
+    <select id="readRecentFollowList" resultType="VideoTwitchVO" parameterType="VideoTwitchVO">
+        SELECT vt.id, vt.stream_id,vt.user_id, vt.user_name , vt.title , vt.description, vt.url, vt.thumbnail_url, vt.view_count , vt.created_at , vt.published_at ,vt.viewable
+             ,vt.`language` ,vt.`type` ,vt.duration, ut.profile_image_url profile_image_url
+        FROM managed_follow mf
+                 LEFT JOIN user_twitch ut ON mf.to_user = ut.id
+                 LEFT OUTER JOIN video_twitch vt ON vt.user_id = ut.id
+        WHERE mf.user_id = #{user_id}
+        <if test="created_at    !=null">AND vt.created_at <![CDATA[<]]> #{created_at}</if>
+        ORDER BY vt.created_at DESC limit #{limit}
     </select>
 
     <!-- 비디오 생성 -->
@@ -50,21 +49,5 @@
         DELETE FROM video_twitch
         WHERE user_id = #{user_id}
     </delete>
-
-    <!-- 비디오 정보 수정 -->
-    <update id="update" parameterType="VideoTwitchVO">
-        UPDATE video_twitch
-        <trim prefix="set" prefixOverrides=",">
-            <if test="display_name		!=null">, display_name = #{display_name}</if>
-            <if test="type		        !=null">, type = #{type}</if>
-            <if test="broadcaster_type	!=null">, broadcaster_type = #{broadcaster_type}</if>
-            <if test="description	    !=null">, description = #{description}</if>
-            <if test="offline_image_url	!=null">, offline_image_url = #{offline_image_url}</if>
-            <if test="profile_image_url !=null">, profile_image_url = #{profile_image_url}</if>
-            <if test="view_count     	!=null">, view_count = #{view_count}</if>
-            <if test="created_at     	!=null">, created_at = #{created_at}</if>
-        </trim>
-        WHERE id = #{id}
-    </update>
 
 </mapper>
