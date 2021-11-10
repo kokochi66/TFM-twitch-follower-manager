@@ -66,7 +66,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 				for (UserFollowVO c_userFollowVO : allFollowedList) {
 					// 갱신할 값이 이미 db에도 있으면 Set에서 값을 지운다.
 					if(followSet.contains(c_userFollowVO.getTo_id())) followSet.remove(c_userFollowVO.getTo_id());
-					service.addUserFollow(c_userFollowVO);
+					else service.addUserFollow(c_userFollowVO);
 				}
 				for (String s : followSet) service.deleteUserFollow(s);
 

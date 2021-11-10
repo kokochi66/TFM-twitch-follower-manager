@@ -3,6 +3,7 @@ package com.kokochi.samp.queryAPI;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kokochi.samp.domain.VideoTwitchVO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -100,6 +101,50 @@ public class GetVideo {
 		}
 		return res;
 	}
+
+	public ArrayList<VideoTwitchVO> getRecentVideo(String client_id, String access_token, String query) throws Exception {
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", access_token);
+		headers.add("Client-id", client_id);
+
+		GetStream streamGetter = new GetStream();
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+		ArrayList<VideoTwitchVO> res = new ArrayList<>();
+		JSONParser parser = new JSONParser();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+
+		try {
+//				System.out.println("GetVideo - userId =  " + c_user_id);
+			ResponseEntity<String> response = rt.exchange(
+					"https://api.twitch.tv/helix/videos"+query, HttpMethod.GET, entity, String.class);
+//				System.out.println("getRecentVideoFromUsers :: " + response.getBody());
+			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
+			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
+			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
+			if(data.size() <= 0) return null; 	// 가져온 비디오 데이터가 없다면 null을 출력
+
+			for(int j=0;j<data.size();j++) {
+//					System.out.println("GetVideo - getRecentVideoFromUsers " + data.get(j).toString() +" "+j+" "+data.size());
+				JSONObject cJson = (JSONObject) parser.parse(data.get(j).toString());
+				VideoTwitchVO v = gsonParser.fromJson(cJson.toString(), VideoTwitchVO.class);
+				if(j == data.size()-1  && pagination.containsKey("cursor")) v.setNextPage(pagination.get("cursor").toString());
+				res.add(v);
+			}
+//			Collections.sort(res, (a,b) -> b.getCreated_at().compareTo(a.getCreated_at()));
+			return res;
+
+
+		} catch (HttpStatusCodeException  e) {
+			JSONObject exceptionMessage = (JSONObject) parser.parse(e.getResponseBodyAsString());
+//			System.out.println("GetVideo - getOneVideoFromId " + exceptionMessage.toJSONString());
+
+			if(exceptionMessage.get("status").toString().equals("401")) return null;
+		}
+		return res;
+	}
+
 	
 	public ArrayList<Video> getRecentVideoFromUsers(String client_id, String access_token,
                                                     List<ManagedFollowVO> users, String query) throws Exception {

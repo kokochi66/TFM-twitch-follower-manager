@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.TwitchKeyVO;
+import com.kokochi.samp.domain.VideoTwitchVO;
 import com.kokochi.samp.queryAPI.GetToken;
+import com.kokochi.samp.service.VideoTwitchService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,6 +49,9 @@ public class HomeController {
 	
 	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
+	private VideoTwitchService videoTwitchService;
 	
 	@Autowired
 	private ManagedService managed_service;
@@ -105,35 +110,63 @@ public class HomeController {
 		}
 
 	}
-	
+
+	// /home/request/getMyRecentVideo POST - 나의 관리목록 최신 다시보기 가져오기
 	@RequestMapping(value="/home/request/getMyRecentVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
 	public String getMyRecentVideo(@RequestBody String body) throws Exception {
 		log.info("/home/request/getMyRecentVideo - 나의 관리목록 최신 다시보기 가져오기 " + body);
-		JSONParser parser = new JSONParser();
-		JSONArray res_arr = new JSONArray();
-		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(!principal.toString().equals("anonymousUser")) {
-			UserDTO user = (UserDTO) principal;
-			List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getUser_id());
-			String client_id = key.read("client_id").getKeyValue();
-			List<Video> service_video = new ArrayList<>();
-			service_video = videoGetter.getRecentVideoFromUsers(client_id, user.getOauth_token(), follow_list, "first=8");
+		try {
+			JSONParser parser = new JSONParser();
+			JSONArray res_arr = new JSONArray();
+			Key keyTwitch = new Key();
+
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(!principal.toString().equals("anonymousUser")) {
+				UserDTO user = (UserDTO) principal;
+
+				// 사용자의 팔로우 관리목록을 가져온다
+				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
+
+				// 팔로우 관리목록에 해당하는 사용자의 비디오 값을 가져온다
+				String client_id = keyTwitch.getClientId();
+				for (ManagedFollowVO managedFollowVO : follow_list) {
+					List<VideoTwitchVO> service_video = service_video = videoGetter.getRecentVideo(client_id, key.read("App_Access_Token").getKeyValue(),
+							"?user_id="+managedFollowVO.getTo_user()+"&first=100");
+					if(service_video != null) {
+						for (VideoTwitchVO videoTwitchVO : service_video) {
+//							System.out.println("TEST :: 가져온 비디오 데이터 :: " + videoTwitchVO);
+							VideoTwitchVO dbSearch = videoTwitchService.read(videoTwitchVO);
+							if(dbSearch == null) { // 비디오값이 DB에 들어있지 않는 동안 트위치 API에서 데이터를 계속 가져와서 DB에 추가한다
+								videoTwitchService.create(videoTwitchVO);
+							} else break;
+						}
+					}
+
+				}
+
+				// DB추가가 끝나면, DB에서 최신순으로 조회한다.
+
+				// 조회한 결과값을 리턴한다.
+
 //			log.info("TEST :: getMyRecentVideo :: " + service_video.size());
-			
-			for(int i=0;i<service_video.size();i++) {
-				service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
-				service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideoVO("exex::", user.getUser_id(),
-						service_video.get(i).getId())));
-				JSONObject res_ob = service_video.get(i).parseToJSONObject();
+
+/*				for(int i=0;i<service_video.size();i++) {
+					service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+					service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideoVO("exex::", user.getUser_id(),
+							service_video.get(i).getId())));
+					JSONObject res_ob = service_video.get(i).parseToJSONObject();
 //				log.info("getMyRecentVideo :: " + res_ob.toJSONString());
-				res_arr.add(res_ob);
+					res_arr.add(res_ob);
+				}
+				if(res_arr.size() <= 0) return null;*/
 			}
-			if(res_arr.size() <= 0) return null;
-		}
 //		log.info("TEST :: getMyRecentVideo :: " + res_arr.toJSONString());
-		return res_arr.toJSONString();
+			return res_arr.toJSONString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
 	}
 	// 관리목록 최신 다시보기 
 	
@@ -169,7 +202,8 @@ public class HomeController {
 			return res_arr.toJSONString();
 			
 		} catch(Exception e) {
-			return e.toString();
+			e.printStackTrace();
+			return e.getMessage();
 		}
 	}
 	// 관리목록 최신 다시보기 더보기

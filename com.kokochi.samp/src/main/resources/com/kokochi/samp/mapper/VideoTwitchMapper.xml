@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kokochi.samp.mapper.VideoTwitchMapper">
+
+    <!-- 특정 비디오 가져오기 -->
+    <select id="read" resultType="VideoTwitchVO" parameterType="VideoTwitchVO">
+        SELECT id, stream_id, user_id, user_name, title, description, url, thumbnail_url, view_count, created_at, published_at, viewable, language, type, duration
+        FROM video_twitch
+        WHERE 1 = 1
+            <if test="id    !=null">AND id = #{id}</if>
+    </select>
+
+    <!-- 비디오 리스트 가져오기 -->
+    <select id="readList" resultType="VideoTwitchVO" parameterType="VideoTwitchVO">
+        SELECT id, stream_id, user_id, user_name, title, description, url, thumbnail_url, view_count, created_at, published_at, viewable, language, type, duration
+        FROM video_twitch
+        WHERE 1 = 1
+        <if test="user_id    !=null">AND user_id = #{user_id}</if>
+        <if test="user_name  !=null">AND user_name = #{user_name}</if>
+    </select>
+
+    <!-- 팔로우 목록의 비디오 가져오기 -->
+    <select id="readFollowList" resultType="VideoTwitchVO" parameterType="String">
+        SELECT ut.id ID, ut.login LOGIN, ut.display_name display_name, ut.type type, ut.broadcaster_type broadcaster_type,
+               ut.description description , ut.offline_image_url offline_image_url, ut.profile_image_url profile_image_url,
+               ut.view_count view_count, ut.created_at created_at, mf.id managed_id, (mf.id is not null) isManaged
+        FROM user_follow uf
+                 left join user_twitch ut on ut.id = uf.to_id
+                 left join user u on u.twitch_user_id = uf.from_id
+                 left join managed_follow mf on u.id = mf.user_id and ut.id = mf.to_user
+        WHERE uf.from_id = #{from_id}
+        ORDER BY isManaged DESC
+    </select>
+
+    <!-- 비디오 생성 -->
+    <insert id="create" parameterType="VideoTwitchVO">
+        INSERT INTO video_twitch(id, stream_id, user_id, user_name, title, description, url, thumbnail_url, view_count, created_at, published_at, viewable, language, type, duration)
+        VALUES(#{id}, #{stream_id}, #{user_id}, #{user_name}, #{title}, #{description}, #{url}, #{thumbnail_url}, #{view_count}, #{created_at}, #{published_at} , #{viewable} , #{language} , #{type}, #{duration} )
+    </insert>
+
+    <!-- 비디오 제거 Id -->
+    <delete id="deleteById" parameterType="String">
+        DELETE FROM video_twitch
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 비디오 제거 userId -->
+    <delete id="deleteByUserId">
+        DELETE FROM video_twitch
+        WHERE user_id = #{user_id}
+    </delete>
+
+    <!-- 비디오 정보 수정 -->
+    <update id="update" parameterType="VideoTwitchVO">
+        UPDATE video_twitch
+        <trim prefix="set" prefixOverrides=",">
+            <if test="display_name		!=null">, display_name = #{display_name}</if>
+            <if test="type		        !=null">, type = #{type}</if>
+            <if test="broadcaster_type	!=null">, broadcaster_type = #{broadcaster_type}</if>
+            <if test="description	    !=null">, description = #{description}</if>
+            <if test="offline_image_url	!=null">, offline_image_url = #{offline_image_url}</if>
+            <if test="profile_image_url !=null">, profile_image_url = #{profile_image_url}</if>
+            <if test="view_count     	!=null">, view_count = #{view_count}</if>
+            <if test="created_at     	!=null">, created_at = #{created_at}</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

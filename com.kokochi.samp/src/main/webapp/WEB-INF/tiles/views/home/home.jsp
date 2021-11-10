@@ -77,14 +77,56 @@
 				</div>
 			</div>
 		</section>
-		<!-- End Services Section -->
-		<script src="${path}/assets/js/home/listvideo.js"></script>
 	</sec:authorize>
 </main>
 <!-- End #main -->
 <script>
+
+	document.addEventListener("DOMContentLoaded", function(){
+
+		// 관리목록 다시보기 데이터 요청
+		async function request_getMyRecentVideoNext(body) {
+			// 메인 헤드 슬라이더의 데이터 값 가져오기
+			ajaxAwait('/home/request/getMyRecentVideo', 'POST', body, (res) => {
+				// console.log('라이브 비디오 가져오기 선언')
+				console.log('관리목록 다시보기 데이터 요청')
+				console.log(JSON.parse(res))
+			})
+
+
+/*			let response = fetch('/home/request/getMyRecentVideo/next', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json;charset=utf-8'
+				},
+				body : body
+			}).then(function(res){
+				res.json()
+						.then(result => { // 결과값을 json 객체로 받아옴
+							// console.log(result)
+							if(result !== 'error') {
+								for(let i=0;i<result.length;i++) recent_video_data.push(result[i])
+								recent_video_data.sort((a,b) => {return Date.parse(b.created_at) < Date.parse(a.created_at) ? -1 : 1})
+							}
+						})
+						.catch(resB => {
+							console.log('catch :: ', resB);
+						})
+			}).catch(function(res){
+				console.log('catch res :: ' , res)
+			})*/
+		} // 관리목록 다시보기 더보기 데이터 요청
+		request_getMyRecentVideoNext('none');
+
+
+
+		// 관리목록 라이브 데이터 요청
+
+		// 관리목록 인기클립 데이터 요청
+
+	});
 	//
-	async function manageVideoToggle(data) {
+/*	async function manageVideoToggle(data) {
 		let response = await fetch('/manage/video/toggle', {
 			method: 'POST',
 			headers: {
@@ -116,6 +158,6 @@
 				.catch(res => {
 					console.log('catch res :: ' , res)
 				})
-	}   // 스트리머를 관리목록에 추가/삭제
+	}   // 스트리머를 관리목록에 추가/삭제*/
 
 </script>

@@ -33,6 +33,7 @@ function listVideo() {
     add_MyRecentVideo(recent_video_data.slice(0, 8), recent_video_box, recent_video_addBtn)
     recent_video_data = recent_video_data.slice(8, recent_video_data.length);
   })  // 관리목록 다시보기 더보기 버튼 이벤트
+
   recent_live_addBtn.addEventListener('click', () => {
     recent_live_box.insertBefore(createLoadingBox(), recent_live_addBtn)
     let next_body = [],
@@ -261,8 +262,6 @@ function listVideo() {
   request_getMyRecentVideo('none')
   request_getMyLiveVideo('none')
   request_getMyClipVideo('none')
-
-
 
 }
 listVideo();
