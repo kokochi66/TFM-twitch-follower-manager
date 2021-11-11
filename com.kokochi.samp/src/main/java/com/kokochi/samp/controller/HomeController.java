@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kokochi.samp.DTO.Key;
-import com.kokochi.samp.domain.TwitchKeyVO;
-import com.kokochi.samp.domain.VideoTwitchVO;
+import com.kokochi.samp.domain.*;
+import com.kokochi.samp.mapper.UserTwitchMapper;
 import com.kokochi.samp.queryAPI.GetToken;
+import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.service.VideoTwitchService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,8 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kokochi.samp.DTO.UserDTO;
-import com.kokochi.samp.domain.ManagedFollowVO;
-import com.kokochi.samp.domain.ManagedVideoVO;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetStream;
@@ -50,6 +49,9 @@ public class HomeController {
 	
 	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
+	private UserTwitchMapper userTwitchMapper;
 
 	@Autowired
 	private VideoTwitchService videoTwitchService;
@@ -169,72 +171,44 @@ public class HomeController {
 			return e.getMessage();
 		}
 	}
-	// 관리목록 최신 다시보기 
-	
-	@RequestMapping(value="/home/request/getMyRecentVideo/next", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
-	@ResponseBody
-	public String getMyRecentVideoNext(@RequestBody String body) throws Exception {
-		log.info("/home/request/getMyRecentVideo/next - 나의 관리목록 최신 다시보기 더보기 가져오기 " + body);
-		try {
-			JSONParser parser = new JSONParser();
-			JSONArray res_arr = new JSONArray();
-			
-			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			if(!principal.toString().equals("anonymousUser")) {
-				UserDTO user = (UserDTO) principal;
-				
-				JSONArray service_arr = (JSONArray) parser.parse(body);
-				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getUser_id());
-				String client_id = key.read("client_id").getKeyValue();
-				Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
-				List<Video> service_video = new ArrayList<>();
-				service_video = videoGetter.getRecentVideoFromUserNext(client_id, user.getOauth_token(), 
-						service_arr.get(0).toString(), "first=8&after="+service_arr.get(1).toString());
-				
-				for(int i=0;i<service_video.size();i++) {
-					service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
-					service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideoVO("exex::", user.getUser_id(), service_video.get(i).getId())));
-					JSONObject res_ob = service_video.get(i).parseToJSONObject();
-					res_arr.add(res_ob);
-				}
-				if(res_arr.size() <= 0) return null;
-			}
-//			log.info(res_arr.toJSONString());
-			return res_arr.toJSONString();
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-			return e.getMessage();
-		}
-	}
-	// 관리목록 최신 다시보기 더보기
-	
+
 	@RequestMapping(value="/home/request/getMyLiveVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
 	public String getMyLiveVideo(@RequestBody String body) throws Exception {
-//		log.info("/home/request/getMyLiveVideo - 나의 관리목록 라이브 가져오기 " + body);
-		JSONArray res_arr = new JSONArray();
-		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(!principal.toString().equals("anonymousUser")) {
-			UserDTO user = (UserDTO) principal;
-			List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getUser_id());
-			String client_id = key.read("client_id").getKeyValue();
-			
-			for(int i=0;i<follow_list.size();i++) {
-				Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), follow_list.get(i).getTo_user(), "");
-				if(s != null) {
-//					log.info("service_getLive :: " + s.toString() +" " + i +" " + follow_list.size())s;
-					s.setThumbnail_url(s.getThumbnail_url().replace("{width}", "300").replace("{height}", "200"));
-					JSONObject res_ob = s.StreamToVideo().parseToJSONObject();
-					res_arr.add(res_ob);
+		log.info("/home/request/getMyLiveVideo - 나의 관리목록 라이브 가져오기 " + body);
+		try {
+			JSONArray res_arr = new JSONArray();
+
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(!principal.toString().equals("anonymousUser")) {
+				UserDTO user = (UserDTO) principal;
+				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
+				String client_id = twitchKey.getClientId();
+
+				for(int i=0;i<follow_list.size();i++) {
+//					log.info("user :: " + client_id+" "+user.getOauth_token()+" "+follow_list.get(i).getTo_user());
+					Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), follow_list.get(i).getTo_user(), "");
+
+					if(s != null) {
+//					log.info("service_getLive :: " + s.toString() +" " + i +" " + follow_list.size());
+						UserTwitchVO searchUser = new UserTwitchVO();
+						searchUser.setId(follow_list.get(i).getTo_user());
+						UserTwitchVO read = userTwitchMapper.read(searchUser);
+						s.setThumbnail_url(s.getThumbnail_url().replace("{width}", "300").replace("{height}", "200"));
+						s.setProfile_image_url(read.getProfile_image_url());
+						JSONObject res_ob = s.StreamToVideo().parseToJSONObject();
+						res_arr.add(res_ob);
+					}
 				}
-			}
 //			log.info("video format :: " + res_arr.toJSONString());
-			if(res_arr.size() <= 0) return null;
+				if(res_arr.size() <= 0) return null;
+			}
+			return res_arr.toJSONString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
 		}
-		
-		return res_arr.toJSONString();
+
 	}
 	// 관리목록 라이브
 	
@@ -291,4 +265,44 @@ public class HomeController {
 		return res_arr.toJSONString();
 	}
 	// 관리목록 인기클립 더보기
+
+
+
+	/*	@RequestMapping(value="/home/request/getMyRecentVideo/next", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
+	@ResponseBody
+	public String getMyRecentVideoNext(@RequestBody String body) throws Exception {
+		log.info("/home/request/getMyRecentVideo/next - 나의 관리목록 최신 다시보기 더보기 가져오기 " + body);
+		try {
+			JSONParser parser = new JSONParser();
+			JSONArray res_arr = new JSONArray();
+
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(!principal.toString().equals("anonymousUser")) {
+				UserDTO user = (UserDTO) principal;
+
+				JSONArray service_arr = (JSONArray) parser.parse(body);
+				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getUser_id());
+				String client_id = key.read("client_id").getKeyValue();
+				Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+				List<Video> service_video = new ArrayList<>();
+				service_video = videoGetter.getRecentVideoFromUserNext(client_id, user.getOauth_token(),
+						service_arr.get(0).toString(), "first=8&after="+service_arr.get(1).toString());
+
+				for(int i=0;i<service_video.size();i++) {
+					service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+					service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideoVO("exex::", user.getUser_id(), service_video.get(i).getId())));
+					JSONObject res_ob = service_video.get(i).parseToJSONObject();
+					res_arr.add(res_ob);
+				}
+				if(res_arr.size() <= 0) return null;
+			}
+//			log.info(res_arr.toJSONString());
+			return res_arr.toJSONString();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+	}
+	// 관리목록 최신 다시보기 더보기*/
 }

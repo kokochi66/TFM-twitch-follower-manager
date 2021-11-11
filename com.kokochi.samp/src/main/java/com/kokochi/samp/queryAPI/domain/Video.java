@@ -53,7 +53,7 @@ public class Video {
 		res.put("view_count", this.view_count);
 		res.put("language", this.language);
 		res.put("nextPage", this.nextPage);
-		res.put("profile_url", this.profile_url);
+		res.put("profile_image_url", this.profile_url);
 		res.put("isManaged", this.isManaged);
 		
 		return res;

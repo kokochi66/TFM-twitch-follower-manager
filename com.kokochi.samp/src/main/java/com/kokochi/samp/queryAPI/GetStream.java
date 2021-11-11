@@ -43,9 +43,6 @@ public class GetStream {
 			if(data.size() <= 0) return null;
 			JSONObject cJson = (JSONObject) parser.parse(data.get(0).toString());
 			Stream stream = gsonParser.fromJson(cJson.toString(), Stream.class);
-			
-			TwitchUser cUser = getUser(client_id, app_access_token, "id="+user_id+"&");
-			stream.setProfile_image_url(cUser.getProfile_image_url());
 
 			return stream;
 		} catch (HttpStatusCodeException  e) {

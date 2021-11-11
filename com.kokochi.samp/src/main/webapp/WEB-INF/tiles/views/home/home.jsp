@@ -63,12 +63,12 @@
 					</div>
 				</div>
 				<div class="recent_live videoList displayNone">
-					<div class="section-title">
+					<div id="recent_live" class="section-title">
 						<h2>관리목록 라이브</h2>
 					</div>
 				</div>
 				<div class="recent_clip videoList displayNone">
-					<div class="section-title">
+					<div id="recent_clip" class="section-title">
 						<h2>관리목록 인기클립</h2>
 					</div>
 				</div>
@@ -96,6 +96,10 @@
 		})
 
 		let addMoreFlage = 1;
+		function addMoreClick(e) {
+
+		}
+
 		addMoreBtn.addEventListener('click', (e) => {
 			if(addMoreFlage === 1) return false;
 			addMoreFlage = 1;
@@ -113,28 +117,40 @@
 			ajaxAwait('<c:url value="/home/request/getMyRecentVideo" />', 'POST', body, (res) => {
 				// console.log('라이브 비디오 가져오기 선언')
 				try {
-					console.log(JSON.parse(res))
+					// console.log(JSON.parse(res))
 					addService_IconSet(JSON.parse(res), document.getElementById('recent_video'), addMoreBtn);
 					recentVideoFlag = 0;
 					addMoreFlage = 0;
 				} catch(e) {
 					recentVideoFlag = 0;
 					addMoreFlage = 0;
-					console.log(e)
+					// console.log(e)
 					return e;
 				}
 			})
 		} // 관리목록 다시보기 더보기 데이터 요청
 		request_getMyRecentVideoNext('none');
 
-
-
 		// 관리목록 라이브 데이터 요청
+		function request_getMyLiveVideo(body) {
+			ajaxAwait('<c:url value="/home/request/getMyLiveVideo" />', 'POST', body, (res) => {
+				// console.log('라이브 비디오 가져오기 선언')
+				try {
+					console.log(JSON.parse(res))
+					if(res !== 'error') addService_IconSet(JSON.parse(res), document.getElementById('recent_live'))
+				} catch(e) {
+					// console.log(e)
+					return e;
+				}
+			})
+
+		} // 관리목록 라이브 데이터 요청
+		request_getMyLiveVideo('none')
 
 		// 관리목록 인기클립 데이터 요청
 
 
-
+		// 데이터 셋 추가하기
 		function addService_IconSet(data, target, last) {
 			let s_row = document.createElement('div');
 			s_row.className = 'row icon-set';
