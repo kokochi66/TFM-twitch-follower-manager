@@ -3,6 +3,7 @@ package com.kokochi.samp.controller;
 import java.util.HashSet;
 import java.util.List;
 
+import com.kokochi.samp.DTO.Key;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,12 +48,13 @@ public class QueryController {
 	public String getReplayDataFromStream(@RequestHeader(value="user_id")String user_id, 
 			@RequestHeader(value="twitch_user_id")String twitch_user_id) throws Exception {
 		log.info("/query/request/initFollow - 팔로우 목록 초기화 및 동기화 ");
-		
-		String client_id = key.read("client_id").getKeyValue();
+		Key keyTwitch = new Key();
+		String client_id = keyTwitch.getClientId();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		List<ManagedFollowVO> managedFollow_VO_list = follow_service.listFollow(user_id);
-		
+
+		log.info("/query/request/initFollow - 토큰값 :: ["+client_id+"]  ["+app_access_token+"]");
 		HashSet<String> follow_set = new HashSet<>();
 		List<String> follow_list = followGetter.getAllFollowedList(client_id, app_access_token, "from_id="+twitch_user_id);
 		
@@ -71,10 +73,10 @@ public class QueryController {
 	@ResponseBody
 	public String getSearchStream(@RequestBody String query) throws Exception {
 		log.info("/query/request/searchStreams - 검색창 쿼리 :: " + query);
-		
-		String client_id = key.read("client_id").getKeyValue();	// 데이터베이스에서 client_id값을 가져옴
-		String app_access_token = key.read("app_access_token").getKeyValue(); // 데이터베이스에서 인증된 app_access_token 값을 가져옴
-		
+		Key keyTwitch = new Key();
+		String client_id = keyTwitch.getClientId();
+		String app_access_token = key.read("app_access_token").getKeyValue();
+//		log.info("/query/request/initFollow - 토큰값 :: ["+client_id+"]  ["+app_access_token+"]");
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", app_access_token);
 		headers.add("Client-id", client_id);	// 인증값을 요청 헤더에 넣어줌

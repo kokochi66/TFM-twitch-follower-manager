@@ -23,3 +23,16 @@
 	</div>
 </section>
 <script src="${path}/assets/js/module/searchBar.js"></script>
+
+
+
+
+
+
+
+
+
+
+<sciprt>
+
+</sciprt>

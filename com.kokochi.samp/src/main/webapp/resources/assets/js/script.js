@@ -21,7 +21,6 @@ async function ajaxAwait(url, method, body, callback){
         })
     })
     .catch(res => {
-        alert('ajaxAwait 에러가 발생하였습니다.');
         console.log('catch res :: ' , res)
     })
 }
@@ -39,7 +38,6 @@ function ajaxSubmit(url, method, body, callback) {
         })
     })
     .catch(res => {
-        alert('ajaxAwait 에러가 발생하였습니다.');
         console.log('catch res :: ' , res)
     })
 }

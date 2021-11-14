@@ -2,6 +2,7 @@ package com.kokochi.samp.queryAPI.domain;
 
 import java.util.Date;
 
+import com.kokochi.samp.domain.ClipTwitchVO;
 import org.json.simple.JSONObject;
 
 import lombok.AllArgsConstructor;
@@ -61,5 +62,26 @@ public class Clips {
 		j.put("nextPage", this.nextPage);
 		j.put("profile_url", this.profile_url);
 		return j;
+	}
+	public ClipTwitchVO parseToClipTwitchVO() {
+		ClipTwitchVO clipTwitchVO = new ClipTwitchVO();
+		if(this.id != null) clipTwitchVO.setId(this.id);
+		if(this.url != null) clipTwitchVO.setUrl(this.url);
+		if(this.embed_url != null) clipTwitchVO.setEmbed_url(this.embed_url);
+		if(this.broadcaster_id != null) clipTwitchVO.setBroadcaster_id(this.broadcaster_id);
+		if(this.broadcaster_name != null) clipTwitchVO.setBroadcaster_name(this.broadcaster_name);
+		if(this.creator_id != null) clipTwitchVO.setCreator_id(this.creator_id);
+		if(this.creator_name != null) clipTwitchVO.setCreator_name(this.creator_name);
+		if(this.video_id != null) clipTwitchVO.setVideo_id(this.video_id);
+		if(this.game_id != null) clipTwitchVO.setGame_id(this.game_id);
+		if(this.language != null) clipTwitchVO.setLanguage(this.language);
+		if(this.title != null) clipTwitchVO.setTitle(this.title);
+		clipTwitchVO.setView_count(this.view_count);
+		if(this.created_at != null) clipTwitchVO.setCreated_at(this.created_at);
+		if(this.thumbnail_url != null) clipTwitchVO.setThumbnail_url(this.thumbnail_url);
+		clipTwitchVO.setDuration(this.duration);
+		if(this.nextPage != null) clipTwitchVO.setNextPage(this.nextPage);
+		if(this.profile_url != null) clipTwitchVO.setProfile_image_url(this.profile_url);
+		return clipTwitchVO;
 	}
 }

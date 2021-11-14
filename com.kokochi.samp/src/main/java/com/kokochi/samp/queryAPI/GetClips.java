@@ -62,7 +62,7 @@ public class GetClips {
 		return null;
 	}
 	
-	public List<Clips> getClipsByUserId(String client_id, String Access_Token, String user_id, int limit) throws Exception {
+	public List<Clips> getClipsByUserId(String client_id, String Access_Token, String user_id, String query) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", Access_Token);
 		headers.add("Client-id", client_id);
@@ -76,7 +76,7 @@ public class GetClips {
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
-					"https://api.twitch.tv/helix/clips?first="+limit+"&"+user_id, HttpMethod.GET,
+					"https://api.twitch.tv/helix/clips?broadcaster_id="+user_id+"&"+query, HttpMethod.GET,
 					entity, String.class);
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
@@ -86,7 +86,7 @@ public class GetClips {
 			for(int i=0;i<data.size();i++) {
 				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
 				Clips clip = gsonParser.fromJson(cJson.toString(), Clips.class);
-				clip.setNextPage(pagination.get("cursor").toString());
+				if(pagination.get("cursor") != null) clip.setNextPage(pagination.get("cursor").toString());
 				res.add(clip);
 			}
 			return res;

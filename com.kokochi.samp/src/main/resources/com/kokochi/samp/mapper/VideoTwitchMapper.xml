@@ -28,7 +28,7 @@
                  LEFT JOIN user_twitch ut ON mf.to_user = ut.id
                  LEFT OUTER JOIN video_twitch vt ON vt.user_id = ut.id
         WHERE mf.user_id = #{user_id}
-        <if test="created_at    !=null">AND vt.created_at <![CDATA[<]]> #{created_at}</if>
+        <if test="created_at    !=null">AND vt.created_at <![CDATA[<]]> #{points}</if>
         ORDER BY vt.created_at DESC limit #{limit}
     </select>
 

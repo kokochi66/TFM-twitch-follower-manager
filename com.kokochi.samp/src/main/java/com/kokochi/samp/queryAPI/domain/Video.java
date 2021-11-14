@@ -39,6 +39,7 @@ public class Video {
 	
 	public JSONObject parseToJSONObject() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		SimpleDateFormat formatStr = new SimpleDateFormat("yyyy년 MM월dd일 HH시 mm분");
 //		System.out.println("JSONObject - parseToJSONObject :: " + format.format(this.created_at));
 		JSONObject res = new JSONObject();
 		res.put("id", this.id);
@@ -47,7 +48,8 @@ public class Video {
 		res.put("user_name", this.user_name);
 		res.put("title", this.title);
 		res.put("description", this.description);
-		res.put("created_at", format.format(this.created_at));
+		res.put("points", format.format(this.created_at));
+		res.put("created_at", formatStr.format(this.created_at));
 		res.put("url", this.url);
 		res.put("thumbnail_url", this.thumbnail_url);
 		res.put("view_count", this.view_count);

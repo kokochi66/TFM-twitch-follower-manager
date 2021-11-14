@@ -33,7 +33,7 @@ function init_SearchBar() {
             res.json().then(result => { // 결과값을 json 객체로 받아옴
                 // console.log(result)
                 searchBar_add_searchPreview(result) // 받아온 객체 배열로 뷰에 추가해줌.
-            }).catch(resB => console.log(resB));
+            }).catch(resB => {console.log(resB);searchBar_input_text.addEventListener('input', searchBar_input_searchEvent);});
         }).catch(function(res){ 
             console.log('catch res :: ' , res)
             // 에러가 발생한 경우에는 아무런 값이 뷰에 추가되지 않음.

@@ -33,10 +33,12 @@ public class VideoTwitchVO {
 	private Boolean isManaged;
 
 	private Integer limit;	// 쿼리용
+	private Date points;
 
 
 	public JSONObject parseToJSON() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		SimpleDateFormat formatStr = new SimpleDateFormat("yyyy년 MM월dd일 HH시 mm분");
 		JSONObject jsonObject = new JSONObject();
 		if(id!=null) jsonObject.put("id",this.id);
 		if(stream_id!=null) jsonObject.put("stream_id",this.stream_id);
@@ -44,7 +46,8 @@ public class VideoTwitchVO {
 		if(user_name!=null) jsonObject.put("user_name",this.user_name);
 		if(title!=null) jsonObject.put("title",this.title);
 		if(description!=null) jsonObject.put("description",this.description);
-		if(created_at!=null) jsonObject.put("created_at",format.format(this.created_at));
+		if(created_at!=null) jsonObject.put("created_at",formatStr.format(this.created_at));
+		if(points!=null) jsonObject.put("points",format.format(this.created_at));
 		if(published_at!=null) jsonObject.put("published_at",format.format(this.published_at));
 		if(url!=null) jsonObject.put("url",this.url);
 		if(thumbnail_url!=null) jsonObject.put("thumbnail_url",this.thumbnail_url);

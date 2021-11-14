@@ -61,6 +61,7 @@
 #services .icon-info .text {margin-left: 70px;}
 #services .icon-info .title {font-size: 15px;}
 #services .icon-info .name {font-size: 13px;}
+#services .icon-info .created_at {font-size: 12px;}
 #services .icon-info .game {font-size: 11px;}
 
 #services .recent_video .icon-set .icon-box {position: relative;}

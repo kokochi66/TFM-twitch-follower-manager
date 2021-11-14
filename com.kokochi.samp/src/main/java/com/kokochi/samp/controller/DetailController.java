@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.kokochi.samp.DTO.Key;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -61,8 +62,9 @@ public class DetailController {
 	@RequestMapping(method=RequestMethod.GET)
 	public String detail(Model model, @RequestParam("streams")String streams) throws Exception { // 메인 home 화면 매핑
 		log.info("/detail - 스트리머 상세보기 페이지 :: " + streams);
-		
-		String client_id = key.read("client_id").getKeyValue();
+
+		Key keyTwitch = new Key();
+		String client_id = keyTwitch.getClientId();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		LanguageConverter langConverter = new LanguageConverter();
@@ -148,7 +150,7 @@ public class DetailController {
 		String client_id = key.read("client_id").getKeyValue();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		List<Clips> replay_list = clipGetter.getClipsByUserId(client_id, app_access_token, 
-				"broadcaster_id="+body_json.get("login").toString()+"&"+body_json.get("next").toString(), 8);
+				body_json.get("login").toString(), body_json.get("next").toString()+" &first=8");
 		if(replay_list == null || replay_list.size() == 0) return "error";
 		
 		JSONArray res_arr = new JSONArray();
