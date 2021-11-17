@@ -58,7 +58,8 @@ public class DetailController {
 	private GetFollow followGetter = new GetFollow();
 	private GetClips clipGetter = new GetClips();
 	private GetVideo videoGetter = new GetVideo();
-	
+
+	// /detail GET - 스트리머 상세보기 페이지
 	@RequestMapping(method=RequestMethod.GET)
 	public String detail(Model model, @RequestParam("streams")String streams) throws Exception { // 메인 home 화면 매핑
 		log.info("/detail - 스트리머 상세보기 페이지 :: " + streams);
@@ -81,15 +82,16 @@ public class DetailController {
 		model.addAttribute("stream_channel", stream_channel);
 		return "detail/detail";
 	}
-	// /detail 매핑
-	
+
+	// /detail/request/live POST - 라이브 데이터 가져오기
 	@RequestMapping(value="/request/live", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getLiveDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/live - 라이브 데이터 가져오기 :: " + body);
-		
-		String client_id = key.read("client_id").getKeyValue();
-		String app_access_token = key.read("app_access_token").getKeyValue();
+
+		Key twitchKey = new Key();		// 키값이 저장된 객체
+		String client_id = twitchKey.getClientId();
+		String app_access_token = key.read("App_Access_Token").getKeyValue();
 		Stream stream = streamGetter.getLiveStream(client_id, app_access_token, body, "");
 		if(stream == null) {
 			JSONObject res = new JSONObject();
@@ -103,8 +105,8 @@ public class DetailController {
 		JSONObject res = stream.StreamToJSON();
 		return res.toJSONString();
 	}
-	// 라이브 데이터 가져오기 요청
-	
+
+	// /detail/request/replay POST - 다시보기 데이터 가져오기
 	@RequestMapping(value="/request/replay", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getReplayDataFromStream(@RequestBody String body) throws Exception {
@@ -119,8 +121,9 @@ public class DetailController {
 			UserDTO user = (UserDTO) principal;
 			user_id = user.getUser_id();
 		}	// 로그인 상태라면, user_id가 로그인값으로 변경됨.
-		
-		String client_id = key.read("client_id").getKeyValue();
+
+		Key twitchKey = new Key();		// 키값이 저장된 객체
+		String client_id = twitchKey.getClientId();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		ArrayList<Video> replay_list = videoGetter.getVideoFromId(client_id, app_access_token, 
 				"user_id="+body_json.get("login").toString()+"&"+body_json.get("next").toString(), 8);
@@ -137,8 +140,8 @@ public class DetailController {
 		}
 		return res_arr.toJSONString();
 	}
-	// 다시보기 데이터 가져오기 요청	
 	
+	// /detail/request/clips POST - 클립 데이터 가져오기
 	@RequestMapping(value="/request/clips", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getClipsDataFromStream(@RequestBody String body) throws Exception {
@@ -146,8 +149,9 @@ public class DetailController {
 		JSONParser parser = new JSONParser();
 		if(body.equals("") || body == null) return "error";
 		JSONObject body_json = (JSONObject) parser.parse(body);
-		
-		String client_id = key.read("client_id").getKeyValue();
+
+		Key twitchKey = new Key();		// 키값이 저장된 객체
+		String client_id = twitchKey.getClientId();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		List<Clips> replay_list = clipGetter.getClipsByUserId(client_id, app_access_token, 
 				body_json.get("login").toString(), body_json.get("next").toString()+" &first=8");
@@ -160,14 +164,15 @@ public class DetailController {
 		}
 		return res_arr.toJSONString();
 	}
-	// 클립 데이터 가져오기 요청
-	
+
+	// /detail/request/relative POST - 연관 스트리머 데이터 가져오기
 	@RequestMapping(value="/request/relative", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getRelativeDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/relative - 연관 스트리머 데이터 가져오기 :: " + body);
-		
-		String client_id = key.read("client_id").getKeyValue();
+
+		Key twitchKey = new Key();		// 키값이 저장된 객체
+		String client_id = twitchKey.getClientId();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		Map<String, Integer> relative = new HashMap<>();
@@ -188,8 +193,8 @@ public class DetailController {
 		}
 		return res_arr.toJSONString();
 	}
-	// 연관 스트리머 데이터 가져오기 요청
 	
+	// /detail/request/getTwitchUserSet POST - 트위치 사용자 데이터 가져오기
 	@RequestMapping(value="/request/getTwitchUserSet", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getTwitchUserDataFromStream(@RequestBody String body) throws Exception {
@@ -197,8 +202,9 @@ public class DetailController {
 		JSONParser parser = new JSONParser();
 		JSONArray res_arr = new JSONArray();
 		JSONArray service_arr = (JSONArray) parser.parse(body);
-		
-		String client_id = key.read("client_id").getKeyValue();
+
+		Key twitchKey = new Key();		// 키값이 저장된 객체
+		String client_id = twitchKey.getClientId();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		String user_id = "";
@@ -220,6 +226,5 @@ public class DetailController {
 
 		return res_arr.toJSONString();
 	}
-	// TwitchUser 포맷 요청
 
 }

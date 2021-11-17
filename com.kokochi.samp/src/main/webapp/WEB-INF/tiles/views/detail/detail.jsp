@@ -91,3 +91,8 @@
 </main>
 <!-- End #main -->
 <script src="${path}/assets/js/detail/detail.js"></script>
+
+<script>
+
+
+</script>
