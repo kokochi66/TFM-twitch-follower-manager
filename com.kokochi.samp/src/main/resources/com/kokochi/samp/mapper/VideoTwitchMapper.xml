@@ -13,11 +13,28 @@
 
     <!-- 비디오 리스트 가져오기 -->
     <select id="readList" resultType="VideoTwitchVO" parameterType="VideoTwitchVO">
-        SELECT id, stream_id, user_id, user_name, title, description, url, thumbnail_url, view_count, created_at, published_at, viewable, language, type, duration
+        SELECT id
+             , stream_id
+             , user_id
+             , user_name
+             , title
+             , description
+             , url
+             , thumbnail_url
+             , view_count
+             , created_at
+             , published_at
+             , viewable
+             , language
+             , type
+             , duration
         FROM video_twitch
-        WHERE 1 = 1
-        <if test="user_id    !=null">AND user_id = #{user_id}</if>
-        <if test="user_name  !=null">AND user_name = #{user_name}</if>
+        <where>
+            <if test="user_id    !=null">AND user_id = #{user_id}</if>
+            <if test="user_name  !=null">AND user_name = #{user_name}</if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{page} OFFSET #{index}
     </select>
 
     <!-- 관리 목록의 비디오 가져오기 -->

@@ -5,6 +5,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let recent_video = document.querySelector('#services .recent_video')
     let recent_video_addMore = document.querySelector('#services .recent_video .addMore')
+    let recent_video_addMore_flag = 1;
+
+    let recent_clip = document.querySelector('#services .recent_clip')
+    let recent_clip_addMore = document.querySelector('#services .recent_clip .addMore')
+    let recent_clip_addMore_flag = 1;
+
+    // 변수 초기화
 
     function getDataLive(body) {
         ajaxAwait('/detail/request/live', 'POST', body, (res) => {
@@ -46,11 +53,11 @@ document.addEventListener("DOMContentLoaded", function(){
             "next" : body
         }
         ajaxAwait('/detail/request/replay', 'POST', JSON.stringify(bodyData), (res) => {
-            // console.log(JSON.parse(res))
             let result = JSON.parse(res);
             if(res !== 'error') {
                 addVideo_iconBox(result);
             }
+            recent_video_addMore_flag = 0;
         })
     }   // /detail/request/replay POST - 다시보기 데이터 가져오기
     function getDataClip(body) {
@@ -59,22 +66,36 @@ document.addEventListener("DOMContentLoaded", function(){
             "next" : body
         }
         ajaxAwait('/detail/request/clips', 'POST', JSON.stringify(bodyData), (res) => {
-            // console.log(JSON.parse(res))
             let result = JSON.parse(res);
             if(res !== 'error') {
-                addVideo_iconBox(result);
+                addClips_iconBox(result);
             }
+            recent_clip_addMore_flag = 0;
         })
     }   // /detail/request/clip POST - 다시보기 데이터 가져오기
 
-    getDataLive(user_id);
-    getDataReplay('');
+    recent_video_addMore.addEventListener('click', (e) => {
+        if(recent_video_addMore_flag === 1) {
+            alert('조회중 입니다.')
+            return false;
+        }
+        recent_video_addMore_flag = 1;
+        getDataReplay(recent_video_addMore.getAttribute('next-id'));
+    }) // 다시보기 더보기 버튼 이벤트
+    recent_clip_addMore.addEventListener('click', (e) => {
+        if(recent_clip_addMore_flag === 1) {
+            alert('조회중 입니다.')
+            return false;
+        }
+        recent_clip_addMore_flag = 1;
+        getDataClip(recent_clip_addMore.getAttribute('next-id'));
+    }) // 클립 더보기 버튼 이벤트
+
     function addVideo_iconBox(data) {
-        console.log(data)
         let row_box = document.createElement('div')
         row_box.className = 'row icon-set';
 
-        for(let i=0;i<data.length;i++) {
+        for(let i=0;i<data.length-1;i++) {
             let col_box = document.createElement('div')
             col_box.className = 'col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5';
             col_box.innerHTML = `
@@ -88,16 +109,15 @@ document.addEventListener("DOMContentLoaded", function(){
                 </div>
                 <div class="icon-info">
                     <div class="title" title="${data[i].title}">${data[i].title}</div>
-                    <div class="view_count">${data[i].view_count}</div>
+                    <div class="view_count">${data[i].view_count}회 재생</div>
                     <div class="created_at">${data[i].created_at}</div>
                     <div class="video_id displayNone">${data[i].id}</div>
-                    <div class="next_page displayNone">${data[i].nextPage}</div>
                 </div>
             `;
             row_box.appendChild(col_box)
         }
+        recent_video_addMore.setAttribute('next-id', data[data.length-1].next);
         recent_video.insertBefore(row_box, recent_video_addMore);
-        // recent_video_addMore.addEventListener('click', replay_addEvent)
         let recent_video_iconInfo = document.querySelectorAll('#services .recent_video .icon-info')
         let recent_video_manageBtn = document.querySelectorAll('#services .recent_video .video-follow-box')
         recent_video_manageBtn.forEach((elem, idx) => {
@@ -114,31 +134,11 @@ document.addEventListener("DOMContentLoaded", function(){
             })
         })
     }   // 다시보기 HTML 추가하기
-
-
-});
-
-function detailInit(){
-    // 0 - 라이브, 1 - 다시보기, 2 - 클립 , 3 - 연관 스트리머
-    let user_id = document.querySelector('#about .profile .user_id').innerHTML;
-    let live_box = document.querySelector('#services .live-box')
-
-    let recent_video = document.querySelector('#services .recent_video')
-    let recent_video_addMore = document.querySelector('#services .recent_video .addMore')
-
-    let recent_clip = document.querySelector('#services .recent_clip')
-    let recent_clip_addMore = document.querySelector('#services .recent_clip .addMore')
-
-    let relative_box = document.querySelector('#services .relative_box')
-    let relative_box_addMore = document.querySelector('#services .relative_box .addMore')
-    let relative_file = {}
-    let relative_file_num = 0;
-
     function addClips_iconBox(data) {
         let row_box = document.createElement('div')
         row_box.className = 'row icon-set';
-    
-        for(let i=0;i<data.length;i++) {
+
+        for(let i=0;i<data.length-1;i++) {
             let col_box = document.createElement('div')
             col_box.className = 'col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5';
             col_box.innerHTML = `
@@ -156,9 +156,41 @@ function detailInit(){
             `;
             row_box.appendChild(col_box)
         }
+        recent_clip_addMore.setAttribute('next-id', data[data.length-1].next);
         recent_clip.insertBefore(row_box, recent_clip_addMore);
-        recent_clip_addMore.addEventListener('click', clips_addEvent)
     }   // 클립 HTML 추가하기
+
+
+    getDataLive(user_id);
+    getDataReplay('0');
+    getDataClip('0');
+});
+
+
+
+
+
+
+
+
+
+function detailInit(){
+    // 0 - 라이브, 1 - 다시보기, 2 - 클립 , 3 - 연관 스트리머
+    let user_id = document.querySelector('#about .profile .user_id').innerHTML;
+    let live_box = document.querySelector('#services .live-box')
+
+    let recent_video = document.querySelector('#services .recent_video')
+    let recent_video_addMore = document.querySelector('#services .recent_video .addMore')
+
+    let recent_clip = document.querySelector('#services .recent_clip')
+    let recent_clip_addMore = document.querySelector('#services .recent_clip .addMore')
+
+    let relative_box = document.querySelector('#services .relative_box')
+    let relative_box_addMore = document.querySelector('#services .relative_box .addMore')
+    let relative_file = {}
+    let relative_file_num = 0;
+
+
     function addRelative_iconBox(data) {
         let row_box = document.createElement('div')
         row_box.className = 'row icon-set';
@@ -297,5 +329,5 @@ function detail_TabInit() {
         })
     })  // 탭 버튼 클릭 이벤트
 }
-detailInit();
+/*detailInit();*/
 detail_TabInit();

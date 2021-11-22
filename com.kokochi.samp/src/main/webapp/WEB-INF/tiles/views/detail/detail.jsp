@@ -36,6 +36,7 @@
 					
 				</div>
 				<div class="rank-box"></div>
+				<button id="refresh" class="btn btn-primary">새로고침</button>
 			</div>
 		</div>
 	</section>

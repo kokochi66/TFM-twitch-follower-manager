@@ -34,6 +34,8 @@ public class VideoTwitchVO {
 
 	private Integer limit;	// 쿼리용
 	private Date points;
+	private int page = 8;
+	private int index = 1;
 
 
 	public JSONObject parseToJSON() {

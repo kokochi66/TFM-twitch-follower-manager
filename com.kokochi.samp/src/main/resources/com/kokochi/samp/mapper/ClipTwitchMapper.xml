@@ -13,11 +13,29 @@
 
     <!-- 클립 리스트 가져오기 -->
     <select id="readList" resultType="ClipTwitchVO" parameterType="ClipTwitchVO">
-        SELECT id, url, embed_url, broadcaster_id, broadcaster_name, creator_id, creator_name, video_id, game_id, language, title, view_count, created_at, thumbnail_url, duration
+        SELECT id
+             , url
+             , embed_url
+             , broadcaster_id
+             , broadcaster_name
+             , creator_id
+             , creator_name
+             , video_id
+             , game_id
+             , language
+             , title
+             , view_count
+             , created_at
+             , thumbnail_url
+             , duration
         FROM clip_twitch
-        WHERE 1 = 1
-        <if test="broadcaster_id    !=null">AND broadcaster_id = #{broadcaster_id}</if>
-        <if test="broadcaster_name  !=null">AND broadcaster_name = #{broadcaster_name}</if>
+        <where>
+            <if test="broadcaster_id    !=null">AND broadcaster_id = #{broadcaster_id}</if>
+            <if test="broadcaster_name  !=null">AND broadcaster_name = #{broadcaster_name}</if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{page} OFFSET #{index}
+
     </select>
 
     <!-- 관리 목록의 인기클립 가져오기 -->

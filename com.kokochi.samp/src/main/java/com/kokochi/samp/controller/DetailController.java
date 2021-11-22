@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.kokochi.samp.DTO.Key;
+import com.kokochi.samp.domain.ClipTwitchVO;
+import com.kokochi.samp.domain.VideoTwitchVO;
+import com.kokochi.samp.service.ClipTwitchService;
+import com.kokochi.samp.service.VideoTwitchService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -53,6 +57,13 @@ public class DetailController {
 	
 	@Autowired
 	private ManagedService follow_service;
+
+	@Autowired
+	private VideoTwitchService videoTwitchService;
+
+	@Autowired
+	private ClipTwitchService clipTwitchService;
+
 	
 	private GetStream streamGetter = new GetStream();
 	private GetFollow followGetter = new GetFollow();
@@ -122,22 +133,21 @@ public class DetailController {
 			user_id = user.getUser_id();
 		}	// 로그인 상태라면, user_id가 로그인값으로 변경됨.
 
-		Key twitchKey = new Key();		// 키값이 저장된 객체
-		String client_id = twitchKey.getClientId();
-		String app_access_token = key.read("app_access_token").getKeyValue();
-		ArrayList<Video> replay_list = videoGetter.getVideoFromId(client_id, app_access_token, 
-				"user_id="+body_json.get("login").toString()+"&"+body_json.get("next").toString(), 8);
-		if(replay_list == null || replay_list.size() == 0) return "error";
-		
+		VideoTwitchVO find = new VideoTwitchVO();
+		find.setUser_id(body_json.get("login").toString());
+		find.setIndex(Integer.parseInt(body_json.get("next").toString()) * find.getPage());
+		List<VideoTwitchVO> voList = videoTwitchService.readList(find);
+
 		JSONArray res_arr = new JSONArray();
-		for(int i=0;i<replay_list.size();i++) {
-			replay_list.get(i).setThumbnail_url(replay_list.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
-			replay_list.get(i).setManaged(follow_service.isManagedVideo(
-					new ManagedVideoVO("exex::", user_id, replay_list.get(i).getId())));
-			
-			JSONObject j = replay_list.get(i).parseToJSONObject();
+		for (VideoTwitchVO twitchVO : voList) {
+			twitchVO.setThumbnail_url(twitchVO.getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+			JSONObject j = twitchVO.parseToJSON();
 			res_arr.add(j);
 		}
+		JSONObject next = new JSONObject();
+		next.put("next", Integer.parseInt(body_json.get("next").toString())+1);
+		res_arr.add(next);
+
 		return res_arr.toJSONString();
 	}
 	
@@ -150,18 +160,20 @@ public class DetailController {
 		if(body.equals("") || body == null) return "error";
 		JSONObject body_json = (JSONObject) parser.parse(body);
 
-		Key twitchKey = new Key();		// 키값이 저장된 객체
-		String client_id = twitchKey.getClientId();
-		String app_access_token = key.read("app_access_token").getKeyValue();
-		List<Clips> replay_list = clipGetter.getClipsByUserId(client_id, app_access_token, 
-				body_json.get("login").toString(), body_json.get("next").toString()+" &first=8");
-		if(replay_list == null || replay_list.size() == 0) return "error";
-		
+		ClipTwitchVO find = new ClipTwitchVO();
+		find.setBroadcaster_id(body_json.get("login").toString());
+		find.setIndex(Integer.parseInt(body_json.get("next").toString()) * find.getPage());
+		List<ClipTwitchVO> voList = clipTwitchService.readList(find);
 		JSONArray res_arr = new JSONArray();
-		for(int i=0;i<replay_list.size();i++) {
-			JSONObject j = replay_list.get(i).clipsToJSON();
+		for (ClipTwitchVO clipTwitchVO : voList) {
+			clipTwitchVO.setThumbnail_url(clipTwitchVO.getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+			JSONObject j = clipTwitchVO.clipsToJSON();
 			res_arr.add(j);
 		}
+		JSONObject next = new JSONObject();
+		next.put("next", Integer.parseInt(body_json.get("next").toString())+1);
+		res_arr.add(next);
+
 		return res_arr.toJSONString();
 	}
 
@@ -223,6 +235,11 @@ public class DetailController {
 			JSONObject j = t_us.TwitchUserToJSON();
 			res_arr.add(j);
 		}
+
+		// 스트리머 다시보기 데이터 가져오기
+		// 스트리머 클립 데이터 가져오기
+		// 스트리머 팔로우 데이터 가져오기
+		// 스트리머를 팔로우 한 사용자 데이터 가져오기
 
 		return res_arr.toJSONString();
 	}

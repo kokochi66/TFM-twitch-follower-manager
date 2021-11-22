@@ -33,6 +33,8 @@ public class ClipTwitchVO {
 
 	private Integer limit;
 	private Long points;
+	private int page = 8;
+	private int index = 1;
 
 	
 	public Video clipsToVideo() {
