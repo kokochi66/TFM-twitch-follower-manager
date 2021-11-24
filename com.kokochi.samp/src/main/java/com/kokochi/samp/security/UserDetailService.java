@@ -146,28 +146,38 @@ public class UserDetailService implements UserDetailsService {
 		read.setId(userFollowVO.getFrom_id());
 		UserTwitchVO temp = readUserTwitch(read);
 		Key key = new Key();
+		String app_access_token = keyMapper.read("App_Access_Token").getKeyValue();
 
 		// db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
 		if(temp == null) {
-			TwitchUser user = new GetStream().getUser(key.getClientId(), keyMapper.read("App_Access_Token").getKeyValue(), "id=" + userFollowVO.getFrom_id());
+			TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token , "id=" + userFollowVO.getFrom_id());
 			if(user == null) {
-				String app_access_token = new GetToken().requestAppAccessToken(key.getClientId(), key.getCleintSecret());
+/*				app_access_token = new GetToken().requestAppAccessToken(key.getClientId(), key.getCleintSecret());
 				keyMapper.update(new TwitchKeyVO("App_Access_Token", app_access_token));
-				user = new GetStream().getUser(key.getClientId(), keyMapper.read("App_Access_Token").getKeyValue(), "id=" + userFollowVO.getFrom_id());
+				user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getFrom_id()); */
+				user = new TwitchUser();
+				user.setId(userFollowVO.getFrom_id());
+				user.setLogin(userFollowVO.getFrom_login());
+				user.setDisplay_name(userFollowVO.getFrom_name());
 			}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
 			UserTwitchVO userTwitchVO = user.toUserTwitchVO();
 			addUserTwitch(userTwitchVO);
+
 		}
 
 		read.setId(userFollowVO.getTo_id());
 		temp = readUserTwitch(read);
 		// db에 팔로우 대상 사용자가 없으면 추가해준다.
 		if(temp == null) {
-			TwitchUser user = new GetStream().getUser(key.getClientId(), keyMapper.read("App_Access_Token").getKeyValue(), "id=" + userFollowVO.getTo_id());
+			TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());
 			if(user == null) {
-				String app_access_token = new GetToken().requestAppAccessToken(key.getClientId(), key.getCleintSecret());
+/*				app_access_token = new GetToken().requestAppAccessToken(key.getClientId(), key.getCleintSecret());
 				keyMapper.update(new TwitchKeyVO("App_Access_Token", app_access_token));
-				user = new GetStream().getUser(key.getClientId(), keyMapper.read("App_Access_Token").getKeyValue(), "id=" + userFollowVO.getTo_id());
+				user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());*/
+				user = new TwitchUser();
+				user.setId(userFollowVO.getTo_id());
+				user.setLogin(userFollowVO.getTo_login());
+				user.setDisplay_name(userFollowVO.getTo_name());
 			}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
 			UserTwitchVO userTwitchVO = user.toUserTwitchVO();
 			addUserTwitch(userTwitchVO);

@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function(){
     let recent_clip_addMore = document.querySelector('#services .recent_clip .addMore')
     let recent_clip_addMore_flag = 1;
 
+    let refresh_btn = document.querySelector('#refresh_btn');
+
     // 변수 초기화
 
     function getDataLive(body) {
@@ -160,6 +162,11 @@ document.addEventListener("DOMContentLoaded", function(){
         recent_clip.insertBefore(row_box, recent_clip_addMore);
     }   // 클립 HTML 추가하기
 
+    refresh_btn.addEventListener('click', (e) => {
+        ajaxAwait('/detail/request/refresh', 'POST', user_id, (res) => {
+            console.log(res);
+        })
+    })  // 새로고침 버튼 이벤트
 
     getDataLive(user_id);
     getDataReplay('0');

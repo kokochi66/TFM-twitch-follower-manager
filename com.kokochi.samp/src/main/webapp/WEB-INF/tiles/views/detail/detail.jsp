@@ -36,7 +36,7 @@
 					
 				</div>
 				<div class="rank-box"></div>
-				<button id="refresh" class="btn btn-primary">새로고침</button>
+				<button id="refresh_btn" class="btn btn-primary">새로고침</button>
 			</div>
 		</div>
 	</section>
@@ -92,8 +92,3 @@
 </main>
 <!-- End #main -->
 <script src="${path}/assets/js/detail/detail.js"></script>
-
-<script>
-
-
-</script>

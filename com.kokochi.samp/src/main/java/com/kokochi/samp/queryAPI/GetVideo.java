@@ -146,8 +146,7 @@ public class GetVideo {
 	}
 
 	
-	public ArrayList<Video> getRecentVideoFromUsers(String client_id, String access_token,
-                                                    List<ManagedFollowVO> users, String query) throws Exception {
+	public ArrayList<Video> getRecentVideoFromUsers(String client_id, String access_token, List<ManagedFollowVO> users, String query) throws Exception {
 		if(users.size() <= 0) return null; // users의 크기가 1 이상이어야함.
 		
 		HttpHeaders headers = new HttpHeaders();

@@ -11,6 +11,10 @@ import java.util.Date;
 public class UserFollowVO {
     private String id;
     private String from_id;
+    private String from_login;
+    private String from_name;
     private String to_id;
+    private String to_login;
+    private String to_name;
     private Date followed_at;
 }

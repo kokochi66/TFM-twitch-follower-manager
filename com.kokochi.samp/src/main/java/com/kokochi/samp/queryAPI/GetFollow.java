@@ -51,7 +51,7 @@ public class GetFollow {
 		return null;
 	}
 	
-	public ArrayList<String> getAllFollowedList(String client_id, String app_access_token, String user_id) throws Exception {
+	public ArrayList<UserFollowVO> getAllFollowedList(String client_id, String app_access_token, String user_id) throws Exception {
 		// 특정 유저의 모든 팔로우 목록을 조회하는 쿼리이다.
 		// 한번에 쿼리로 찾을 수 있는 팔로우 수는 100개까지이므로, 모든 팔로우 목록을 찾을 때 까지 nextPage를 반복하여 찾아야한다.
 		
@@ -61,8 +61,9 @@ public class GetFollow {
 		
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
+		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
 		
-		ArrayList<String> list = new ArrayList<>();
+		ArrayList<UserFollowVO> list = new ArrayList<>();
 		JSONParser parser = new JSONParser();
 		try {
 			JSONObject pagination = new JSONObject();
@@ -78,7 +79,9 @@ public class GetFollow {
 				
 				for(int i=0;i<data.size();i++) {
 					JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
-					list.add(cJson.get("to_id").toString());
+					UserFollowVO userFollowVO = gsonParser.fromJson(cJson.toString(), UserFollowVO.class);
+					System.out.println("TEST :: getAllFollowedList :: " + userFollowVO);
+					list.add(userFollowVO);
 				}
 			} while(pagination.containsKey("cursor"));
 			return list;

@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.kokochi.samp.DTO.Key;
-import com.kokochi.samp.domain.ClipTwitchVO;
-import com.kokochi.samp.domain.VideoTwitchVO;
+import com.kokochi.samp.domain.*;
+import com.kokochi.samp.security.UserDetailService;
 import com.kokochi.samp.service.ClipTwitchService;
 import com.kokochi.samp.service.VideoTwitchService;
 import org.json.simple.JSONArray;
@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,8 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.converter.LanguageConverter;
-import com.kokochi.samp.domain.ManagedFollowVO;
-import com.kokochi.samp.domain.ManagedVideoVO;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetFollow;
@@ -51,12 +50,12 @@ public class DetailController {
 	
 	@Autowired
 	private TwitchKeyService key;
+
+	@Autowired
+	private UserDetailService userService;
 	
 	@Autowired
-	private UserMapper usermapper;
-	
-	@Autowired
-	private ManagedService follow_service;
+	private ManagedService followService;
 
 	@Autowired
 	private VideoTwitchService videoTwitchService;
@@ -206,42 +205,170 @@ public class DetailController {
 		return res_arr.toJSONString();
 	}
 	
-	// /detail/request/getTwitchUserSet POST - 트위치 사용자 데이터 가져오기
-	@RequestMapping(value="/request/getTwitchUserSet", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
+	// /detail/request/refresh POST - 트위치 사용자 데이터 새로고침
+	@RequestMapping(value="/request/refresh", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
-	public String getTwitchUserDataFromStream(@RequestBody String body) throws Exception {
-		log.info("/detail/request/getTwitchUserSet - 트위치 사용자 데이터 가져오기 :: " + body);
-		JSONParser parser = new JSONParser();
-		JSONArray res_arr = new JSONArray();
-		JSONArray service_arr = (JSONArray) parser.parse(body);
+	public String getTwitchUserDataRefresh(@RequestBody String userId) throws Exception {
+		try {
+			log.info("/detail/request/refresh - 트위치 사용자 데이터 가져오기 :: " + userId);
+			JSONParser parser = new JSONParser();
+			JSONArray res_arr = new JSONArray();
 
-		Key twitchKey = new Key();		// 키값이 저장된 객체
-		String client_id = twitchKey.getClientId();
-		String app_access_token = key.read("app_access_token").getKeyValue();
-		
-		String user_id = "";
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(!principal.toString().equals("anonymousUser")) {
-			UserDTO user = (UserDTO) principal;
-			user_id = user.getUser_id();
+			Key twitchKey = new Key();		// 키값이 저장된 객체
+			String client_id = twitchKey.getClientId();
+			String app_access_token = key.read("App_Access_Token").getKeyValue();
+			int left, right;
+
+			List<VideoTwitchVO> videos = videoGetter.getRecentVideo(client_id,app_access_token ,"?user_id="+userId+"&first=100");
+			VideoTwitchVO findv = new VideoTwitchVO();
+			findv.setUser_id(userId);
+			findv.setPage(1000000000);
+			findv.setIndex(0);
+			List<VideoTwitchVO> vos = videoTwitchService.readList(findv);
+			Collections.sort(videos,(a,b) -> {return b.getCreated_at().compareTo(a.getCreated_at());});
+			Collections.sort(vos,(a,b) -> {return b.getCreated_at().compareTo(a.getCreated_at());});
+			left = 0;
+			right = 0;
+			while(left < videos.size() && right < vos.size()) {
+				VideoTwitchVO tav = videos.get(left);
+				VideoTwitchVO dv = vos.get(right);
+
+				if(!tav.getId().equals(dv.getId())) {
+					// tav가 더 작으면 insert
+					// dv가 더 작으면 dv를 delete
+					if(tav.getCreated_at().compareTo(dv.getCreated_at()) <= 0) {
+						videoTwitchService.create(tav);
+						left++;
+					} else {
+						videoTwitchService.deleteById(dv.getId());
+						right++;
+					}
+				} else {
+					left++;
+					right++;
+				}
+			}
+			while(left < videos.size()) videoTwitchService.create(videos.get(left++));
+			while(right < vos.size()) videoTwitchService.deleteById(vos.get(right++).getId());
+			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 다시보기 데이터 가져오기 완료");
+			// 다시보기 데이터 가져오기
+
+
+			List<ClipTwitchVO> clips = clipGetter.getClipsAll(client_id, app_access_token, "broadcaster_id="+userId+"&first=100");
+			ClipTwitchVO findc = new ClipTwitchVO();
+			findc.setBroadcaster_id(userId);
+			findc.setPage(1000000000);
+			findc.setIndex(0);
+			List<ClipTwitchVO> cos = clipTwitchService.readList(findc);
+			Collections.sort(clips,(a,b) -> {return b.getCreated_at().compareTo(a.getCreated_at());});
+			Collections.sort(cos,(a,b) -> {return b.getCreated_at().compareTo(a.getCreated_at());});
+			left = 0;
+			right = 0;
+			while(left < clips.size() && right < cos.size()) {
+				ClipTwitchVO tac = clips.get(left);
+				ClipTwitchVO dc = cos.get(right);
+
+				if(!tac.getId().equals(dc.getId())) {
+					// tav가 더 작으면 insert
+					// dv가 더 작으면 dv를 delete
+					if(tac.getCreated_at().compareTo(dc.getCreated_at()) <= 0) {
+						clipTwitchService.create(tac);
+						left++;
+					} else {
+						clipTwitchService.deleteById(dc.getId());
+						right++;
+					}
+				} else {
+					left++;
+					right++;
+				}
+			}
+			while(left < clips.size()) clipTwitchService.create(clips.get(left++));
+			while(right < cos.size()) clipTwitchService.deleteById(cos.get(right++).getId());
+			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 클립 데이터 가져오기 완료");
+			// 클립 데이터 가져오기
+
+
+			ArrayList<UserFollowVO> fromFollows = followGetter.getAllFollowedList(client_id, app_access_token, "from_id=" + userId);
+			UserFollowVO findu = new UserFollowVO();
+			findu.setFrom_id(userId);
+			List<UserFollowVO> ffs = userService.readUserFollowList(findu);
+			Collections.sort(fromFollows, (a,b) -> {return b.getFollowed_at().compareTo(a.getFollowed_at());});
+			Collections.sort(ffs, (a,b) -> {return b.getFollowed_at().compareTo(a.getFollowed_at());});
+			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: fromFollows :: " +fromFollows.size());
+			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: ffs :: " +ffs.size());
+			left = 0;
+			right = 0;
+			while(left < fromFollows.size() && right < ffs.size()) {
+				UserFollowVO taf = fromFollows.get(left);
+				UserFollowVO df = ffs.get(right);
+				System.out.println("TEST :: taf :: " + taf+" "+left);
+				System.out.println("TEST :: df :: " + df+" "+right);
+
+				if(!taf.getTo_id().equals(df.getTo_id())) {
+					// tav가 더 작으면 insert
+					// dv가 더 작으면 dv를 delete
+					if(taf.getFollowed_at().compareTo(df.getFollowed_at()) <= 0) {
+						userService.addUserFollow(taf);
+						left++;
+					} else {
+						userService.deleteUserFollow(df.getId());
+						right++;
+					}
+				} else {
+					left++;
+					right++;
+				}
+			}
+			while(left < fromFollows.size()) userService.addUserFollow(fromFollows.get(left++));
+			while(right < ffs.size()) userService.deleteUserFollow(ffs.get(right++).getId());
+			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우 데이터 가져오기");
+			// 팔로우 데이터 가져오기
+
+/*			ArrayList<UserFollowVO> fromFollows;
+			List<ManagedFollowVO> managedFollowVOS;
+			UserFollowVO findu;
+			List<UserFollowVO> ffs;
+
+			fromFollows = followGetter.getAllFollowedList(client_id, app_access_token, "to_id=" + userId);
+			findu = new UserFollowVO();
+			findu.setTo_id(userId);
+			ffs = userService.readUserFollowList(findu);
+			Collections.sort(fromFollows, (a,b) -> {return b.getFollowed_at().compareTo(a.getFollowed_at());});
+			Collections.sort(ffs, (a,b) -> {return b.getFollowed_at().compareTo(a.getFollowed_at());});
+			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: fromFollows :: " +fromFollows.size());
+			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: ffs :: " +ffs.size());
+			left = 0;
+			right = 0;
+			while(left < fromFollows.size() && right < ffs.size()) {
+				UserFollowVO taf = fromFollows.get(left);
+				UserFollowVO df = ffs.get(right);
+
+				if(!taf.getFrom_id().equals(df.getFrom_id())) {
+					// tav가 더 작으면 insert
+					// dv가 더 작으면 dv를 delete
+					if(taf.getFollowed_at().compareTo(df.getFollowed_at()) <= 0) {
+						userService.addUserFollow(taf);
+						left++;
+					} else {
+						userService.deleteUserFollow(df.getId());
+						right++;
+					}
+				} else {
+					left++;
+					right++;
+				}
+			}
+			while(left < fromFollows.size()) userService.addUserFollow(fromFollows.get(left++));
+			while(right < ffs.size()) userService.deleteUserFollow(ffs.get(right++).getId());
+			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 스트리머를 팔로우한 사용자 데이터 가져오기");
+			// 스트리머를 팔로우한 사용자 데이터 가져오기*/
+
+			return res_arr.toJSONString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
 		}
-		
-		for(int i=0;i<service_arr.size();i++) {
-			String c_user_id = service_arr.get(i).toString();
-//			log.info(c_user_id);
-			TwitchUser t_us = streamGetter.getUser(client_id, app_access_token, "id="+c_user_id);
-			
-			t_us.setManaged(follow_service.isManagedFollow(new ManagedFollowVO("exex::", user_id, t_us.getId())));
-			JSONObject j = t_us.TwitchUserToJSON();
-			res_arr.add(j);
-		}
-
-		// 스트리머 다시보기 데이터 가져오기
-		// 스트리머 클립 데이터 가져오기
-		// 스트리머 팔로우 데이터 가져오기
-		// 스트리머를 팔로우 한 사용자 데이터 가져오기
-
-		return res_arr.toJSONString();
 	}
 
 }

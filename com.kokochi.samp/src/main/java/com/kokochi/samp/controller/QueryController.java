@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.kokochi.samp.DTO.Key;
+import com.kokochi.samp.domain.UserFollowVO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -56,9 +57,9 @@ public class QueryController {
 
 		log.info("/query/request/initFollow - 토큰값 :: ["+client_id+"]  ["+app_access_token+"]");
 		HashSet<String> follow_set = new HashSet<>();
-		List<String> follow_list = followGetter.getAllFollowedList(client_id, app_access_token, "from_id="+twitch_user_id);
+		List<UserFollowVO> follow_list = followGetter.getAllFollowedList(client_id, app_access_token, "from_id="+twitch_user_id);
 		
-		for(String str : follow_list) follow_set.add(str);
+		for(UserFollowVO follow : follow_list) follow_set.add(follow.getId());
 		
 		for(ManagedFollowVO mf : managedFollow_VO_list) {
 			if(!follow_set.contains(mf.getTo_user())) {
