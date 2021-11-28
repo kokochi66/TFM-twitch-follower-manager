@@ -10,6 +10,7 @@ public interface UserTwitchMapper {
     public UserTwitchVO read(UserTwitchVO userTwitchVO) throws Exception;
     public List<UserTwitchVO> readFollowList(String from_id) throws Exception;
     public void create(UserTwitchVO userTwitchVO) throws Exception;
+    public void createList(List<UserTwitchVO> list) throws Exception;
     public void deleteById(String id) throws Exception;
     public void deleteByLogin(String login) throws Exception;
     public void update(UserTwitchVO userTwitchVO) throws Exception;

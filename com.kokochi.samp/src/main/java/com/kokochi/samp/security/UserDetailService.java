@@ -1,5 +1,7 @@
 package com.kokochi.samp.security;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -152,9 +154,6 @@ public class UserDetailService implements UserDetailsService {
 		if(temp == null) {
 			TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token , "id=" + userFollowVO.getFrom_id());
 			if(user == null) {
-/*				app_access_token = new GetToken().requestAppAccessToken(key.getClientId(), key.getCleintSecret());
-				keyMapper.update(new TwitchKeyVO("App_Access_Token", app_access_token));
-				user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getFrom_id()); */
 				user = new TwitchUser();
 				user.setId(userFollowVO.getFrom_id());
 				user.setLogin(userFollowVO.getFrom_login());
@@ -171,9 +170,6 @@ public class UserDetailService implements UserDetailsService {
 		if(temp == null) {
 			TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());
 			if(user == null) {
-/*				app_access_token = new GetToken().requestAppAccessToken(key.getClientId(), key.getCleintSecret());
-				keyMapper.update(new TwitchKeyVO("App_Access_Token", app_access_token));
-				user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());*/
 				user = new TwitchUser();
 				user.setId(userFollowVO.getTo_id());
 				user.setLogin(userFollowVO.getTo_login());
@@ -188,8 +184,72 @@ public class UserDetailService implements UserDetailsService {
 		userFollowMapper.create(userFollowVO);
 	}
 
+	public void addUserFollowList(List<UserFollowVO> list) throws Exception {
+
+		List<UserTwitchVO> utList = new ArrayList<>();
+		List<UserFollowVO> ufList = new ArrayList<>();
+		HashSet<String> set = new HashSet<>();
+
+		int cnt = 0;
+		for (UserFollowVO userFollowVO : list) {
+			cnt++;
+			UserTwitchVO read = new UserTwitchVO();
+			read.setId(userFollowVO.getFrom_id());
+			UserTwitchVO temp = readUserTwitch(read);
+			Key key = new Key();
+			String app_access_token = keyMapper.read("App_Access_Token").getKeyValue();
+
+			// db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
+			if(temp == null) {
+				TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token , "id=" + userFollowVO.getFrom_id());
+				if(user == null) {
+					user = new TwitchUser();
+					user.setId(userFollowVO.getFrom_id());
+					user.setLogin(userFollowVO.getFrom_login());
+					user.setDisplay_name(userFollowVO.getFrom_name());
+				}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
+				UserTwitchVO userTwitchVO = user.toUserTwitchVO();
+				if(!set.contains(user.getId())) {
+					utList.add(userTwitchVO);
+					set.add(user.getId());
+				}
+			}
+
+			read.setId(userFollowVO.getTo_id());
+			temp = readUserTwitch(read);
+			// db에 팔로우 대상 사용자가 없으면 추가해준다.
+			if(temp == null) {
+				TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());
+				if(user == null) {
+					user = new TwitchUser();
+					user.setId(userFollowVO.getTo_id());
+					user.setLogin(userFollowVO.getTo_login());
+					user.setDisplay_name(userFollowVO.getTo_name());
+				}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
+				UserTwitchVO userTwitchVO = user.toUserTwitchVO();
+				if(!set.contains(user.getId())) {
+					utList.add(userTwitchVO);
+					set.add(user.getId());
+				}
+			}
+
+			// 마지막으로 팔로우 데이터를 DB에 추가한다.
+			userFollowVO.setId(UUID.randomUUID().toString());
+			ufList.add(userFollowVO);
+			System.out.println("TEST :: / addUserFollowList :: 팔로우 추가하기 :: " + cnt+"/"+list.size());
+		}
+		userTwitchMapper.createList(utList);
+		userFollowMapper.createList(ufList);
+		System.out.println("TEST :: / addUserFollowList :: 팔로우 추가완료 ::");
+
+	}
+
 	public void deleteUserFollow(String id) throws Exception {
 		userFollowMapper.deleteById(id);
+	}
+	public void deleteUserFollowList(List<String> list) throws Exception {
+		String ids = String.join(",",list);
+		userFollowMapper.deleteById(ids);
 	}
 
 }

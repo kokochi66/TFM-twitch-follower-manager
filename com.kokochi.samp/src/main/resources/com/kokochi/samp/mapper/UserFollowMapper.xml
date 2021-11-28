@@ -6,15 +6,20 @@
     <select id="read" resultType="UserFollowVO" parameterType="UserFollowVO">
         SELECT id, from_id, to_id, followed_at
         FROM user_follow
-        WHERE  id = #{id}
+        <where>
+            <if test="id	    !=null">AND id = #{id}</if>
+            <if test="from_id	!=null">AND from_id = #{from_id}</if>
+            <if test="to_id	    !=null">AND to_id = #{to_id}</if>
+        </where>
     </select>
 
     <select id="readList" resultType="UserFollowVO" parameterType="UserFollowVO">
         SELECT id, from_id, to_id, followed_at
         FROM user_follow
-        WHERE 1=1
-        <if test="from_id	!=null">AND from_id = #{from_id}</if>
-        <if test="to_id	    !=null">AND to_id = #{to_id}</if>
+        <where>
+            <if test="from_id	!=null">AND from_id = #{from_id}</if>
+            <if test="to_id	    !=null">AND to_id = #{to_id}</if>
+        </where>
     </select>
 
     <insert id="create" parameterType="UserFollowVO">
@@ -22,9 +27,24 @@
         VALUES(#{id}, #{from_id}, #{to_id}, #{followed_at})
     </insert>
 
+    <insert id="createList" parameterType="UserFollowVO">
+        INSERT INTO user_follow(id, from_id, to_id, followed_at)
+        VALUES
+        <foreach collection="list" item="uf" index="index" separator=",">
+            (#{uf.id}, #{uf.from_id}, #{uf.to_id}, #{uf.followed_at})
+        </foreach>
+    </insert>
+
     <delete id="deleteById" parameterType="String">
         DELETE FROM user_follow
         WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteList" parameterType="String">
+        DELETE FROM user_follow
+        <where>
+            FIND_IN_SET(id, #{ids})
+        </where>
     </delete>
 
 </mapper>

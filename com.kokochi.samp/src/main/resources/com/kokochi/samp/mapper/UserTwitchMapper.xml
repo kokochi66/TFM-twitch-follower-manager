@@ -7,9 +7,10 @@
     <select id="read" resultType="UserTwitchVO" parameterType="UserTwitchVO">
         SELECT id, login, display_name, type, broadcaster_type, description, offline_image_url, profile_image_url, view_count, created_at
         FROM user_twitch
-        WHERE 1 = 1
+        <where>
             <if test="id    !=null">AND id = #{id}</if>
             <if test="login !=null">AND login = #{login}</if>
+        </where>
     </select>
 
     <!-- 사용자의 팔로우 목록 가져오기 -->
@@ -29,6 +30,23 @@
     <insert id="create" parameterType="UserTwitchVO">
         INSERT INTO user_twitch(id, login, display_name, type, broadcaster_type, description, offline_image_url, profile_image_url, view_count, created_at)
         VALUES(#{id}, #{login}, #{display_name}, #{type}, #{broadcaster_type}, #{description}, #{offline_image_url}, #{profile_image_url}, #{view_count}, #{created_at})
+    </insert>
+
+    <insert id="createList" parameterType="UserTwitchVO">
+        INSERT INTO user_twitch(id, login, display_name, type, broadcaster_type, description, offline_image_url, profile_image_url, view_count, created_at)
+        VALUES
+        <foreach collection="list" item="ut" index="index" separator=",">
+            (#{ut.id}
+            , #{ut.login}
+            , #{ut.display_name}
+            , #{ut.type}
+            , #{ut.broadcaster_type}
+            , #{ut.description}
+            , #{ut.offline_image_url}
+            , #{ut.profile_image_url}
+            , #{ut.view_count}
+            , #{ut.created_at})
+        </foreach>
     </insert>
 
     <!-- 사용자 제거 Id -->

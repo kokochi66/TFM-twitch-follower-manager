@@ -80,7 +80,6 @@ public class GetFollow {
 				for(int i=0;i<data.size();i++) {
 					JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
 					UserFollowVO userFollowVO = gsonParser.fromJson(cJson.toString(), UserFollowVO.class);
-					System.out.println("TEST :: getAllFollowedList :: " + userFollowVO);
 					list.add(userFollowVO);
 				}
 			} while(pagination.containsKey("cursor"));

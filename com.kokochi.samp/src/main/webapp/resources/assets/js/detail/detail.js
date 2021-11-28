@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", function(){
     let recent_clip_addMore = document.querySelector('#services .recent_clip .addMore')
     let recent_clip_addMore_flag = 1;
 
+    let relative_box = document.querySelector('#services .relative_box')
+    let relative_box_addMore = document.querySelector('#services .relative_box .addMore')
+    let relative_file = {}
+    let relative_file_num = 0;
+
     let refresh_btn = document.querySelector('#refresh_btn');
 
     // 변수 초기화
@@ -74,7 +79,19 @@ document.addEventListener("DOMContentLoaded", function(){
             }
             recent_clip_addMore_flag = 0;
         })
-    }   // /detail/request/clip POST - 다시보기 데이터 가져오기
+    }   // /detail/request/clip POST - 클립 데이터 가져오기
+    function getDataRelative(body) {
+        ajaxAwait('/detail/request/relative', 'POST', body, (res) => {
+            console.log(res);
+            let result = JSON.parse(res);
+            addRelative_iconBox(result)
+            // if(res !== 'error') {
+            //     addVideo_iconBox(result);
+            // }
+            // recent_video_addMore_flag = 0;
+        })
+    }   // /detail/request/replay POST - 연관 스트리머 데이터 가져오기
+
 
     recent_video_addMore.addEventListener('click', (e) => {
         if(recent_video_addMore_flag === 1) {
@@ -161,16 +178,59 @@ document.addEventListener("DOMContentLoaded", function(){
         recent_clip_addMore.setAttribute('next-id', data[data.length-1].next);
         recent_clip.insertBefore(row_box, recent_clip_addMore);
     }   // 클립 HTML 추가하기
+    function addRelative_iconBox(data) {
+        let row_box = document.createElement('div')
+        row_box.className = 'row icon-set';
+
+        for(let i=0;i<data.length;i++) {
+            let col_box = document.createElement('div')
+            col_box.className = 'col-lg-3 col-md-4 col-sm-6 d-flex flex-column mb-5';
+            col_box.innerHTML = `
+                <div class="follow-box">
+                    <div class="profile">
+                        <a href="https://www.twitch.tv/${data[i].login}" class="linkBox" target="_blank">
+                            <img src="${data[i].profile_image_url}" width="100%"/>
+                        </a>
+                    </div>
+                    <div class="info">
+                        <div class="name">${data[i].display_name}</div>
+                        <div class="desc">${data[i].description}</div>
+                        <div class="user_id displayNone">${data[i].id}</div>
+                        <div class="check">
+                            <input type="checkbox" class="form-check-input checkInput" ${data[i].isManaged ? 'checked' : ''}/>
+                        </div>
+                    </div>
+                </div>
+            `;
+            row_box.appendChild(col_box)
+        }
+        relative_box.insertBefore(row_box, relative_box_addMore);
+        relative_box.removeChild(relative_box.querySelector('.loading'))
+        relative_file_num += 8;
+
+        let relative_user_id_set = row_box.querySelectorAll('.user_id')
+        let relative_checkInput = row_box.querySelectorAll('.check .checkInput')
+        relative_checkInput.forEach((elem, idx) => {
+            elem.addEventListener('change', () => {
+                console.log(relative_user_id_set[idx].innerHTML)
+                manageFollowToggle(relative_user_id_set[idx].innerHTML);
+            })
+        })
+
+        // relative_box_addMore.addEventListener('click', relative_addEvent)
+    }   // 연관 스트리머 HTML 추가하기
 
     refresh_btn.addEventListener('click', (e) => {
         ajaxAwait('/detail/request/refresh', 'POST', user_id, (res) => {
-            console.log(res);
+            alert('새로고침 되었습니다.')
+            location.reload();
         })
     })  // 새로고침 버튼 이벤트
 
     getDataLive(user_id);
     getDataReplay('0');
     getDataClip('0');
+    getDataRelative(user_id);
 });
 
 
