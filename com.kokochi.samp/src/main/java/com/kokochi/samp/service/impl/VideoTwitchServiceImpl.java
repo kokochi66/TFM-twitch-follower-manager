@@ -36,12 +36,29 @@ public class VideoTwitchServiceImpl implements VideoTwitchService {
     public void create(VideoTwitchVO videoTwitchVO) throws Exception {
         videoTwitchMapper.create(videoTwitchVO);
     }
+
+    @Override
+    public void createList(List<VideoTwitchVO> list) throws Exception {
+        videoTwitchMapper.createList(list);
+    }
+
     @Override
     public void deleteById(String id) throws Exception {
         videoTwitchMapper.deleteById(id);
     }
+
+    @Override
+    public void deleteList(String ids) throws Exception {
+        videoTwitchMapper.deleteList(ids);
+    }
+
     @Override
     public void deleteByUserId(String user_id) throws Exception {
         videoTwitchMapper.deleteByUserId(user_id);
+    }
+
+    @Override
+    public void update(VideoTwitchVO videoTwitchVO) throws Exception {
+        videoTwitchMapper.update(videoTwitchVO);
     }
 }

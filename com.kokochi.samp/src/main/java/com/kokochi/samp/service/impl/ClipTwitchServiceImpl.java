@@ -39,6 +39,11 @@ public class ClipTwitchServiceImpl implements ClipTwitchService {
     }
 
     @Override
+    public void createList(List<ClipTwitchVO> list) throws Exception {
+        clipTwitchMapper.createList(list);
+    }
+
+    @Override
     public void deleteById(String id) throws Exception {
         clipTwitchMapper.deleteById(id);
     }
@@ -46,6 +51,11 @@ public class ClipTwitchServiceImpl implements ClipTwitchService {
     @Override
     public void deleteByUserId(String user_id) throws Exception {
         clipTwitchMapper.deleteByUserId(user_id);
+    }
+
+    @Override
+    public void deleteList(String ids) throws Exception {
+        clipTwitchMapper.deleteList(ids);
     }
 
     @Override

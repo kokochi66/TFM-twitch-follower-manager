@@ -241,13 +241,15 @@ public class DetailController {
 
 			List<VideoTwitchVO> videos = videoGetter.getRecentVideo(client_id,app_access_token ,"?user_id="+userId+"&first=100");
 			if(videos != null) {
+				List<VideoTwitchVO> addVideos = new ArrayList<>();
+				List<String> delVideos = new ArrayList<>();
 				VideoTwitchVO findv = new VideoTwitchVO();
 				findv.setUser_id(userId);
 				findv.setPage(1000000000);
 				findv.setIndex(0);
 				List<VideoTwitchVO> vos = videoTwitchService.readList(findv);
-				Collections.sort(videos,(a,b) -> {return b.getCreated_at().compareTo(a.getCreated_at());});
-				Collections.sort(vos,(a,b) -> {return b.getCreated_at().compareTo(a.getCreated_at());});
+				Collections.sort(videos,(a,b) -> {return a.getId().compareTo(b.getId());});
+				Collections.sort(vos,(a,b) -> {return a.getId().compareTo(b.getId());});
 				left = 0;
 				right = 0;
 				while(left < videos.size() && right < vos.size()) {
@@ -257,11 +259,11 @@ public class DetailController {
 					if(!tav.getId().equals(dv.getId())) {
 						// tav가 더 작으면 insert
 						// dv가 더 작으면 dv를 delete
-						if(tav.getCreated_at().compareTo(dv.getCreated_at()) <= 0) {
-							videoTwitchService.create(tav);
+						if(tav.getId().compareTo(dv.getId()) < 0) {
+							addVideos.add(tav);
 							left++;
 						} else {
-							videoTwitchService.deleteById(dv.getId());
+							delVideos.add(dv.getId());
 							right++;
 						}
 					} else {
@@ -269,8 +271,10 @@ public class DetailController {
 						right++;
 					}
 				}
-				while(left < videos.size()) videoTwitchService.create(videos.get(left++));
-				while(right < vos.size()) videoTwitchService.deleteById(vos.get(right++).getId());
+				while(left < videos.size()) addVideos.add(videos.get(left++));
+				while(right < vos.size()) delVideos.add(vos.get(right++).getId());
+				videoTwitchService.createList(addVideos);
+				videoTwitchService.deleteList(String.join(",",delVideos));
 			}
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 다시보기 데이터 가져오기 완료");
 			// 다시보기 데이터 가져오기
@@ -278,27 +282,28 @@ public class DetailController {
 
 			List<ClipTwitchVO> clips = clipGetter.getClipsAll(client_id, app_access_token, "broadcaster_id="+userId+"&first=100");
 			if(clips != null) {
+				List<ClipTwitchVO> addClips = new ArrayList<>();
+				List<String> delClips = new ArrayList<>();
 				ClipTwitchVO findc = new ClipTwitchVO();
 				findc.setBroadcaster_id(userId);
 				findc.setPage(1000000000);
 				findc.setIndex(0);
 				List<ClipTwitchVO> cos = clipTwitchService.readList(findc);
-				Collections.sort(clips,(a,b) -> {return b.getCreated_at().compareTo(a.getCreated_at());});
-				Collections.sort(cos,(a,b) -> {return b.getCreated_at().compareTo(a.getCreated_at());});
+				Collections.sort(clips,(a,b) -> {return a.getId().compareTo(b.getId());});
+				log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: clips :: " +clips.size());
 				left = 0;
 				right = 0;
 				while(left < clips.size() && right < cos.size()) {
 					ClipTwitchVO tac = clips.get(left);
 					ClipTwitchVO dc = cos.get(right);
-
 					if(!tac.getId().equals(dc.getId())) {
 						// tav가 더 작으면 insert
 						// dv가 더 작으면 dv를 delete
-						if(tac.getCreated_at().compareTo(dc.getCreated_at()) < 0) {
-							clipTwitchService.create(tac);
+						if(tac.getId().compareTo(dc.getId()) < 0) {
+							addClips.add(tac);
 							left++;
 						} else {
-							clipTwitchService.deleteById(dc.getId());
+							delClips.add(dc.getId());
 							right++;
 						}
 					} else {
@@ -306,8 +311,10 @@ public class DetailController {
 						right++;
 					}
 				}
-				while(left < clips.size()) clipTwitchService.create(clips.get(left++));
-				while(right < cos.size()) clipTwitchService.deleteById(cos.get(right++).getId());
+				while(left < clips.size()) addClips.add(clips.get(left++));
+				while(right < cos.size()) delClips.add(cos.get(right++).getId());
+				clipTwitchService.createList(addClips);
+				clipTwitchService.deleteList(String.join(",",delClips));
 			}
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 클립 데이터 가져오기 완료");
 			// 클립 데이터 가져오기
@@ -317,15 +324,13 @@ public class DetailController {
 
 			ArrayList<UserFollowVO> fromFollows = followGetter.getAllFollowedList(client_id, app_access_token, "from_id=" + userId);
 			if(fromFollows != null) {
-				List<UserFollowVO> ufList = new ArrayList<>();
-				List<String> ufDList = new ArrayList<>();
+				List<UserFollowVO> addFollows = new ArrayList<>();
+				List<String> delFollows = new ArrayList<>();
 				UserFollowVO findu = new UserFollowVO();
 				findu.setFrom_id(userId);
 				List<UserFollowVO> ffs = userService.readUserFollowList(findu);
-				Collections.sort(fromFollows, (a,b) -> {return b.getFollowed_at().compareTo(a.getFollowed_at());});
-				Collections.sort(ffs, (a,b) -> {return b.getFollowed_at().compareTo(a.getFollowed_at());});
-				log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: fromFollows :: " +fromFollows.size());
-				log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: ffs :: " +ffs.size());
+				Collections.sort(fromFollows, (a,b) -> {return a.getFollowed_at().compareTo(b.getFollowed_at());});
+				Collections.sort(ffs, (a,b) -> {return a.getFollowed_at().compareTo(b.getFollowed_at());});
 				left = 0;
 				right = 0;
 				while(left < fromFollows.size() && right < ffs.size()) {
@@ -337,11 +342,11 @@ public class DetailController {
 						// dv가 더 작으면 dv를 delete
 						if(taf.getFollowed_at().compareTo(df.getFollowed_at()) <= 0) {
 //						userService.addUserFollow(taf);
-							ufList.add(taf);
+							addFollows.add(taf);
 							left++;
 						} else {
 //						userService.deleteUserFollow(df.getId());
-							ufDList.add(df.getId());
+							delFollows.add(df.getId());
 							right++;
 						}
 					} else {
@@ -349,8 +354,8 @@ public class DetailController {
 						right++;
 					}
 				}
-				while(left < fromFollows.size()) ufList.add(fromFollows.get(left++));
-				while(right < ffs.size()) ufDList.add(ffs.get(right++).getId());
+				while(left < fromFollows.size()) addFollows.add(fromFollows.get(left++));
+				while(right < ffs.size()) delFollows.add(ffs.get(right++).getId());
 
 				int cnt = 0;
 				for (UserFollowVO fromFollow : fromFollows) {
@@ -359,8 +364,8 @@ public class DetailController {
 					UserFollowVO findsf = new UserFollowVO();
 					findu.setFrom_id(fromFollow.getTo_id());
 					List<UserFollowVO> sToffs = userService.readUserFollowList(findu);
-					Collections.sort(sTof, (a,b) -> {return b.getFollowed_at().compareTo(a.getFollowed_at());});
-					Collections.sort(sToffs, (a,b) -> {return b.getFollowed_at().compareTo(a.getFollowed_at());});
+					Collections.sort(sTof, (a,b) -> {return a.getFollowed_at().compareTo(b.getFollowed_at());});
+					Collections.sort(sToffs, (a,b) -> {return a.getFollowed_at().compareTo(b.getFollowed_at());});
 					log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: fromFollows :: " +sTof.size());
 					log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: ffs :: " +sToffs.size());
 					left = 0;
@@ -373,10 +378,10 @@ public class DetailController {
 							// tav가 더 작으면 insert
 							// dv가 더 작으면 dv를 delete
 							if(taf.getFollowed_at().compareTo(df.getFollowed_at()) <= 0) {
-								ufList.add(taf);
+								addFollows.add(taf);
 								left++;
 							} else {
-								ufDList.add(df.getId());
+								delFollows.add(df.getId());
 								right++;
 							}
 						} else {
@@ -384,13 +389,13 @@ public class DetailController {
 							right++;
 						}
 					}
-					while(left < sTof.size()) ufList.add(sTof.get(left++));
-					while(right < sToffs.size()) ufDList.add(sToffs.get(right++).getId());
+					while(left < sTof.size()) addFollows.add(sTof.get(left++));
+					while(right < sToffs.size()) delFollows.add(sToffs.get(right++).getId());
 					log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우의 팔로우 데이터 가져오기 :: " + cnt+"/"+fromFollows.size());
 					// 팔로우 데이터 가져오기
 				}
-				userService.addUserFollowList(ufList);
-				userService.deleteUserFollowList(ufDList);
+				userService.addUserFollowList(addFollows);
+				userService.deleteUserFollowList(delFollows);
 			}
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우 데이터 가져오기");
 			// 팔로우 데이터 가져오기

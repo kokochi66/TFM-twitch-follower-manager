@@ -54,7 +54,16 @@
     <!-- 클립 생성 -->
     <insert id="create" parameterType="ClipTwitchVO">
         INSERT INTO clip_twitch(id, url, embed_url, broadcaster_id, broadcaster_name, creator_id, creator_name, video_id, game_id, language, title, view_count, created_at, thumbnail_url, duration)
-        VALUES(#{id}, #{url}, #{embed_url}, #{broadcaster_id}, #{broadcaster_name}, #{creator_id}, #{creator_name}, #{video_id}, #{game_id}, #{language}, #{title} , #{view_count} , #{created_at} , #{thumbnail_url}, #{duration} )
+        VALUES(#{id}, #{url}, #{embed_url}, #{broadcaster_id}, #{broadcaster_name}, #{creator_id}, #{creator_name}, #{video_id}, #{game_id}, #{language}, #{title}, #{view_count}, #{created_at}, #{thumbnail_url}, #{duration} )
+    </insert>
+
+    <!-- 클립 리스트 생성 -->
+    <insert id="createList" parameterType="ClipTwitchVO">
+        INSERT INTO clip_twitch(id, url, embed_url, broadcaster_id, broadcaster_name, creator_id, creator_name, video_id, game_id, language, title, view_count, created_at, thumbnail_url, duration)
+        VALUES
+        <foreach collection="list" item="uc" index="index" separator=",">
+            (#{uc.id}, #{uc.url}, #{uc.embed_url}, #{uc.broadcaster_id}, #{uc.broadcaster_name}, #{uc.creator_id}, #{uc.creator_name}, #{uc.video_id}, #{uc.game_id}, #{uc.language}, #{uc.title}, #{uc.view_count}, #{uc.created_at}, #{uc.thumbnail_url}, #{uc.duration} )
+        </foreach>
     </insert>
 
     <!-- 클립 제거 Id -->
@@ -67,6 +76,14 @@
     <delete id="deleteByUserId">
         DELETE FROM clip_twitch
         WHERE broadcaster_id = #{broadcaster_id}
+    </delete>
+
+    <!-- 클립 제거 리스트 -->
+    <delete id="deleteList" parameterType="String">
+        DELETE FROM clip_twitch
+        <where>
+            FIND_IN_SET(broadcaster_id, #{ids})
+        </where>
     </delete>
 
 </mapper>
