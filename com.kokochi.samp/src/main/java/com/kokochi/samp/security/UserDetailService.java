@@ -1,9 +1,6 @@
 package com.kokochi.samp.security;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.*;
@@ -195,18 +192,20 @@ public class UserDetailService implements UserDetailsService {
 		List<UserFollowVO> ufList = new ArrayList<>();
 		HashSet<String> set = new HashSet<>();
 		List<UserTwitchVO> userList = readUserTwitchList(new UserTwitchVO());
+		HashMap<String, UserTwitchVO> userMap = new HashMap<>();
+		for (UserTwitchVO ut : userList) userMap.put(ut.getId(), ut);
 
 		int cnt = 0;
 		for (UserFollowVO userFollowVO : list) {
 			cnt++;
-			UserTwitchVO read = new UserTwitchVO();
-			read.setId(userFollowVO.getFrom_id());
-			UserTwitchVO temp = readUserTwitch(read);
+//			UserTwitchVO read = new UserTwitchVO();
+//			read.setId(userFollowVO.getFrom_id());
+//			UserTwitchVO temp = readUserTwitch(read);
 			Key key = new Key();
 			String app_access_token = keyMapper.read("App_Access_Token").getKeyValue();
 
 			// db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
-			if(temp == null) {
+			if(!userMap.containsKey(userFollowVO.getFrom_id())) {
 				TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token , "id=" + userFollowVO.getFrom_id());
 				if(user == null) {
 					user = new TwitchUser();
@@ -221,10 +220,10 @@ public class UserDetailService implements UserDetailsService {
 				}
 			}
 
-			read.setId(userFollowVO.getTo_id());
-			temp = readUserTwitch(read);
+			/*read.setId(userFollowVO.getTo_id());
+			temp = readUserTwitch(read);*/
 			// db에 팔로우 대상 사용자가 없으면 추가해준다.
-			if(temp == null) {
+			if(!userMap.containsKey(userFollowVO.getTo_id())) {
 				TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());
 				if(user == null) {
 					user = new TwitchUser();
