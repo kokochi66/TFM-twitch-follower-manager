@@ -56,10 +56,42 @@
     </insert>
 
     <insert id="createList" parameterType="VideoTwitchVO">
-        INSERT INTO video_twitch(id, stream_id, user_id, user_name, title, description, url, thumbnail_url, view_count, created_at, published_at, viewable, language, type, duration)
+        INSERT INTO video_twitch(
+                                 id,
+                                 stream_id,
+                                 user_id,
+                                 user_name,
+                                 title,
+                                 description,
+                                 url,
+                                 thumbnail_url,
+                                 view_count,
+                                 created_at,
+                                 published_at,
+                                 viewable,
+                                 language,
+                                 type,
+                                 duration
+                                 )
         VALUES
         <foreach collection="list" item="uv" index="index" separator=",">
-            (#{uv.id}, #{uv.stream_id}, #{uv.user_id}, #{uv.user_name}, #{uv.title}, #{uv.description}, #{uv.url}, #{uv.thumbnail_url}, #{uv.view_count}, #{uv.created_at}, #{uv.published_at}, #{uv.viewable}, #{uv.language}, #{uv.type}, #{uv.duration} )
+            (
+             #{uv.id},
+             #{uv.stream_id},
+             #{uv.user_id},
+             #{uv.user_name},
+             #{uv.title},
+             #{uv.description},
+             #{uv.url} ,
+             #{uv.thumbnail_url},
+             #{uv.view_count},
+             #{uv.created_at},
+             #{uv.published_at},
+             #{uv.viewable},
+             #{uv.language},
+             #{uv.type},
+             #{uv.duration}
+             )
         </foreach>
     </insert>
 

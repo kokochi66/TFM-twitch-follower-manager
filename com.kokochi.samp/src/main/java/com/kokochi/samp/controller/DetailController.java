@@ -177,50 +177,72 @@ public class DetailController {
 	@RequestMapping(value="/request/relative", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getRelativeDataFromStream(@RequestBody String body) throws Exception {
-		log.info("/detail/request/relative - 연관 스트리머 데이터 가져오기 :: " + body);
-
-		UserFollowVO findu = new UserFollowVO();
-		findu.setFrom_id(body);
-		List<UserFollowVO> sTof = userService.readUserFollowList(findu);
-		System.out.println("TEST :: / 팔로우 리스트 :: " + sTof.size());
-		HashMap<String, Integer> map = new HashMap<>();
-		for (UserFollowVO f : sTof) {
-			// 스트리머가 팔로우 한 대상 리스트 => +4점
-			if(map.containsKey(f.getTo_id())) map.replace(f.getTo_id(),map.get(f.getTo_id())+10);
-			else map.put(f.getTo_id(), 10);
-
-			UserFollowVO findf = new UserFollowVO();
-			findf.setFrom_id(f.getTo_id());
-			List<UserFollowVO> fTof = userService.readUserFollowList(findf);
-
-			for (UserFollowVO ff : fTof) {
-				// 팔로우한 대상이 팔로우 한 리스트 => +1점 (팔팔에게만)
-				if(map.containsKey(ff.getTo_id())) map.replace(ff.getTo_id(),map.get(ff.getTo_id())+1);
-				else map.put(ff.getTo_id(), 1);
-
-				UserFollowVO findff = new UserFollowVO();
-				findff.setFrom_id(ff.getTo_id());
-				findff.setTo_id(ff.getTo_id());
-				UserFollowVO fTos = userService.readUserFollow(findff);
-				if(fTos != null) {
-					map.replace(f.getTo_id(),map.get(f.getTo_id())+5);
-					map.replace(ff.getTo_id(),map.get(ff.getTo_id())+5);
-				}
-				// 팔팔이 스트리머를 팔로우 했는지 확인 => +2점 (팔과 팔팔 함께 더함)
-			}
-		}
-		System.out.println("TEST :: / 맵 크기 :: " + map.size());
-
-		ArrayList<String> tempList = new ArrayList<>();
 		JSONArray res_arr = new JSONArray();
-		for (String s : map.keySet()) if(!s.equals(body)) tempList.add(s);
-		Collections.sort(tempList, (a,b) -> {return map.get(b) - map.get(a);});
-		for (String s : tempList) {
-			UserTwitchVO fu = new UserTwitchVO();
-			fu.setId(s);
-			UserTwitchVO userTwitchVO = userService.readUserTwitch(fu);
-//			System.out.println("TEST :: / 연관 스트리머 데이터 :: " + userTwitchVO.getDisplay_name()+"  점수 ::"+ map.get(s));
-			res_arr.add(userTwitchVO.parseToJSON());
+		try{
+			log.info("/detail/request/relative - 연관 스트리머 데이터 가져오기 :: " + body);
+
+			List<UserFollowVO> followVOList = userService.readUserFollowList(new UserFollowVO());
+			HashMap<String, List<UserFollowVO>> followMap = new HashMap<>();
+			for (UserFollowVO userFollowVO : followVOList) {
+				if(!followMap.containsKey(userFollowVO.getFrom_id())) {
+					List<UserFollowVO> l = new ArrayList<>();
+					l.add(userFollowVO);
+					followMap.put(userFollowVO.getFrom_id(), l);
+				} else {
+					followMap.get(userFollowVO.getFrom_id()).add(userFollowVO);
+				}
+			}
+
+			List<UserTwitchVO> userList = userService.readUserTwitchList(new UserTwitchVO());
+			HashMap<String, UserTwitchVO> userMap = new HashMap<>();
+			for (UserTwitchVO ut : userList) userMap.put(ut.getId(), ut);
+
+			List<UserFollowVO> sTof = followMap.get(body);
+			System.out.println("TEST :: / 팔로우 리스트 :: " + sTof.size());
+			HashMap<String, Integer> map = new HashMap<>();
+			if(sTof != null) {
+				for (UserFollowVO f : sTof) {
+					// 스트리머가 팔로우 한 대상 리스트 => +10점
+					if (map.containsKey(f.getTo_id())) map.replace(f.getTo_id(), map.get(f.getTo_id()) + 10);
+					else map.put(f.getTo_id(), 10);
+
+					List<UserFollowVO> fTof = followMap.get(f.getTo_id());
+					if (fTof != null) {
+						for (UserFollowVO ff : fTof) {
+							// 팔로우한 대상이 팔로우 한 리스트 => +1점 (팔팔에게만)
+							if (map.containsKey(ff.getTo_id())) map.replace(ff.getTo_id(), map.get(ff.getTo_id()) + 1);
+							else map.put(ff.getTo_id(), 1);
+
+							// 팔로우한 대상이 스트리머를 팔로우 했으면 +8점
+							if (ff.getTo_id().equals(body)) map.replace(f.getTo_id(), map.get(f.getTo_id()) + 8);
+
+							List<UserFollowVO> fTos = followMap.get(ff.getTo_id());
+							if (fTos != null) {
+								for (UserFollowVO fTo : fTos) {
+									if (fTo.getTo_id().equals(body)) {
+										map.replace(f.getTo_id(), map.get(f.getTo_id()) + 4);
+										map.replace(ff.getTo_id(), map.get(ff.getTo_id()) + 4);
+									}
+								}
+							}
+							// 팔팔이 스트리머를 팔로우 했는지 확인 => +4점 (팔과 팔팔 함께 더함)
+						}
+					}
+				}
+			}
+			System.out.println("TEST :: / 맵 크기 :: " + map.size());
+
+			ArrayList<String> tempList = new ArrayList<>();
+			for (String s : map.keySet()) if(!s.equals(body)) tempList.add(s);
+			Collections.sort(tempList, (a,b) -> {return map.get(b) - map.get(a);});
+			for (String s : tempList) {
+				UserTwitchVO userTwitchVO = userMap.get(s);
+				System.out.println("TEST :: / 연관 스트리머 데이터 :: " + userTwitchVO.getDisplay_name()+"  점수 ::"+ map.get(s));
+				res_arr.add(userTwitchVO.parseToJSON());
+			}
+			return res_arr.toJSONString();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return res_arr.toJSONString();
 	}
@@ -238,6 +260,9 @@ public class DetailController {
 			String client_id = twitchKey.getClientId();
 			String app_access_token = key.read("App_Access_Token").getKeyValue();
 			int left, right;
+
+
+			// 사용자 본인 데이터 가져오기
 
 			List<VideoTwitchVO> videos = videoGetter.getRecentVideo(client_id,app_access_token ,"?user_id="+userId+"&first=100");
 			if(videos != null) {
@@ -273,8 +298,8 @@ public class DetailController {
 				}
 				while(left < videos.size()) addVideos.add(videos.get(left++));
 				while(right < vos.size()) delVideos.add(vos.get(right++).getId());
-				videoTwitchService.createList(addVideos);
-				videoTwitchService.deleteList(String.join(",",delVideos));
+				if(addVideos.size() > 0) videoTwitchService.createList(addVideos);
+				if(delVideos.size() > 0) videoTwitchService.deleteList(String.join(",",delVideos));
 			}
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 다시보기 데이터 가져오기 완료");
 			// 다시보기 데이터 가져오기
@@ -290,6 +315,7 @@ public class DetailController {
 				findc.setIndex(0);
 				List<ClipTwitchVO> cos = clipTwitchService.readList(findc);
 				Collections.sort(clips,(a,b) -> {return a.getId().compareTo(b.getId());});
+				Collections.sort(cos,(a,b) -> {return a.getId().compareTo(b.getId());});
 				log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: clips :: " +clips.size());
 				left = 0;
 				right = 0;
@@ -313,8 +339,8 @@ public class DetailController {
 				}
 				while(left < clips.size()) addClips.add(clips.get(left++));
 				while(right < cos.size()) delClips.add(cos.get(right++).getId());
-				clipTwitchService.createList(addClips);
-				clipTwitchService.deleteList(String.join(",",delClips));
+				if(addClips.size() > 0) clipTwitchService.createList(addClips);
+				if(delClips.size() > 0) clipTwitchService.deleteList(String.join(",",delClips));
 			}
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 클립 데이터 가져오기 완료");
 			// 클립 데이터 가져오기
@@ -394,8 +420,8 @@ public class DetailController {
 					log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우의 팔로우 데이터 가져오기 :: " + cnt+"/"+fromFollows.size());
 					// 팔로우 데이터 가져오기
 				}
-				userService.addUserFollowList(addFollows);
-				userService.deleteUserFollowList(delFollows);
+				if(addFollows.size() > 0) userService.addUserFollowList(addFollows);
+				if(delFollows.size() > 0) userService.deleteUserFollowList(delFollows);
 			}
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우 데이터 가져오기");
 			// 팔로우 데이터 가져오기

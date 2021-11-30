@@ -194,6 +194,7 @@ public class UserDetailService implements UserDetailsService {
 		List<UserTwitchVO> userList = readUserTwitchList(new UserTwitchVO());
 		HashMap<String, UserTwitchVO> userMap = new HashMap<>();
 		for (UserTwitchVO ut : userList) userMap.put(ut.getId(), ut);
+		String app_access_token = keyMapper.read("App_Access_Token").getKeyValue();
 
 		int cnt = 0;
 		for (UserFollowVO userFollowVO : list) {
@@ -202,10 +203,9 @@ public class UserDetailService implements UserDetailsService {
 //			read.setId(userFollowVO.getFrom_id());
 //			UserTwitchVO temp = readUserTwitch(read);
 			Key key = new Key();
-			String app_access_token = keyMapper.read("App_Access_Token").getKeyValue();
 
 			// db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
-			if(!userMap.containsKey(userFollowVO.getFrom_id())) {
+			if(!userMap.containsKey(userFollowVO.getFrom_id()) && !set.contains(userFollowVO.getFrom_id())) {
 				TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token , "id=" + userFollowVO.getFrom_id());
 				if(user == null) {
 					user = new TwitchUser();
@@ -214,16 +214,14 @@ public class UserDetailService implements UserDetailsService {
 					user.setDisplay_name(userFollowVO.getFrom_name());
 				}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
 				UserTwitchVO userTwitchVO = user.toUserTwitchVO();
-				if(!set.contains(user.getId())) {
-					utList.add(userTwitchVO);
-					set.add(user.getId());
-				}
+				utList.add(userTwitchVO);
+				set.add(user.getId());
 			}
 
 			/*read.setId(userFollowVO.getTo_id());
 			temp = readUserTwitch(read);*/
 			// db에 팔로우 대상 사용자가 없으면 추가해준다.
-			if(!userMap.containsKey(userFollowVO.getTo_id())) {
+			if(!userMap.containsKey(userFollowVO.getTo_id()) && !set.contains(userFollowVO.getTo_id())) {
 				TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());
 				if(user == null) {
 					user = new TwitchUser();
@@ -232,10 +230,8 @@ public class UserDetailService implements UserDetailsService {
 					user.setDisplay_name(userFollowVO.getTo_name());
 				}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환
 				UserTwitchVO userTwitchVO = user.toUserTwitchVO();
-				if(!set.contains(user.getId())) {
-					utList.add(userTwitchVO);
-					set.add(user.getId());
-				}
+				utList.add(userTwitchVO);
+				set.add(user.getId());
 			}
 
 			// 마지막으로 팔로우 데이터를 DB에 추가한다.
@@ -243,8 +239,8 @@ public class UserDetailService implements UserDetailsService {
 			ufList.add(userFollowVO);
 			System.out.println("TEST :: / addUserFollowList :: 팔로우 추가하기 :: " + cnt+"/"+list.size());
 		}
-		userTwitchMapper.createList(utList);
-		userFollowMapper.createList(ufList);
+		if(utList.size() > 0) userTwitchMapper.createList(utList);
+		if(ufList.size() > 0) userFollowMapper.createList(ufList);
 		System.out.println("TEST :: / addUserFollowList :: 팔로우 추가완료 ::");
 
 	}
