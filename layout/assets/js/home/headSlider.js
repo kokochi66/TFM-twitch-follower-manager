@@ -63,4 +63,5 @@ function request_getLiveVideo() {
       // 에러가 발생한 경우에는 아무런 값이 뷰에 추가되지 않음.
   })
 }
+
 request_getLiveVideo();
