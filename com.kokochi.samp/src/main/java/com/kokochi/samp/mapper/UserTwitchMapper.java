@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UserTwitchMapper {
     public UserTwitchVO read(UserTwitchVO userTwitchVO) throws Exception;
+    public List<UserTwitchVO> readList(UserTwitchVO userTwitchVO) throws Exception;
     public List<UserTwitchVO> readFollowList(String from_id) throws Exception;
     public void create(UserTwitchVO userTwitchVO) throws Exception;
     public void createList(List<UserTwitchVO> list) throws Exception;

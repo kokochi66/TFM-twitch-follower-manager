@@ -13,6 +13,16 @@
         </where>
     </select>
 
+    <!-- 사용자 목록 가져오기 -->
+    <select id="readList" resultType="UserTwitchVO" parameterType="UserTwitchVO">
+        SELECT id, login, display_name, type, broadcaster_type, description, offline_image_url, profile_image_url, view_count, created_at
+        FROM user_twitch
+        <where>
+            <if test="id    !=null">AND id = #{id}</if>
+            <if test="login !=null">AND login = #{login}</if>
+        </where>
+    </select>
+
     <!-- 사용자의 팔로우 목록 가져오기 -->
     <select id="readFollowList" resultType="UserTwitchVO" parameterType="String">
         SELECT ut.id ID, ut.login LOGIN, ut.display_name display_name, ut.type type, ut.broadcaster_type broadcaster_type,

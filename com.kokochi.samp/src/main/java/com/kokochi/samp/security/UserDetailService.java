@@ -110,6 +110,11 @@ public class UserDetailService implements UserDetailsService {
 		return userTwitchMapper.read(userTwitchVO);
 	}
 
+	public List<UserTwitchVO> readUserTwitchList(UserTwitchVO userTwitchVO) throws Exception {
+		return userTwitchMapper.readList(userTwitchVO);
+	}
+
+
 	// 특정 사용자의 팔로우 목록 가져오기
 	public List<UserTwitchVO> readUserTwitchFollowList(String from_id) throws Exception {
 		return userTwitchMapper.readFollowList(from_id);
@@ -189,6 +194,7 @@ public class UserDetailService implements UserDetailsService {
 		List<UserTwitchVO> utList = new ArrayList<>();
 		List<UserFollowVO> ufList = new ArrayList<>();
 		HashSet<String> set = new HashSet<>();
+		List<UserTwitchVO> userList = readUserTwitchList(new UserTwitchVO());
 
 		int cnt = 0;
 		for (UserFollowVO userFollowVO : list) {
