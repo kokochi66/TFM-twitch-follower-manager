@@ -209,14 +209,20 @@ public class DetailController {
 					List<UserFollowVO> fTof = followMap.get(f.getTo_id());
 					if (fTof != null) {
 						for (UserFollowVO ff : fTof) {
+							int addFlag = 0;
+							// 팔로우한 대상이 스트리머를 팔로우 했으면 +8점
+							if (ff.getTo_id().equals(body)) {
+								map.replace(f.getTo_id(), map.get(f.getTo_id()) + 8);
+								addFlag = 2;
+							}
+
 							// 팔로우한 대상이 팔로우 한 리스트 => +1점 (팔팔에게만)
-							if (map.containsKey(ff.getTo_id())) map.replace(ff.getTo_id(), map.get(ff.getTo_id()) + 1);
+							if (map.containsKey(ff.getTo_id())) map.replace(ff.getTo_id(), map.get(ff.getTo_id()) + 1 + addFlag);
 							else map.put(ff.getTo_id(), 1);
 
-							// 팔로우한 대상이 스트리머를 팔로우 했으면 +8점
-							if (ff.getTo_id().equals(body)) map.replace(f.getTo_id(), map.get(f.getTo_id()) + 8);
 
-							List<UserFollowVO> fTos = followMap.get(ff.getTo_id());
+
+/*							List<UserFollowVO> fTos = followMap.get(ff.getTo_id());
 							if (fTos != null) {
 								for (UserFollowVO fTo : fTos) {
 									if (fTo.getTo_id().equals(body)) {
@@ -224,7 +230,7 @@ public class DetailController {
 										map.replace(ff.getTo_id(), map.get(ff.getTo_id()) + 4);
 									}
 								}
-							}
+							}*/
 							// 팔팔이 스트리머를 팔로우 했는지 확인 => +4점 (팔과 팔팔 함께 더함)
 						}
 					}
@@ -384,7 +390,7 @@ public class DetailController {
 				while(right < ffs.size()) delFollows.add(ffs.get(right++).getId());
 
 				int cnt = 0;
-				for (UserFollowVO fromFollow : fromFollows) {
+/*				for (UserFollowVO fromFollow : fromFollows) {
 					cnt++;
 					ArrayList<UserFollowVO> sTof = followGetter.getAllFollowedList(client_id, app_access_token, "from_id=" + fromFollow.getTo_id());
 					UserFollowVO findsf = new UserFollowVO();
@@ -419,7 +425,7 @@ public class DetailController {
 					while(right < sToffs.size()) delFollows.add(sToffs.get(right++).getId());
 					log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우의 팔로우 데이터 가져오기 :: " + cnt+"/"+fromFollows.size());
 					// 팔로우 데이터 가져오기
-				}
+				}*/
 				if(addFollows.size() > 0) userService.addUserFollowList(addFollows);
 				if(delFollows.size() > 0) userService.deleteUserFollowList(delFollows);
 			}
