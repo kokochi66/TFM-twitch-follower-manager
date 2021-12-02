@@ -198,7 +198,7 @@ public class DetailController {
 			for (UserTwitchVO ut : userList) userMap.put(ut.getId(), ut);
 
 			List<UserFollowVO> sTof = followMap.get(body);
-			System.out.println("TEST :: / 팔로우 리스트 :: " + sTof.size());
+//			System.out.println("TEST :: / 팔로우 리스트 :: " + sTof.size());
 			HashMap<String, Integer> map = new HashMap<>();
 			if(sTof != null) {
 				for (UserFollowVO f : sTof) {
@@ -236,14 +236,13 @@ public class DetailController {
 					}
 				}
 			}
-			System.out.println("TEST :: / 맵 크기 :: " + map.size());
 
 			ArrayList<String> tempList = new ArrayList<>();
 			for (String s : map.keySet()) if(!s.equals(body)) tempList.add(s);
 			Collections.sort(tempList, (a,b) -> {return map.get(b) - map.get(a);});
 			for (String s : tempList) {
 				UserTwitchVO userTwitchVO = userMap.get(s);
-				System.out.println("TEST :: / 연관 스트리머 데이터 :: " + userTwitchVO.getDisplay_name()+"  점수 ::"+ map.get(s));
+//				System.out.println("TEST :: / 연관 스트리머 데이터 :: " + userTwitchVO.getDisplay_name()+"  점수 ::"+ map.get(s));
 				res_arr.add(userTwitchVO.parseToJSON());
 			}
 			return res_arr.toJSONString();
@@ -267,8 +266,10 @@ public class DetailController {
 			String app_access_token = key.read("App_Access_Token").getKeyValue();
 			int left, right;
 
-
 			// 사용자 본인 데이터 가져오기
+			TwitchUser user = new GetStream().getUser(client_id, app_access_token , "id=" + userId);
+			UserTwitchVO userTwitchVO = user.toUserTwitchVO();
+			userService.addUserTwitch(userTwitchVO);
 
 			List<VideoTwitchVO> videos = videoGetter.getRecentVideo(client_id,app_access_token ,"?user_id="+userId+"&first=100");
 			if(videos != null) {
@@ -432,7 +433,7 @@ public class DetailController {
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우 데이터 가져오기");
 			// 팔로우 데이터 가져오기
 
-
+			System.out.println("TEST :: 가져온 유저 정보 :: " + user);
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 데이터 새로고침 완료");
 			return res_arr.toJSONString();
 		} catch (Exception e) {

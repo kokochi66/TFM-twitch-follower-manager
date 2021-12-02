@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function(){
             "login" : user_id,
             "next" : body
         }
+        recent_video.insertBefore(createLoadingBox(), recent_video_addMore);
         ajaxAwait('/detail/request/replay', 'POST', JSON.stringify(bodyData), (res) => {
             let result = JSON.parse(res);
             if(res !== 'error') {
@@ -68,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function(){
         })
     }   // /detail/request/replay POST - 다시보기 데이터 가져오기
     function getDataClip(body) {
+        recent_clip.insertBefore(createLoadingBox(), recent_clip_addMore);
         let bodyData = {
             "login" : user_id,
             "next" : body
@@ -81,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function(){
         })
     }   // /detail/request/clip POST - 클립 데이터 가져오기
     function getDataRelative(body) {
+        relative_box.insertBefore(createLoadingBox(), relative_box_addMore);
         ajaxAwait('/detail/request/relative', 'POST', body, (res) => {
             let result = JSON.parse(res);
             console.log(result.slice(0,20))
@@ -137,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function(){
         }
         recent_video_addMore.setAttribute('next-id', data[data.length-1].next);
         recent_video.insertBefore(row_box, recent_video_addMore);
+        recent_video.removeChild(recent_video.querySelector('.loading'))
         let recent_video_iconInfo = document.querySelectorAll('#services .recent_video .icon-info')
         let recent_video_manageBtn = document.querySelectorAll('#services .recent_video .video-follow-box')
         recent_video_manageBtn.forEach((elem, idx) => {
@@ -177,6 +181,7 @@ document.addEventListener("DOMContentLoaded", function(){
         }
         recent_clip_addMore.setAttribute('next-id', data[data.length-1].next);
         recent_clip.insertBefore(row_box, recent_clip_addMore);
+        recent_clip.removeChild(recent_clip.querySelector('.loading'))
     }   // 클립 HTML 추가하기
     function addRelative_iconBox(data) {
         let row_box = document.createElement('div')
@@ -205,7 +210,7 @@ document.addEventListener("DOMContentLoaded", function(){
             row_box.appendChild(col_box)
         }
         relative_box.insertBefore(row_box, relative_box_addMore);
-        // relative_box.removeChild(relative_box.querySelector('.loading'))
+        relative_box.removeChild(relative_box.querySelector('.loading'))
         relative_file_num += 8;
 
         let relative_user_id_set = row_box.querySelectorAll('.user_id')
