@@ -21,6 +21,7 @@ import com.kokochi.samp.mapper.TwitchKeyMapper;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 @Service("userDetailService")

@@ -75,6 +75,15 @@
 #services .recent_video .icon-set .video-follow-box:hover {background-color: #bbb;}
 #services .recent_video .icon-set .video-follow-box i {font-size: 25px; line-height: 30px;}
 
+#services .videoList .section-title {
+    position: relative;
+}
+#services .videoList .refresh-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 @media (min-width: 0px) {
     #headslider-container {width: 100%;}
     #headslider .swiper-wrapper .swiper-slide .imageBox { width: 80px; height: 50px;}

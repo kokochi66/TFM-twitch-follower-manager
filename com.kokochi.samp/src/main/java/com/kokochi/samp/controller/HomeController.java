@@ -2,6 +2,7 @@ package com.kokochi.samp.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.kokochi.samp.DTO.Key;
@@ -136,7 +137,7 @@ public class HomeController {
 				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
 
 				// 팔로우 관리목록에 해당하는 사용자의 비디오 값을 가져온다
-				String client_id = keyTwitch.getClientId();
+/*				String client_id = keyTwitch.getClientId();
 				for (ManagedFollowVO managedFollowVO : follow_list) {
 					List<VideoTwitchVO> service_video = service_video = videoGetter.getRecentVideo(client_id, key.read("App_Access_Token").getKeyValue(),
 							"?user_id="+managedFollowVO.getTo_user()+"&first=100");
@@ -149,7 +150,7 @@ public class HomeController {
 							} else break;
 						}
 					}
-				}
+				}*/
 
 				// DB추가가 끝나면, DB에서 최신순으로 조회한다.
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -161,6 +162,7 @@ public class HomeController {
 				for (VideoTwitchVO videoTwitchVO : videoTwitchVOS) {
 					if(videoTwitchVO != null)  {
 						videoTwitchVO.setThumbnail_url(videoTwitchVO.getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
+						videoTwitchVO.setPoints(videoTwitchVO.getCreated_at());
 						JSONObject res_ob = videoTwitchVO.parseToJSON();
 						res_arr.add(res_ob);
 					}
@@ -173,6 +175,75 @@ public class HomeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.getMessage();
+		}
+	}
+
+	// /home/request/refreshMyRecentVideo POST - 나의 관리목록 최신 다시보기 새로고침
+	@RequestMapping(value="/home/request/refreshMyRecentVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
+	@ResponseBody
+	public String refreshMyRecentVideo(@RequestBody String body) throws Exception {
+		log.info("/home/request/refreshMyRecentVideo - 나의 관리목록 최신 다시보기 새로고침 " + body);
+		JSONObject res = new JSONObject();
+		try {
+			Key keyTwitch = new Key();
+
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(!principal.toString().equals("anonymousUser")) {
+				UserDTO user = (UserDTO) principal;
+
+				// 사용자의 팔로우 관리목록을 가져온다
+				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
+				String client_id = keyTwitch.getClientId();
+				String app_access_token = key.read("App_Access_Token").getKeyValue();
+				for (ManagedFollowVO managedFollowVO : follow_list) {
+
+					String userId = managedFollowVO.getTo_user();
+					List<VideoTwitchVO> videos = videoGetter.getRecentVideo(client_id,app_access_token ,"?user_id="+userId+"&first=100");
+					if(videos != null) {
+						List<VideoTwitchVO> addVideos = new ArrayList<>();
+						List<String> delVideos = new ArrayList<>();
+						VideoTwitchVO findv = new VideoTwitchVO();
+						findv.setUser_id(userId);
+						findv.setPage(1000000000);
+						findv.setIndex(0);
+						List<VideoTwitchVO> vos = videoTwitchService.readList(findv);
+						Collections.sort(videos,(a, b) -> {return a.getId().compareTo(b.getId());});
+						Collections.sort(vos,(a,b) -> {return a.getId().compareTo(b.getId());});
+						int left = 0;
+						int right = 0;
+						while(left < videos.size() && right < vos.size()) {
+							VideoTwitchVO tav = videos.get(left);
+							VideoTwitchVO dv = vos.get(right);
+
+							if(!tav.getId().equals(dv.getId())) {
+								// tav가 더 작으면 insert
+								// dv가 더 작으면 dv를 delete
+								if(tav.getId().compareTo(dv.getId()) < 0) {
+									addVideos.add(tav);
+									left++;
+								} else {
+									delVideos.add(dv.getId());
+									right++;
+								}
+							} else {
+								left++;
+								right++;
+							}
+						}
+						while(left < videos.size()) addVideos.add(videos.get(left++));
+						while(right < vos.size()) delVideos.add(vos.get(right++).getId());
+						if(addVideos.size() > 0) videoTwitchService.createList(addVideos);
+						if(delVideos.size() > 0) videoTwitchService.deleteList(String.join(",",delVideos));
+					}
+					// 다시보기 데이터 가져오기
+				}
+
+				res.put("msg", "success");
+			}
+			return res.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return res.toString();
 		}
 	}
 
@@ -190,22 +261,20 @@ public class HomeController {
 				UserDTO user = (UserDTO) principal;
 				String client_id = twitchKey.getClientId();
 
-				// 팔로우 리스트 가져오기
-				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
+				// 관리목록 리스트 가져오기
+				List<UserTwitchVO> managedList = userTwitchMapper.readManagedList(user.getId());
 
-				for(int i=0;i<follow_list.size();i++) {
+				for(UserTwitchVO utv : managedList) {
 //					log.info("user :: " + client_id+" "+user.getOauth_token()+" "+follow_list.get(i).getTo_user());
 					// 각 팔로우 리스트의 라이브 데이터 가져오기
-					Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), follow_list.get(i).getTo_user(), "");
+					Stream s = streamGetter.getLiveStream(client_id, user.getOauth_token(), utv.getId(), "");
 
 					if(s != null) {
 //					log.info("service_getLive :: " + s.toString() +" " + i +" " + follow_list.size());
 						// 라이브 중 이라면 사용자에게 보여주기 위한 데이터 세팅
-						UserTwitchVO searchUser = new UserTwitchVO();
-						searchUser.setId(follow_list.get(i).getTo_user());
-						UserTwitchVO read = userTwitchMapper.read(searchUser);
+
 						s.setThumbnail_url(s.getThumbnail_url().replace("{width}", "300").replace("{height}", "200"));
-						s.setProfile_image_url(read.getProfile_image_url());
+						s.setProfile_image_url(utv.getProfile_image_url());
 						JSONObject res_ob = s.StreamToVideo().parseToJSONObject();
 						res_arr.add(res_ob);
 					}
@@ -244,7 +313,7 @@ public class HomeController {
 
 
 				// 팔로우 관리목록에 해당하는 사용자의 클립 데이터를 가져온다
-				for (int i=0;i<follow_list.size();i++) {
+/*				for (int i=0;i<follow_list.size();i++) {
 					List<Clips> service_clip = clipGetter.getClipsByUserId(client_id, user.getOauth_token(), follow_list.get(i).getTo_user(), "first=100");
 					if(service_clip != null) {
 						for (Clips clip : service_clip) {
@@ -258,7 +327,7 @@ public class HomeController {
 							} else break;
 						}
 					}
-				}
+				}*/
 
 
 				// DB추가가 끝나면, DB에서 최신순으로 조회한다.
@@ -286,72 +355,6 @@ public class HomeController {
 		}
 
 	}
-	
-	@RequestMapping(value="/home/request/getMyClipVideo/next", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
-	@ResponseBody
-	public String getMyClipVideoNext(@RequestBody String body) throws Exception {
-		log.info("/home/request/getMyClipVideo/next - 나의 관리목록 클립 가져오기 Next " + body);
-		JSONParser parser = new JSONParser();
-		JSONArray res_arr = new JSONArray();
-
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(!principal.toString().equals("anonymousUser")) {
-			UserDTO user = (UserDTO) principal;
-
-			JSONArray service_arr = (JSONArray) parser.parse(body);
-			List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getUser_id());
-			String client_id = key.read("client_id").getKeyValue();
-			List<Clips> service_clip = clipGetter.getClipsRecentByUser(client_id, user.getOauth_token(), service_arr.get(0).toString()
-					, "after="+service_arr.get(1).toString()+"&first=8");
-			for(int i=0;i<service_clip.size();i++) {
-				service_clip.get(i).setThumbnail_url(service_clip.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
-				JSONObject res_ob = service_clip.get(i).clipsToVideo().parseToJSONObject();
-				res_arr.add(res_ob);
-			}
-			if(res_arr.size() <= 0) return null;
-		}
-//		log.info(res_arr.toJSONString());
-		return res_arr.toJSONString();
-	}
-	// 관리목록 인기클립 더보기
 
 
-
-	/*	@RequestMapping(value="/home/request/getMyRecentVideo/next", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
-	@ResponseBody
-	public String getMyRecentVideoNext(@RequestBody String body) throws Exception {
-		log.info("/home/request/getMyRecentVideo/next - 나의 관리목록 최신 다시보기 더보기 가져오기 " + body);
-		try {
-			JSONParser parser = new JSONParser();
-			JSONArray res_arr = new JSONArray();
-
-			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			if(!principal.toString().equals("anonymousUser")) {
-				UserDTO user = (UserDTO) principal;
-
-				JSONArray service_arr = (JSONArray) parser.parse(body);
-				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getUser_id());
-				String client_id = key.read("client_id").getKeyValue();
-				Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
-				List<Video> service_video = new ArrayList<>();
-				service_video = videoGetter.getRecentVideoFromUserNext(client_id, user.getOauth_token(),
-						service_arr.get(0).toString(), "first=8&after="+service_arr.get(1).toString());
-
-				for(int i=0;i<service_video.size();i++) {
-					service_video.get(i).setThumbnail_url(service_video.get(i).getThumbnail_url().replace("%{width}", "300").replace("%{height}", "200"));
-					service_video.get(i).setManaged(managed_service.isManagedVideo(new ManagedVideoVO("exex::", user.getUser_id(), service_video.get(i).getId())));
-					JSONObject res_ob = service_video.get(i).parseToJSONObject();
-					res_arr.add(res_ob);
-				}
-				if(res_arr.size() <= 0) return null;
-			}
-//			log.info(res_arr.toJSONString());
-			return res_arr.toJSONString();
-
-		} catch(Exception e) {
-			e.printStackTrace();
-			return e.getMessage();
-		}
-	}
-	// 관리목록 최신 다시보기 더보기*/
 }

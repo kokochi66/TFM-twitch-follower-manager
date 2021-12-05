@@ -4,7 +4,11 @@ import java.util.List;
 
 import com.kokochi.samp.domain.MemberVO;
 import com.kokochi.samp.domain.MemberAuthVO;
+import org.apache.ibatis.annotations.Mapper;
 
+import javax.annotation.Resource;
+
+@Mapper
 public interface UserMapper {
 	public MemberVO readUser(String id) throws Exception;
 

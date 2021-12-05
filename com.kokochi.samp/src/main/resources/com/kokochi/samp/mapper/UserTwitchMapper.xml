@@ -36,6 +36,27 @@
         ORDER BY isManaged DESC
     </select>
 
+
+    <!-- 관리목록의 사용자 리스트 가져오기 -->
+    <select id="readManagedList" resultType="UserTwitchVO" parameterType="UserTwitchVO">
+        SELECT mf.user_id,
+               ut.id,
+               ut.login,
+               ut.id ID,
+               ut.login LOGIN,
+               ut.display_name display_name,
+               ut.type type,
+               ut.broadcaster_type broadcaster_type,
+               ut.description description,
+               ut.offline_image_url offline_image_url,
+               ut.profile_image_url profile_image_url,
+               ut.view_count view_count,
+               ut.created_at created_at
+        FROM managed_follow mf
+                 left join user_twitch ut on mf.to_user = ut.id
+        WHERE user_id = #{user_id};
+    </select>
+
     <!-- 사용자 생성 -->
     <insert id="create" parameterType="UserTwitchVO">
         INSERT INTO user_twitch(id, login, display_name, type, broadcaster_type, description, offline_image_url, profile_image_url, view_count, created_at)

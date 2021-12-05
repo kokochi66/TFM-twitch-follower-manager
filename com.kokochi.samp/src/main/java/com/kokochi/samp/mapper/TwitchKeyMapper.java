@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import javax.annotation.Resource;
 
+@Mapper
 public interface TwitchKeyMapper {
 	
 	public void create(TwitchKeyVO key) throws Exception;

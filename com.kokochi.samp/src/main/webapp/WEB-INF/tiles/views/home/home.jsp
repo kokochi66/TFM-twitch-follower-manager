@@ -60,16 +60,19 @@
 				<div class="recent_video videoList">
 					<div id="recent_video" class="section-title">
 						<h2>관리목록 다시보기</h2>
+						<button id="video_refresh_btn" class="refresh-btn btn btn-primary" label-idx="0">새로고침</button>
 					</div>
 				</div>
 				<div class="recent_live videoList displayNone">
 					<div id="recent_live" class="section-title">
 						<h2>관리목록 라이브</h2>
+						<button id="live_refresh_btn" class="refresh-btn btn btn-primary" label-idx="1">새로고침</button>
 					</div>
 				</div>
 				<div class="recent_clip videoList displayNone">
 					<div id="recent_clip" class="section-title">
 						<h2>관리목록 인기클립</h2>
+						<button id="clip_refresh_btn" class="refresh-btn btn btn-primary" label-idx="2">새로고침</button>
 					</div>
 				</div>
 				<div id="addMore" class="col-3 btn-danger p-3 text-sm-center addMore m-auto" label-videoIdx="0">더 보기</div>
@@ -98,13 +101,11 @@
 
 
 <script>
-
 	document.addEventListener("DOMContentLoaded", function(){
 
-		// 더보기 버튼 및
-		let addMoreBtn = document.querySelector('#addMore');
-		// 리스트 버튼 클릭 이벤트
-		let videoList = document.querySelectorAll('#services .videoList');
+		let addMoreBtn = document.querySelector('#addMore');					// 더보기 버튼 및
+		let videoList = document.querySelectorAll('#services .videoList');		// 리스트 버튼 클릭 이벤트
+		let refreshBtnList = document.querySelectorAll('#services .refresh-btn');
 		document.querySelectorAll('#about .listBtn').forEach((elem, idx) => {
 			elem.addEventListener('click',(e)=> {
 				videoList.forEach(elem => {if(!elem.classList.contains('displayNone')) elem.classList.add('displayNone')})
@@ -115,6 +116,8 @@
 				// 클릭한 목록 활성화
 			})
 		})
+
+		console.log(refreshBtnList)
 
 		let addMoreFlage = 1;
 		let initVideoFlag = [1,1,1];
@@ -133,11 +136,10 @@
 			else if(e.target.getAttribute('label-videoIdx') === '2') {
 				request_getMyRecentClip(videoList[2].querySelector('.section-title').lastChild.lastChild.querySelector('.points').innerText)
 			}
-		})
+		})			// 더보기 버튼 클릭하기
+		refreshBtnList.forEach()
 
-
-		// 관리목록 다시보기 데이터 요청
-		async function request_getMyRecentVideoNext(body) {
+		function request_getMyRecentVideoNext(body) {
 			// console.log('다시보기 가져오기 함수실행')
 			// 메인 헤드 슬라이더의 데이터 값 가져오기
 			ajaxAwait('<c:url value="/home/request/getMyRecentVideo" />', 'POST', body, (res) => {
@@ -154,10 +156,7 @@
 					return e;
 				}
 			})
-		} // 관리목록 다시보기 더보기 데이터 요청
-		request_getMyRecentVideoNext('none');
-
-		// 관리목록 라이브 데이터 요청
+		} 			// 관리목록 다시보기 더보기 데이터 요청
 		function request_getMyLiveVideo(body) {
 			ajaxAwait('<c:url value="/home/request/getMyLiveVideo" />', 'POST', body, (res) => {
 				// console.log('라이브 비디오 가져오기 선언')
@@ -174,10 +173,7 @@
 				}
 			})
 
-		} // 관리목록 라이브 데이터 요청
-		request_getMyLiveVideo('none')
-
-		// 관리목록 인기클립 데이터 요청
+		} 				// 관리목록 라이브 데이터 요청
 		function request_getMyRecentClip(body) {
 			ajaxAwait('<c:url value="/home/request/getMyClipVideo" />', 'POST', body, (res) => {
 				// console.log('라이브 비디오 가져오기 선언')
@@ -194,10 +190,7 @@
 				}
 			})
 
-		} // 관리목록 라이브 데이터 요청
-		request_getMyRecentClip('none')
-
-		// 데이터 셋 추가하기
+		} 				// 관리목록 인기클립 데이터 요청
 		function addService_IconSet(data, target, last) {
 			let s_row = document.createElement('div');
 			s_row.className = 'row icon-set';
@@ -228,8 +221,65 @@
 
 			target.appendChild(s_row)
 			// target.removeChild(target.querySelector('.loading'));
-		} /// IconSet 추가하기
-	});
-	//
+		} 		// IconSet 추가하기
 
+		request_getMyRecentVideoNext('none');
+		request_getMyLiveVideo('none')
+		request_getMyRecentClip('none')
+
+		function request_refreshMyRecentVideoNext(body) {
+			// console.log('다시보기 가져오기 함수실행')
+			// 메인 헤드 슬라이더의 데이터 값 가져오기
+			ajaxAwait('<c:url value="/home/request/refreshMyRecentVideo" />', 'POST', body, (res) => {
+				// console.log('라이브 비디오 가져오기 선언')
+				console.log(res);
+/*				try {
+					// console.log(JSON.parse(res))
+					addService_IconSet(JSON.parse(res), document.getElementById('recent_video'), addMoreBtn);
+					addMoreFlage = 0;
+					initVideoFlag[0] = 0;
+				} catch(e) {
+					initVideoFlag[0] = 0;
+					addMoreFlage = 0;
+					// console.log(e)
+					return e;
+				}*/
+			})
+		} 			// 관리목록 다시보기 더보기 데이터 새로고침 요청
+		function request_refreshMyLiveVideo(body) {
+			ajaxAwait('<c:url value="/home/request/refreshMyLiveVideo" />', 'POST', body, (res) => {
+				// console.log('라이브 비디오 가져오기 선언')
+				try {
+					// console.log(JSON.parse(res))
+					if(res !== 'error') addService_IconSet(JSON.parse(res), document.getElementById('recent_live'))
+					addMoreFlage = 0;
+					initVideoFlag[1] = 0;
+				} catch(e) {
+					// console.log(e)
+					addMoreFlage = 0;
+					initVideoFlag[1] = 0;
+					return e;
+				}
+			})
+
+		} 				// 관리목록 라이브 데이터 새로고침 요청
+		function request_refreshMyRecentClip(body) {
+			ajaxAwait('<c:url value="/home/request/refreshMyClipVideo" />', 'POST', body, (res) => {
+				// console.log('라이브 비디오 가져오기 선언')
+				try {
+					// console.log(JSON.parse(res))
+					if(res !== 'error') addService_IconSet(JSON.parse(res), document.getElementById('recent_clip'))
+					addMoreFlage = 0;
+					initVideoFlag[2] = 0;
+				} catch(e) {
+					// console.log(e)
+					addMoreFlage = 0;
+					initVideoFlag[2] = 0;
+					return e;
+				}
+			})
+
+		} 				// 관리목록 인기클립 데이터 새로고침 요청
+
+	});
 </script>
