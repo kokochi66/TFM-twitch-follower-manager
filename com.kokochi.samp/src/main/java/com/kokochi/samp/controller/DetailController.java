@@ -391,42 +391,6 @@ public class DetailController {
 				while(right < ffs.size()) delFollows.add(ffs.get(right++).getId());
 
 				int cnt = 0;
-/*				for (UserFollowVO fromFollow : fromFollows) {
-					cnt++;
-					ArrayList<UserFollowVO> sTof = followGetter.getAllFollowedList(client_id, app_access_token, "from_id=" + fromFollow.getTo_id());
-					UserFollowVO findsf = new UserFollowVO();
-					findu.setFrom_id(fromFollow.getTo_id());
-					List<UserFollowVO> sToffs = userService.readUserFollowList(findu);
-					Collections.sort(sTof, (a,b) -> {return a.getFollowed_at().compareTo(b.getFollowed_at());});
-					Collections.sort(sToffs, (a,b) -> {return a.getFollowed_at().compareTo(b.getFollowed_at());});
-					log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: fromFollows :: " +sTof.size());
-					log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: ffs :: " +sToffs.size());
-					left = 0;
-					right = 0;
-					while(left < sTof.size() && right < sToffs.size()) {
-						UserFollowVO taf = sTof.get(left);
-						UserFollowVO df = sToffs.get(right);
-
-						if(!taf.getTo_id().equals(df.getTo_id())) {
-							// tav가 더 작으면 insert
-							// dv가 더 작으면 dv를 delete
-							if(taf.getFollowed_at().compareTo(df.getFollowed_at()) <= 0) {
-								addFollows.add(taf);
-								left++;
-							} else {
-								delFollows.add(df.getId());
-								right++;
-							}
-						} else {
-							left++;
-							right++;
-						}
-					}
-					while(left < sTof.size()) addFollows.add(sTof.get(left++));
-					while(right < sToffs.size()) delFollows.add(sToffs.get(right++).getId());
-					log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우의 팔로우 데이터 가져오기 :: " + cnt+"/"+fromFollows.size());
-					// 팔로우 데이터 가져오기
-				}*/
 				if(addFollows.size() > 0) userService.addUserFollowList(addFollows);
 				if(delFollows.size() > 0) userService.deleteUserFollowList(delFollows);
 			}
