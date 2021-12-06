@@ -99,9 +99,9 @@ public class MenuController {
 		}
 	}
 
-	// /menu/replayvideo GET :: 다시보기 찜 관리 화면
-	@RequestMapping(value="/replayvideo", method = RequestMethod.GET)
-	public void postPOST() { // 메인 home 화면 매핑
+	// /menu/clipShorts GET :: 트위치 클립 쇼츠
+	@RequestMapping(value="/clipShorts", method = RequestMethod.GET)
+	public void clipShorts() { // 메인 home 화면 매핑
 		log.info("/menu/replayvideo - ReplayVideo Mappin");
 	}
 	

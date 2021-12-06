@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+/* follow */
+body {
+    background-color: #2e2e2e;
+}
+
+#topbar {
+    background-color: #a5a5a5;
+}
+
+#breadcrumbs h2 {
+    color: #ccc;
+}
+
+#content {
+    background-color: #0e0e10;
+}
+
+#clip-swiper .clips {
+    width: 1000px;
+    height: 500px;
+    border: 1px solid #eee;
+    color: #fff;
+    margin: 0 auto;
+}
+#clip-swiper .swiper-button-prev, #clip-swiper .swiper-button-next {
+    color: #bbb;
+}
