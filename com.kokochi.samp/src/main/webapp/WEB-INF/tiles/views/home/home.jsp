@@ -117,6 +117,10 @@
 			})
 		})
 
+		let recent_video = document.querySelector('#recent_video');
+		let recent_live = document.querySelector('#recent_live');
+		let recent_clip = document.querySelector('#recent_clip');
+
 		let addMoreFlage = 1;
 		let initVideoFlag = [1,1,1];
 
@@ -141,19 +145,17 @@
 		})
 
 		function request_getMyRecentVideoNext(body) {
-			// console.log('다시보기 가져오기 함수실행')
 			// 메인 헤드 슬라이더의 데이터 값 가져오기
+			recent_video.appendChild(createLoadingBox());
 			ajaxAwait('<c:url value="/home/request/getMyRecentVideo" />', 'POST', body, (res) => {
-				// console.log('라이브 비디오 가져오기 선언')
+				recent_video.removeChild(recent_video.querySelector('.loading'));
 				try {
-					// console.log(JSON.parse(res))
 					addService_IconSet(JSON.parse(res), document.getElementById('recent_video'), addMoreBtn);
 					addMoreFlage = 0;
 					initVideoFlag[0] = 0;
 				} catch(e) {
 					initVideoFlag[0] = 0;
 					addMoreFlage = 0;
-					// console.log(e)
 					return e;
 				}
 			})
