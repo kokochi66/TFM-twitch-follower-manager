@@ -1,9 +1,10 @@
 package com.kokochi.samp.security;
 
-import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.MemberVO;
 import com.kokochi.samp.domain.UserFollowVO;
+import com.kokochi.samp.mapper.TwitchKeyMapper;
 import com.kokochi.samp.queryAPI.GetFollow;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,10 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
-import com.kokochi.samp.service.TwitchKeyService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,15 +30,21 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private TwitchKeyMapper twitchKeyMapper;
 	
+	@SneakyThrows
 	@Override
-	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException{
 		// TODO Auto-generated method stub
 //		System.out.println("CustomAuthenticationProvider - authenticate :: 진입");
 		
 		String user_id = (String) authentication.getPrincipal();
 		String user_pwd = (String) authentication.getCredentials();
 		UsernamePasswordAuthenticationToken authToken = null;
+		String client_id = twitchKeyMapper.read("client_id").getKeyValue();
+		String client_secret = twitchKeyMapper.read("client_secret").getKeyValue();
 //		System.out.println("CustomAuthenticationProvider - authenticate :: " + user_id + " " + user_pwd);
 		
 		if(user_id.equals("OAuth2_authentication")) {
@@ -49,7 +54,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			GetStream streamGenerator = new GetStream();
 			GetFollow followGetter = new GetFollow();
 			try {
-				String client_id = new Key().getClientId();
 				TwitchUser tuser = streamGenerator.getUser(client_id, user_pwd, "");
 				UserDTO user = (UserDTO) service.loadUserByTwitchUsername(tuser.getId());
 				if(user == null) throw new UsernameNotFoundException(user_id);

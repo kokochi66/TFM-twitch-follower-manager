@@ -43,5 +43,5 @@ hs_err_pid*
 secret
 /.metadata/
 key/
-TwitchKeyVO.java
+com.kokochi.samp/src/main/java/com/kokochi/samp/DTO/Key.java
 com.kokochi.samp/src/main/java/com/kokochi/samp/domain/TwitchKeyVO.java

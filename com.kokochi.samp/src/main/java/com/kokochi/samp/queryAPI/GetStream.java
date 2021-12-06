@@ -1,10 +1,7 @@
 package com.kokochi.samp.queryAPI;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-import com.kokochi.samp.DTO.Key;
-import com.kokochi.samp.domain.TwitchKeyVO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

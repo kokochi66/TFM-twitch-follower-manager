@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.*;
 import com.kokochi.samp.security.UserDetailService;
 import com.kokochi.samp.service.ClipTwitchService;
@@ -17,7 +14,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,8 +67,7 @@ public class DetailController {
 	public String detail(Model model, @RequestParam("streams")String streams) throws Exception { // 메인 home 화면 매핑
 		log.info("/detail - 스트리머 상세보기 페이지 :: " + streams);
 
-		Key keyTwitch = new Key();
-		String client_id = keyTwitch.getClientId();
+		String client_id = key.read("client_id").getKeyValue();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		LanguageConverter langConverter = new LanguageConverter();
@@ -96,8 +91,7 @@ public class DetailController {
 	public String getLiveDataFromStream(@RequestBody String body) throws Exception {
 		log.info("/detail/request/live - 라이브 데이터 가져오기 :: " + body);
 
-		Key twitchKey = new Key();		// 키값이 저장된 객체
-		String client_id = twitchKey.getClientId();
+		String client_id = key.read("client_id").getKeyValue();
 		String app_access_token = key.read("App_Access_Token").getKeyValue();
 		Stream stream = streamGetter.getLiveStream(client_id, app_access_token, body, "");
 		if(stream == null) {
@@ -261,8 +255,7 @@ public class DetailController {
 			JSONParser parser = new JSONParser();
 			JSONArray res_arr = new JSONArray();
 
-			Key twitchKey = new Key();		// 키값이 저장된 객체
-			String client_id = twitchKey.getClientId();
+			String client_id = key.read("client_id").getKeyValue();
 			String app_access_token = key.read("App_Access_Token").getKeyValue();
 			int left, right;
 

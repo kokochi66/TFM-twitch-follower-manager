@@ -1,15 +1,11 @@
 package com.kokochi.samp.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.*;
 import com.kokochi.samp.mapper.UserTwitchMapper;
 import com.kokochi.samp.queryAPI.GetToken;
-import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import com.kokochi.samp.service.ClipTwitchService;
 import com.kokochi.samp.service.VideoTwitchService;
 import org.json.simple.JSONArray;
@@ -24,16 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.GetVideo;
-import com.kokochi.samp.queryAPI.domain.Clips;
 import com.kokochi.samp.queryAPI.domain.Stream;
-import com.kokochi.samp.queryAPI.domain.Video;
 import com.kokochi.samp.service.ManagedService;
 import com.kokochi.samp.service.TwitchKeyService;
 
@@ -68,7 +60,6 @@ public class HomeController {
 	private GetVideo videoGetter = new GetVideo();
 	private GetClips clipGetter = new GetClips();
 	private GetToken tokenGetter = new GetToken();
-	private Key twitchKey = new Key();		// 키값이 저장된 객체
 
 	// / 홈 매핑
 	@RequestMapping(value="/")
@@ -86,8 +77,8 @@ public class HomeController {
 		try {
 			// 선언부
 			HttpSession session = req.getSession();
-			String client_id = twitchKey.getClientId();
-			String client_secret = twitchKey.getCleintSecret();
+			String client_id = key.read("client_id").getKeyValue();
+			String client_secret = key.read("client_secret").getKeyValue();
 			String app_access_token = key.read("App_Access_Token").getKeyValue();
 //			log.info("TEST :: getLiveVideo :: 토큰 선언 :: " + client_id +" " +client_secret +" " + app_access_token);
 
@@ -127,7 +118,6 @@ public class HomeController {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONArray res_arr = new JSONArray();
-			Key keyTwitch = new Key();
 
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			if(!principal.toString().equals("anonymousUser")) {
@@ -185,7 +175,6 @@ public class HomeController {
 		log.info("/home/request/refreshMyRecentVideo - 나의 관리목록 최신 다시보기 새로고침 " + body);
 		JSONObject res = new JSONObject();
 		try {
-			Key keyTwitch = new Key();
 
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			if(!principal.toString().equals("anonymousUser")) {
@@ -193,7 +182,7 @@ public class HomeController {
 
 				// 사용자의 팔로우 관리목록을 가져온다
 				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
-				String client_id = keyTwitch.getClientId();
+				String client_id = key.read("client_id").getKeyValue();
 				String app_access_token = key.read("App_Access_Token").getKeyValue();
 				for (ManagedFollowVO managedFollowVO : follow_list) {
 
@@ -259,7 +248,7 @@ public class HomeController {
 			if(!principal.toString().equals("anonymousUser")) {
 				// 인증값 초기화
 				UserDTO user = (UserDTO) principal;
-				String client_id = twitchKey.getClientId();
+				String client_id = key.read("client_id").getKeyValue();
 
 				// 관리목록 리스트 가져오기
 				List<UserTwitchVO> managedList = userTwitchMapper.readManagedList(user.getId());
@@ -292,74 +281,6 @@ public class HomeController {
 
 	}
 
-	// /home/request/refreshMyRecentVideo POST - 나의 관리목록 최신 다시보기 새로고침
-	@RequestMapping(value="/home/request/refreshMyRecentVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
-	@ResponseBody
-	public String refreshMyRecentVideo(@RequestBody String body) throws Exception {
-		log.info("/home/request/refreshMyRecentVideo - 나의 관리목록 최신 다시보기 새로고침 " + body);
-		JSONObject res = new JSONObject();
-		try {
-			Key keyTwitch = new Key();
-
-			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			if(!principal.toString().equals("anonymousUser")) {
-				UserDTO user = (UserDTO) principal;
-
-				// 사용자의 팔로우 관리목록을 가져온다
-				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
-				String client_id = keyTwitch.getClientId();
-				String app_access_token = key.read("App_Access_Token").getKeyValue();
-				for (ManagedFollowVO managedFollowVO : follow_list) {
-
-					String userId = managedFollowVO.getTo_user();
-					List<VideoTwitchVO> videos = videoGetter.getRecentVideo(client_id,app_access_token ,"?user_id="+userId+"&first=100");
-					if(videos != null) {
-						List<VideoTwitchVO> addVideos = new ArrayList<>();
-						List<String> delVideos = new ArrayList<>();
-						VideoTwitchVO findv = new VideoTwitchVO();
-						findv.setUser_id(userId);
-						findv.setPage(1000000000);
-						findv.setIndex(0);
-						List<VideoTwitchVO> vos = videoTwitchService.readList(findv);
-						Collections.sort(videos,(a, b) -> {return a.getId().compareTo(b.getId());});
-						Collections.sort(vos,(a,b) -> {return a.getId().compareTo(b.getId());});
-						int left = 0;
-						int right = 0;
-						while(left < videos.size() && right < vos.size()) {
-							VideoTwitchVO tav = videos.get(left);
-							VideoTwitchVO dv = vos.get(right);
-
-							if(!tav.getId().equals(dv.getId())) {
-								// tav가 더 작으면 insert
-								// dv가 더 작으면 dv를 delete
-								if(tav.getId().compareTo(dv.getId()) < 0) {
-									addVideos.add(tav);
-									left++;
-								} else {
-									delVideos.add(dv.getId());
-									right++;
-								}
-							} else {
-								left++;
-								right++;
-							}
-						}
-						while(left < videos.size()) addVideos.add(videos.get(left++));
-						while(right < vos.size()) delVideos.add(vos.get(right++).getId());
-						if(addVideos.size() > 0) videoTwitchService.createList(addVideos);
-						if(delVideos.size() > 0) videoTwitchService.deleteList(String.join(",",delVideos));
-					}
-					// 다시보기 데이터 가져오기
-				}
-
-				res.put("msg", "success");
-			}
-			return res.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return res.toString();
-		}
-	}
 
 	// /home/request/getMyClipVideo POST - 나의 관리목록 인기클립 가져오기
 	@RequestMapping(value="/home/request/getMyClipVideo", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
@@ -372,9 +293,8 @@ public class HomeController {
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			if(!principal.toString().equals("anonymousUser")) {
 				// 인증값 초기화
-				Key keyTwitch = new Key();
 				UserDTO user = (UserDTO) principal;
-				String client_id = keyTwitch.getClientId();
+				String client_id = key.read("client_id").getKeyValue();
 
 				// 팔로우 데이터 가져오기
 				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
@@ -412,7 +332,6 @@ public class HomeController {
 		log.info("/home/request/refreshMyRecentVideo - 나의 관리목록 최신 다시보기 새로고침 " + body);
 		JSONObject res = new JSONObject();
 		try {
-			Key keyTwitch = new Key();
 
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			if(!principal.toString().equals("anonymousUser")) {
@@ -420,46 +339,27 @@ public class HomeController {
 
 				// 사용자의 팔로우 관리목록을 가져온다
 				List<ManagedFollowVO> follow_list = managed_service.listFollow(user.getId());
-				String client_id = keyTwitch.getClientId();
+				String client_id = key.read("client_id").getKeyValue();
 				String app_access_token = key.read("App_Access_Token").getKeyValue();
 				for (ManagedFollowVO managedFollowVO : follow_list) {
-
 					String userId = managedFollowVO.getTo_user();
-					List<ClipTwitchVO> clips = clipGetter.getClipsAll(client_id, app_access_token, "broadcaster_id="+userId+"&first=100");
+					List<ClipTwitchVO> clips = clipGetter.getClips(client_id, app_access_token, "broadcaster_id="+userId+"&first=100");
 					if(clips != null) {
 						List<ClipTwitchVO> addClips = new ArrayList<>();
-						List<String> delClips = new ArrayList<>();
 						ClipTwitchVO findc = new ClipTwitchVO();
 						findc.setBroadcaster_id(userId);
-						findc.setPage(1000000000);
+						findc.setPage(100);
 						findc.setIndex(0);
 						List<ClipTwitchVO> cos = clipTwitchService.readList(findc);
-						Collections.sort(clips,(a,b) -> {return a.getId().compareTo(b.getId());});
-						Collections.sort(cos,(a,b) -> {return a.getId().compareTo(b.getId());});
-						int left = 0;
-						int right = 0;
-						while(left < clips.size() && right < cos.size()) {
-							ClipTwitchVO tac = clips.get(left);
-							ClipTwitchVO dc = cos.get(right);
-							if(!tac.getId().equals(dc.getId())) {
-								// tav가 더 작으면 insert
-								// dv가 더 작으면 dv를 delete
-								if(tac.getId().compareTo(dc.getId()) < 0) {
-									addClips.add(tac);
-									left++;
-								} else {
-									delClips.add(dc.getId());
-									right++;
-								}
-							} else {
-								left++;
-								right++;
-							}
+						HashSet<String> cosSet = new HashSet<>();
+						for (ClipTwitchVO co : cos) {
+							cosSet.add(co.getId());
+
 						}
-						while(left < clips.size()) addClips.add(clips.get(left++));
-						while(right < cos.size()) delClips.add(cos.get(right++).getId());
+						for (ClipTwitchVO co : cos) {
+							if(!cosSet.contains(co.getId())) addClips.add(co);
+						}
 						if(addClips.size() > 0) clipTwitchService.createList(addClips);
-						if(delClips.size() > 0) clipTwitchService.deleteList(String.join(",",delClips));
 					}
 					// 클립 데이터 가져오기
 				}

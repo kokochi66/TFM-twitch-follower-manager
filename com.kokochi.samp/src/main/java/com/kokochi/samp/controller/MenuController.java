@@ -3,7 +3,6 @@ package com.kokochi.samp.controller;
 import java.util.List;
 import java.util.UUID;
 
-import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.UserTwitchVO;
 import com.kokochi.samp.security.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +67,6 @@ public class MenuController {
 
 			UserDTO user = (UserDTO) principal;
 //			postQuery.initManagedFollow(user.getTwitch_user_id(), user.getUser_id());		// 팔로우 목록 초기화/동기화
-			Key twitckKey = new Key();
 			String app_access_token = key.read("App_Access_Token").getKeyValue();
 			
 /*			List<TwitchUser> follow_list =  followGetter.getFollowedList(twitckKey.getClientId(), app_access_token, "from_id="+user.getTwitch_user_id()+"&", "first=40&");

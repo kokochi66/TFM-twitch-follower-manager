@@ -2,12 +2,10 @@ package com.kokochi.samp.security;
 
 import java.util.*;
 
-import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.*;
 import com.kokochi.samp.mapper.UserFollowMapper;
 import com.kokochi.samp.mapper.UserTwitchMapper;
 import com.kokochi.samp.queryAPI.GetStream;
-import com.kokochi.samp.queryAPI.GetToken;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,9 +18,6 @@ import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.mapper.TwitchKeyMapper;
 import com.kokochi.samp.mapper.UserMapper;
 import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 @Service("userDetailService")
 public class UserDetailService implements UserDetailsService {
@@ -38,7 +33,10 @@ public class UserDetailService implements UserDetailsService {
 
 	@Autowired
 	private UserFollowMapper userFollowMapper;
-	
+
+	@Autowired
+	private TwitchKeyMapper twitchKeyMapper;
+
 	@Override
 	public UserDetails loadUserByUsername(String user_id) throws UsernameNotFoundException {
 //		System.out.println("UserDetailService - loadUserByUsername :: 진입 :: " + user_id);
@@ -150,12 +148,14 @@ public class UserDetailService implements UserDetailsService {
 		UserTwitchVO read = new UserTwitchVO();
 		read.setId(userFollowVO.getFrom_id());
 		UserTwitchVO temp = readUserTwitch(read);
-		Key key = new Key();
+
+		String client_id = twitchKeyMapper.read("client_id").getKeyValue();
+		String client_secret = twitchKeyMapper.read("client_secret").getKeyValue();
 		String app_access_token = keyMapper.read("App_Access_Token").getKeyValue();
 
 		// db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
 		if(temp == null) {
-			TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token , "id=" + userFollowVO.getFrom_id());
+			TwitchUser user = new GetStream().getUser(client_id, app_access_token , "id=" + userFollowVO.getFrom_id());
 			if(user == null) {
 				user = new TwitchUser();
 				user.setId(userFollowVO.getFrom_id());
@@ -171,7 +171,7 @@ public class UserDetailService implements UserDetailsService {
 		temp = readUserTwitch(read);
 		// db에 팔로우 대상 사용자가 없으면 추가해준다.
 		if(temp == null) {
-			TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());
+			TwitchUser user = new GetStream().getUser(client_id, app_access_token, "id=" + userFollowVO.getTo_id());
 			if(user == null) {
 				user = new TwitchUser();
 				user.setId(userFollowVO.getTo_id());
@@ -200,14 +200,12 @@ public class UserDetailService implements UserDetailsService {
 		int cnt = 0;
 		for (UserFollowVO userFollowVO : list) {
 			cnt++;
-//			UserTwitchVO read = new UserTwitchVO();
-//			read.setId(userFollowVO.getFrom_id());
-//			UserTwitchVO temp = readUserTwitch(read);
-			Key key = new Key();
+			String client_id = twitchKeyMapper.read("client_id").getKeyValue();
+			String client_secret = twitchKeyMapper.read("client_secret").getKeyValue();
 
 			// db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
 			if(!userMap.containsKey(userFollowVO.getFrom_id()) && !set.contains(userFollowVO.getFrom_id())) {
-				TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token , "id=" + userFollowVO.getFrom_id());
+				TwitchUser user = new GetStream().getUser(client_id, app_access_token , "id=" + userFollowVO.getFrom_id());
 				if(user == null) {
 					user = new TwitchUser();
 					user.setId(userFollowVO.getFrom_id());
@@ -223,7 +221,7 @@ public class UserDetailService implements UserDetailsService {
 			temp = readUserTwitch(read);*/
 			// db에 팔로우 대상 사용자가 없으면 추가해준다.
 			if(!userMap.containsKey(userFollowVO.getTo_id()) && !set.contains(userFollowVO.getTo_id())) {
-				TwitchUser user = new GetStream().getUser(key.getClientId(), app_access_token, "id=" + userFollowVO.getTo_id());
+				TwitchUser user = new GetStream().getUser(client_id, app_access_token, "id=" + userFollowVO.getTo_id());
 				if(user == null) {
 					user = new TwitchUser();
 					user.setId(userFollowVO.getTo_id());

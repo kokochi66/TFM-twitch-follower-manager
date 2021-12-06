@@ -3,7 +3,6 @@ package com.kokochi.samp.controller;
 import java.util.HashSet;
 import java.util.List;
 
-import com.kokochi.samp.DTO.Key;
 import com.kokochi.samp.domain.UserFollowVO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -49,8 +48,7 @@ public class QueryController {
 	public String getReplayDataFromStream(@RequestHeader(value="user_id")String user_id, 
 			@RequestHeader(value="twitch_user_id")String twitch_user_id) throws Exception {
 		log.info("/query/request/initFollow - 팔로우 목록 초기화 및 동기화 ");
-		Key keyTwitch = new Key();
-		String client_id = keyTwitch.getClientId();
+		String client_id = key.read("client_id").getKeyValue();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 		
 		List<ManagedFollowVO> managedFollow_VO_list = follow_service.listFollow(user_id);
@@ -74,8 +72,7 @@ public class QueryController {
 	@ResponseBody
 	public String getSearchStream(@RequestBody String query) throws Exception {
 		log.info("/query/request/searchStreams - 검색창 쿼리 :: " + query);
-		Key keyTwitch = new Key();
-		String client_id = keyTwitch.getClientId();
+		String client_id = key.read("client_id").getKeyValue();
 		String app_access_token = key.read("app_access_token").getKeyValue();
 //		log.info("/query/request/initFollow - 토큰값 :: ["+client_id+"]  ["+app_access_token+"]");
 		HttpHeaders headers = new HttpHeaders();

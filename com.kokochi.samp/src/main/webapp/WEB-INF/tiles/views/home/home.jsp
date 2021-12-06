@@ -178,8 +178,10 @@
 
 		} 				// 관리목록 라이브 데이터 요청
 		function request_getMyRecentClip(body) {
+			recent_clip.appendChild(createLoadingBox());
 			ajaxAwait('<c:url value="/home/request/getMyClipVideo" />', 'POST', body, (res) => {
 				// console.log('라이브 비디오 가져오기 선언')
+				recent_clip.removeChild(recent_clip.querySelector('.loading'));
 				try {
 					// console.log(JSON.parse(res))
 					if(res !== 'error') addService_IconSet(JSON.parse(res), document.getElementById('recent_clip'))
