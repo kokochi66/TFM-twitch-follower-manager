@@ -66,29 +66,10 @@ public class MenuController {
 
 
 			UserDTO user = (UserDTO) principal;
-//			postQuery.initManagedFollow(user.getTwitch_user_id(), user.getUser_id());		// 팔로우 목록 초기화/동기화
 			String app_access_token = key.read("App_Access_Token").getKeyValue();
-			
-/*			List<TwitchUser> follow_list =  followGetter.getFollowedList(twitckKey.getClientId(), app_access_token, "from_id="+user.getTwitch_user_id()+"&", "first=40&");
-			// db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
-			if(follow_list == null) {
-				app_access_token = new GetToken().requestAppAccessToken(twitckKey.getClientId(), twitckKey.getCleintSecret());
-				key.modify(new TwitchKeyVO("App_Access_Token", app_access_token));
-				follow_list =  followGetter.getFollowedList(twitckKey.getClientId(), app_access_token, "from_id="+user.getTwitch_user_id()+"&", "first=40&");
-			}// 토큰이 무효라면, 토큰 재발급 후, 딱 한번만 재실행 되도록함. 실행해도 실패한 경우에는, 에러를 반환*/
 
 			// 트위치 API가 아닌, DB에서 팔로우 목록을 가져온다.
 			List<UserTwitchVO> userTwitchList = userService.readUserTwitchFollowList(user.getTwitch_user_id());
-
-/*			for(int i=0;i<userTwitchList.size();i++) {
-				ManagedFollowVO managedFollowVO = new ManagedFollowVO();
-				managedFollowVO.setUserId(user.getUser_id());
-				managedFollowVO.setToUser(follow_list.get(i).getId());
-				follow_list.get(i).setManaged(follow_service.isManagedFollow(managedFollowVO));
-				if(follow_list.get(i).isManaged()) {
-					follow_list.add(0, follow_list.remove(i)); // 관리체크된 값들은 맨위로 올라오도록 리스트 위치를 조정해준다.
-				}
-			}*/
 			
 			model.addAttribute("follow_list", userTwitchList);
 			
@@ -99,12 +80,6 @@ public class MenuController {
 		}
 	}
 
-	// /menu/clipShorts GET :: 트위치 클립 쇼츠
-	@RequestMapping(value="/clipShorts", method = RequestMethod.GET)
-	public void clipShorts() { // 메인 home 화면 매핑
-		log.info("/menu/replayvideo - ReplayVideo Mappin");
-	}
-	
 	// /menu/request/managedfollow/remove POST :: 팔로우 관리목록 추가
 	@RequestMapping(value="/request/managedfollow/add", method = RequestMethod.POST)
 	@ResponseBody
@@ -159,4 +134,41 @@ public class MenuController {
 		}
 		return "error";
 	}
+
+	// /menu/clipShorts GET :: 트위치 클립 쇼츠
+	@RequestMapping(value="/clipShorts", method = RequestMethod.GET)
+	public void clipShorts() { // 메인 home 화면 매핑
+		log.info("/menu/replayvideo - ReplayVideo Mappin");
+	}
+
+	// /menu/clipShorts/next POST :: 트위치 클립 쇼츠 영상 가져오기
+	@RequestMapping(value="/request/managedfollow/add", method = RequestMethod.POST)
+	@ResponseBody
+	public String nextClipShorts(@RequestBody String toUser) throws Exception {
+		log.info("/managedfollow/add - 팔로우 관리목록 추가 " + toUser);
+		try {
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(!principal.toString().equals("anonymousUser")) {
+				UserDTO user = (UserDTO) principal;
+
+				/*
+				1. 이미 본 클립은 가져오지 않음 (본 클립, 보지않은 클립 flag를 추가 - 테이블 추가)
+				2. 관리목록에 있는 스트리머 최우선 (점수가 높게 배정됨 -> 배수)
+				3. 팔로우 스트리머 차선 ( 그다음 추가 점수 배정)
+				4. 나머지 스트리머들 조회 (점수의 배수 없음)
+				5. 빠른 넘기기를 위해 무조건 데이터베이스에 있는 클립 데이터만 사용함 (새로고침, API 쿼리과정 일체 거치지 않음)
+				6. 한번 쿼리시에 영상 5개 추가, 일정 넘어갈때마다 추가로 5개가 계속 추가됨. (최초는 10개)
+				7. 클립넘기기/스트리머넘기기 플래그를 추가로 가짐. 해당 클립과 스트리머는 더이상 쇼츠에 나타나지 않음
+				* */
+
+
+				return "success";
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+		return "error";
+	}
+
 }
