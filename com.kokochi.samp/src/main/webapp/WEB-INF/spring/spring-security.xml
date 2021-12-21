@@ -15,6 +15,8 @@
 	<sec:authentication-manager>
 		<sec:authentication-provider ref="authenticationProvider" />
 	</sec:authentication-manager>
+
+	<context:component-scan base-package="com.kokochi.samp" />
 	
 <!-- 	<sec:authentication-manager alias="authenticationManager">
 		<sec:authentication-provider user-service-ref="userService">
@@ -42,7 +44,7 @@
 	</sec:http>
 	
 	<bean id="bcrptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
-	<bean id="userService" class="com.kokochi.samp.security.UserDetailService" />
+	<bean id="userDetailService" class="com.kokochi.samp.security.UserDetailService" />
 	<bean id="authenticationProvider" class="com.kokochi.samp.security.CustomAuthenticationProvider" />
 	<bean id="loginFailureHandler" class="com.kokochi.samp.security.LoginFailureHandler">
 		<property name="user_id" value="user_id" />

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.kokochi.samp.domain.UserTwitchVO;
 import com.kokochi.samp.security.UserDetailService;
+import com.kokochi.samp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -30,7 +31,7 @@ public class MenuController {
 	private TwitchKeyService key;
 
 	@Autowired
-	private UserDetailService userService;
+	private UserService userService;
 	
 	@Autowired
 	private ManagedService follow_service;
@@ -135,6 +136,7 @@ public class MenuController {
 		return "error";
 	}
 
+/*
 	// /menu/clipShorts GET :: 트위치 클립 쇼츠
 	@RequestMapping(value="/clipShorts", method = RequestMethod.GET)
 	public void clipShorts() { // 메인 home 화면 매핑
@@ -150,8 +152,11 @@ public class MenuController {
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			if(!principal.toString().equals("anonymousUser")) {
 				UserDTO user = (UserDTO) principal;
+				List<Integer> list;
 
-				/*
+
+				*/
+/*
 				1. 이미 본 클립은 가져오지 않음 (본 클립, 보지않은 클립 flag를 추가 - 테이블 추가)
 				2. 관리목록에 있는 스트리머 최우선 (점수가 높게 배정됨 -> 배수)
 				3. 팔로우 스트리머 차선 ( 그다음 추가 점수 배정)
@@ -159,7 +164,8 @@ public class MenuController {
 				5. 빠른 넘기기를 위해 무조건 데이터베이스에 있는 클립 데이터만 사용함 (새로고침, API 쿼리과정 일체 거치지 않음)
 				6. 한번 쿼리시에 영상 5개 추가, 일정 넘어갈때마다 추가로 5개가 계속 추가됨. (최초는 10개)
 				7. 클립넘기기/스트리머넘기기 플래그를 추가로 가짐. 해당 클립과 스트리머는 더이상 쇼츠에 나타나지 않음
-				* */
+				* *//*
+
 
 
 				return "success";
@@ -170,5 +176,6 @@ public class MenuController {
 		}
 		return "error";
 	}
+*/
 
 }

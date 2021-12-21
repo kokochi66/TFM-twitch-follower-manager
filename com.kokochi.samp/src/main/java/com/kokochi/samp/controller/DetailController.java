@@ -7,8 +7,7 @@ import java.util.List;
 
 import com.kokochi.samp.domain.*;
 import com.kokochi.samp.security.UserDetailService;
-import com.kokochi.samp.service.ClipTwitchService;
-import com.kokochi.samp.service.VideoTwitchService;
+import com.kokochi.samp.service.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,8 +30,6 @@ import com.kokochi.samp.queryAPI.GetVideo;
 import com.kokochi.samp.queryAPI.domain.Channel;
 import com.kokochi.samp.queryAPI.domain.Stream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
-import com.kokochi.samp.service.ManagedService;
-import com.kokochi.samp.service.TwitchKeyService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +42,7 @@ public class DetailController {
 	private TwitchKeyService key;
 
 	@Autowired
-	private UserDetailService userService;
+	private UserService userService;
 	
 	@Autowired
 	private ManagedService followService;

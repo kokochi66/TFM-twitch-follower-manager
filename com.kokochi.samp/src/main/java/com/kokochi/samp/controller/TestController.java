@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.kokochi.samp.domain.UserFollowVO;
 import com.kokochi.samp.security.UserDetailService;
+import com.kokochi.samp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +27,7 @@ public class TestController {
 	private ManagedService follow_service;
 
 	@Autowired
-	private UserDetailService userService;
+	private UserService userService;
 
 	@RequestMapping(value="/followtest", method=RequestMethod.GET)
 	public String formTest(Model model) throws Exception {

@@ -4,6 +4,7 @@ import com.kokochi.samp.domain.MemberVO;
 import com.kokochi.samp.domain.UserFollowVO;
 import com.kokochi.samp.mapper.TwitchKeyMapper;
 import com.kokochi.samp.queryAPI.GetFollow;
+import com.kokochi.samp.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,14 +20,18 @@ import com.kokochi.samp.DTO.UserDTO;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 	
-	@Autowired
-	private UserDetailService service;
+	@Resource(name = "userDetailService")
+	private UserDetailService userDetailService;
+
+	@Resource(name ="userService")
+	private UserService service;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -55,7 +60,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			GetFollow followGetter = new GetFollow();
 			try {
 				TwitchUser tuser = streamGenerator.getUser(client_id, user_pwd, "");
-				UserDTO user = (UserDTO) service.loadUserByTwitchUsername(tuser.getId());
+				UserDTO user = (UserDTO) userDetailService.loadUserByTwitchUsername(tuser.getId());
 				if(user == null) throw new UsernameNotFoundException(user_id);
 				user.setUser_pwd("");	// 비밀번호는 객체에 적용하지 않음
 				user.setOauth_token(user_pwd);
@@ -88,7 +93,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			
 		} else {
 			// 일반 로그인 처리
-			UserDTO user = (UserDTO) service.loadUserByUsername(user_id);
+			UserDTO user = (UserDTO) userDetailService.loadUserByUsername(user_id);
 			
 //			System.out.println("AuthController - authenticate :: enable = " + user.isEnabled());
 			if(user == null) throw new UsernameNotFoundException(user_id);
