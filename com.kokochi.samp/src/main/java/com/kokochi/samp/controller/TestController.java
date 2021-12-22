@@ -29,7 +29,7 @@ public class TestController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value="/followtest", method=RequestMethod.GET)
+	@RequestMapping(value="/test", method=RequestMethod.GET)
 	public String formTest(Model model) throws Exception {
 		try {
 			log.info("TestController - form GET");
@@ -50,4 +50,5 @@ public class TestController {
 		}
 		return "test/formTest";
 	}
+
 }
