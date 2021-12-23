@@ -244,7 +244,7 @@ public class DetailController {
 	}
 	
 	// /detail/request/refresh POST - 트위치 사용자 데이터 새로고침
-/*	@RequestMapping(value="/request/refresh", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
+	@RequestMapping(value="/request/refresh", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getTwitchUserDataRefresh(@RequestBody String userId) throws Exception {
 		try {
@@ -394,10 +394,10 @@ public class DetailController {
 			e.printStackTrace();
 			return e.getMessage();
 		}
-	}*/
+	}
 
 
-	// /detail/request/refresh POST - 트위치 사용자 데이터 새로고침
+/*	// /detail/request/refresh POST - 트위치 사용자 데이터 새로고침 - 각각의 개체수 따로 INSERT, DELETE
 	@RequestMapping(value="/request/refresh", produces="application/json;charset=UTF-8", method=RequestMethod.POST)
 	@ResponseBody
 	public String getTwitchUserDataRefresh(@RequestBody String userId) throws Exception {
@@ -516,7 +516,7 @@ public class DetailController {
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 팔로우 데이터 가져오기");
 			// 팔로우 데이터 가져오기
 
-/*			ArrayList<UserFollowVO> fromFollows;
+*//*			ArrayList<UserFollowVO> fromFollows;
 			List<ManagedFollowVO> managedFollowVOS;
 			UserFollowVO findu;
 			List<UserFollowVO> ffs;
@@ -553,12 +553,12 @@ public class DetailController {
 			while(left < fromFollows.size()) userService.addUserFollow(fromFollows.get(left++));
 			while(right < ffs.size()) userService.deleteUserFollow(ffs.get(right++).getId());
 			log.info("/detail /request/refresh :: getTwitchUserDataRefresh :: 스트리머를 팔로우한 사용자 데이터 가져오기");
-			// 스트리머를 팔로우한 사용자 데이터 가져오기*/
+			// 스트리머를 팔로우한 사용자 데이터 가져오기*//*
 
 			return res_arr.toJSONString();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.getMessage();
 		}
-	}
+	}*/
 }
