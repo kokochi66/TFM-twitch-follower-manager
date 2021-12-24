@@ -302,7 +302,8 @@ public class DetailController {
 			// 다시보기 데이터 가져오기
 
 
-			List<ClipTwitchVO> clips = clipGetter.getClipsAll(client_id, app_access_token, "broadcaster_id="+userId+"&first=100");
+//			List<ClipTwitchVO> clips = clipGetter.getClipsAll(client_id, app_access_token, "broadcaster_id="+userId+"&first=100");
+			List<ClipTwitchVO> clips = clipGetter.getClips(client_id, app_access_token, "broadcaster_id="+userId+"&first=100");
 			if(clips != null) {
 				List<ClipTwitchVO> addClips = new ArrayList<>();
 				List<String> delClips = new ArrayList<>();

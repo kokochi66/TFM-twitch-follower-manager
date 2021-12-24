@@ -20,9 +20,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kokochi.samp.domain.ManagedFollowVO;
-import com.kokochi.samp.queryAPI.domain.Clips;
-import com.kokochi.samp.queryAPI.domain.TwitchUser;
 
 public class GetClips {
 	public List<ClipTwitchVO> getClipsAll(String client_id, String Access_Token, String query) throws Exception {
@@ -94,6 +91,8 @@ public class GetClips {
 			for(int i=0;i<data.size();i++) {
 				JSONObject cJson = (JSONObject) parser.parse(data.get(i).toString());
 				ClipTwitchVO clip = gsonParser.fromJson(cJson.toString(), ClipTwitchVO.class);
+
+				if(pagination.get("cursor") != null) clip.setNextPage(pagination.get("cursor").toString());
 				res.add(clip);
 			}
 			return res;
