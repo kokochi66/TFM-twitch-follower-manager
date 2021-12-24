@@ -2,10 +2,11 @@ package com.kokochi.samp.mapper;
 
 import com.kokochi.samp.domain.ClipTwitchVO;
 import com.kokochi.samp.domain.VideoTwitchVO;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-
+@Mapper
 public interface ClipTwitchMapper {
     public ClipTwitchVO read(ClipTwitchVO clipTwitchVO) throws Exception;
     public List<ClipTwitchVO> readList(ClipTwitchVO clipTwitchVO) throws Exception;

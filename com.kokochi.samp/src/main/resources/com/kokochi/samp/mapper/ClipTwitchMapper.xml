@@ -85,4 +85,27 @@
         </where>
     </delete>
 
+    <update id="update" parameterType="UserTwitchVO">
+        UPDATE clip_twitch
+        <trim prefix="set" prefixOverrides=",">
+            <if test="url		!=null">, url = #{url}</if>
+            <if test="embed_url		        !=null">, embed_url = #{embed_url}</if>
+            <if test="broadcaster_id	!=null">, broadcaster_id = #{broadcaster_id}</if>
+            <if test="broadcaster_name	    !=null">, broadcaster_name = #{broadcaster_name}</if>
+            <if test="creator_id	!=null">, creator_id = #{creator_id}</if>
+            <if test="creator_name !=null">, creator_name = #{creator_name}</if>
+            <if test="video_id     	!=null">, video_id = #{video_id}</if>
+            <if test="game_id     	!=null">, game_id = #{game_id}</if>
+            <if test="language     	!=null">, language = #{language}</if>
+            <if test="title     	!=null">, title = #{title}</if>
+            <if test="view_count     	!=null">, view_count = #{view_count}</if>
+            <if test="created_at     	!=null">, created_at = #{created_at}</if>
+            <if test="thumbnail_url     	!=null">, thumbnail_url = #{thumbnail_url}</if>
+            <if test="duration     	!=null">, duration = #{duration}</if>
+        </trim>
+        <where>
+            <if test="id				!=null">AND id = #{id}</if>
+        </where>
+    </update>
+
 </mapper>

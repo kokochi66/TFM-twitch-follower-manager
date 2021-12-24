@@ -127,8 +127,8 @@ document.addEventListener("DOMContentLoaded", function(){
         // target.removeChild(target.querySelector('.loading'));
     } 		// IconSet 추가하기
 
-    // request_getMyRecentVideoNext('none');
-    // request_getMyLiveVideo('none')
+    request_getMyRecentVideoNext('none');
+    request_getMyLiveVideo('none')
     request_getMyRecentClip('none')
 
     function request_refreshMyRecentVideoNext(body) {

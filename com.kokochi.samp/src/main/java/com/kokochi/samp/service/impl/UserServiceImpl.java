@@ -129,12 +129,11 @@ public class UserServiceImpl implements UserService {
         HashMap<String, UserTwitchVO> userMap = new HashMap<>();
         for (UserTwitchVO ut : userList) userMap.put(ut.getId(), ut);
         String app_access_token = twitchKeyMapper.read("App_Access_Token").getKeyValue();
+        String client_id = twitchKeyMapper.read("client_id").getKeyValue();
 
         int cnt = 0;
         for (UserFollowVO userFollowVO : list) {
             cnt++;
-            String client_id = twitchKeyMapper.read("client_id").getKeyValue();
-            String client_secret = twitchKeyMapper.read("client_secret").getKeyValue();
 
             // db에 팔로우하려는 사용자의 데이터가 없으면 추가해준다.
             if(!userMap.containsKey(userFollowVO.getFrom_id()) && !set.contains(userFollowVO.getFrom_id())) {
