@@ -50,6 +50,20 @@
         ORDER by points desc limit #{limit};
     </select>
 
+
+    <!-- 클립쇼츠 가져오기 -->
+    <select id="readClipShortsList" resultType="ClipTwitchVO" parameterType="ClipTwitchVO">
+        SELECT ct.id, ct.url, ct.embed_url, ct.broadcaster_id, ct.broadcaster_name, ct.creator_id, ct.creator_name, ct.video_id,
+        ct.game_id, ct.language, ct.title, ct.view_count, ct.created_at, ct.thumbnail_url, ct.duration, ut.profile_image_url profile_image_url,
+        (ct.view_count / ((dayofyear(now()) - dayofyear(ct.created_at) + ((year(now()) - year(ct.created_at)) * 365 )) * (dayofyear(now()) - dayofyear(ct.created_at) + ((year(now()) - year(ct.created_at)) * 365 )))  ) points
+        FROM managed_follow mf
+        LEFT JOIN user_twitch ut ON mf.to_user = ut.id
+        LEFT OUTER JOIN clip_twitch ct ON ct.broadcaster_id = ut.id
+        WHERE mf.user_id = #{user_id}
+        <if test="points    !=null">AND (ct.view_count /((dayofyear(now()) - dayofyear(ct.created_at) + ((year(now()) - year(ct.created_at)) * 365 )) * (dayofyear(now()) - dayofyear(ct.created_at) + ((year(now()) - year(ct.created_at)) * 365 )))  ) <![CDATA[<]]> #{points}</if>
+        ORDER by points desc limit #{limit};
+    </select>
+
     <!-- 클립 생성 -->
     <insert id="create" parameterType="ClipTwitchVO">
         INSERT INTO clip_twitch(id, url, embed_url, broadcaster_id, broadcaster_name, creator_id, creator_name, video_id, game_id, language, title, view_count, created_at, thumbnail_url, duration)
