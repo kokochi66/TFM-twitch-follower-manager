@@ -1,9 +1,14 @@
 package com.kokochi.samp.controller;
 
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
+import com.kokochi.samp.domain.ClipTwitchVO;
+import com.kokochi.samp.domain.UserFollowVO;
 import com.kokochi.samp.domain.UserTwitchVO;
+import com.kokochi.samp.queryAPI.GetClips;
+import com.kokochi.samp.queryAPI.GetVideo;
 import com.kokochi.samp.security.UserDetailService;
 import com.kokochi.samp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +40,14 @@ public class MenuController {
 	
 	@Autowired
 	private ManagedService follow_service;
-	
-	private GetStream streamGenerator = new GetStream();
-	private GetFollow followGetter = new GetFollow();
-	private PostQuery postQuery = new PostQuery();
+
+	@Autowired
+	private ManagedService managedService;
+
+	private final GetStream streamGetter = new GetStream();
+	private final GetFollow followGetter = new GetFollow();
+	private final GetClips clipGetter = new GetClips();
+	private final GetVideo videoGetter = new GetVideo();
 
 	// /menu/setting GET :: 메뉴 설정 화면
 	@RequestMapping(value="/setting", method = RequestMethod.GET)
@@ -151,8 +160,11 @@ public class MenuController {
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			if(!principal.toString().equals("anonymousUser")) {
 				UserDTO user = (UserDTO) principal;
-				List<Integer> list;
-
+				String client_id = key.read("client_id").getKeyValue();
+				String app_access_token = key.read("App_Access_Token").getKeyValue();
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+				Date nowDate = new Date();
+				nowDate.setDate(nowDate.getDate() - 7);
 
 /*				1. 이미 본 클립은 가져오지 않음 (본 클립, 보지않은 클립 flag를 추가 - 테이블 추가)
 				2. 관리목록에 있는 스트리머 최우선 (점수가 높게 배정됨 -> 배수)
@@ -162,6 +174,39 @@ public class MenuController {
 				6. 한번 쿼리시에 영상 5개 추가, 일정 넘어갈때마다 추가로 5개가 계속 추가됨. (최초는 10개)
 				7. 클립넘기기/스트리머넘기기 플래그를 추가로 가짐. 해당 클립과 스트리머는 더이상 쇼츠에 나타나지 않음
 				* */
+
+				UserFollowVO userFollowVO = new UserFollowVO();
+				userFollowVO.setFrom_id(user.getTwitch_user_id());
+				List<UserFollowVO> userFollowVOS = userService.readUserFollowList(userFollowVO);
+				// 사용자의 팔로우 목록 가져오기
+
+
+				List<ManagedFollowVO> managedFollowList = managedService.listFollow(user.getUser_id());
+				Set<String> managedSet = new HashSet<>();
+				for (ManagedFollowVO managedFollowVO : managedFollowList) {
+					managedSet.add(managedFollowVO.getTo_user());
+				}
+				// 사용자의 관심 스트리머 목록 가져오기
+
+				// 사용자의 이미 본 클립 목록 가져오기
+
+				List<ClipTwitchVO> clips = new ArrayList<>();
+				for (UserFollowVO followVO : userFollowVOS) {
+					List<ClipTwitchVO> clipList = clipGetter.getClips(client_id, app_access_token, "broadcaster_id="+followVO.getTo_id()+"&first=100&started_at="+format.format(nowDate));
+					for (ClipTwitchVO clipTwitchVO : clipList) {
+						if(managedSet.contains(followVO.getTo_id())) {
+							clipTwitchVO.setView_count((int)(clipTwitchVO.getView_count() * 1.5));
+						}
+						clips.add(clipTwitchVO);
+					}
+					// 최신 일주일 클립을 모두 합치기 (합치면서, 관심목록 스트리머라면, viewCount를 1.5배수, 이미 본 클립이라면 제외)
+				}
+				// 팔로우 목록에 따라 스트리머 최신 일주일 클립 가져오기
+
+				Collections.sort(clips, (a,b) -> {
+					return b.getView_count() - a.getView_count();
+				});
+				// viewCount/일자수^2 로 정렬하여 사용자에게 보여줌.
 
 				return "success";
 			}

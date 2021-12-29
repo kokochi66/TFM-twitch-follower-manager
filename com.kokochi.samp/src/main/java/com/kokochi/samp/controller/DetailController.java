@@ -54,10 +54,10 @@ public class DetailController {
 	private ClipTwitchService clipTwitchService;
 
 	
-	private GetStream streamGetter = new GetStream();
-	private GetFollow followGetter = new GetFollow();
-	private GetClips clipGetter = new GetClips();
-	private GetVideo videoGetter = new GetVideo();
+	private final GetStream streamGetter = new GetStream();
+	private final GetFollow followGetter = new GetFollow();
+	private final GetClips clipGetter = new GetClips();
+	private final GetVideo videoGetter = new GetVideo();
 
 	// /detail GET - 스트리머 상세보기 페이지
 	@RequestMapping(method=RequestMethod.GET)
