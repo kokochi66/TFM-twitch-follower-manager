@@ -19,8 +19,15 @@
       <div class="col--12 align-items-stretch mb-5">
         <div id="clip-swiper" class="swiper-container">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <div class="clips">1</div>
+<%--            <div class="swiper-slide">
+              <div class="clips">
+                <iframe class="clip-video"
+                        src="https://clips.twitch.tv/embed?clip=OpenOptimisticTrollEagleEye-Sz_ZgOJPNNMnf3N_&parent=localhost&autoplay=true"
+                        height="500"
+                        width="1000"
+                        allowfullscreen="true">
+                </iframe>
+              </div>
             </div>
             <div class="swiper-slide">
               <div class="clips">2</div>
@@ -30,20 +37,17 @@
             </div>
             <div class="swiper-slide">
               <div class="clips">4</div>
-            </div>
+            </div>--%>
           </div>
           <div class="swiper-button-prev"></div>
           <div class="swiper-button-next"></div>
         </div>
       </div>
     </div>
+    <button id="testBtn" type="button">테스트버튼</button>
   </div>
-  <%--	<iframe
-			src="https://clips.twitch.tv/embed?clip=OpenOptimisticTrollEagleEye-Sz_ZgOJPNNMnf3N_&parent=localhost&autoplay=true"
-			height="300"
-			width="500"
-			allowfullscreen="true">
-	</iframe>--%>
+
 </section><!-- End Blog Section -->
+<script src= "https://player.twitch.tv/js/embed/v1.js"></script>
 <script src="${path}/assets/js/swiper-bundle.min.js"></script>
 <script src="${path}/assets/js/menu/clipShorts.js"></script>

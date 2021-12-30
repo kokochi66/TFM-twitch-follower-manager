@@ -23,6 +23,13 @@ body {
     border: 1px solid #eee;
     color: #fff;
     margin: 0 auto;
+    position: relative;
+}
+#clip-swiper .clips .clip-video {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
 }
 #clip-swiper .swiper-button-prev, #clip-swiper .swiper-button-next {
     color: #bbb;

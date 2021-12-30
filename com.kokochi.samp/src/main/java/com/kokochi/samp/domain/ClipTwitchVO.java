@@ -60,6 +60,7 @@ public class ClipTwitchVO {
 		j.put("user_name", this.broadcaster_name);
 		j.put("title", this.title);
 		j.put("url", this.url);
+		j.put("embed_url", this.embed_url);
 		j.put("view_count", this.view_count);
 		j.put("points ", format.format(this.created_at));
 		j.put("created_at", formatStr.format(this.created_at));
