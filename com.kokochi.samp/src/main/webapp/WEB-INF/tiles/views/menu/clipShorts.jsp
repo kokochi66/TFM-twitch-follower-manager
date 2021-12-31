@@ -44,7 +44,6 @@
         </div>
       </div>
     </div>
-    <button id="testBtn" type="button">테스트버튼</button>
   </div>
 
 </section><!-- End Blog Section -->

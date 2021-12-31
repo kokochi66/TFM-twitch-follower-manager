@@ -6,41 +6,51 @@ document.addEventListener("DOMContentLoaded", function(){
             prevEl: ".swiper-button-prev"
         },
         centeredSlides: true,
-    });
+        on: {
+            activeIndexChange: function () {
+                let clipSlides = document.querySelectorAll('.clips')
+                if(this.realIndex > 0) clipSlides[this.realIndex-1].innerHTML = '';
+                if(this.realIndex < clipSlides.length-1) clipSlides[this.realIndex+1].innerHTML = '';
+                clipSlides[this.realIndex].innerHTML = `
+                    <iframe class="clip-video"
+                            src="${clipsShortsData[this.realIndex].embed_url}&parent=localhost&autoplay=true"
+                            height="500"
+                            width="1000"
+                            allowfullscreen="true">
+                    </iframe>`;
+            }
+        }
 
-    document.querySelector('#testBtn').addEventListener('click', ()=> {
-        // let html = `
-        //     <div class="swiper-slide">
-        //       <div class="clips">새슬라이드</div>
-        //     </div>
-        // `;
-        // swiper.appendSlide(html);
-        // console.log(document.querySelectorAll('.clip-video')[0])
-        // document.querySelectorAll('.clip-video')[0].pause();
-        let player = new Twitch.Player(document.querySelectorAll('.clip-video')[0]);
-        player.pause();
-    })
+
+    });
 
     let clipsShortsData = [];
     let lastIndex = -1;
     function getDataClips(body) {
         ajaxAwait('/menu/request/clipShorts/get', 'POST', body, (res) => {
             clipsShortsData = JSON.parse(res);
-            console.log(clipsShortsData)
             lastIndex = 10;
             for(let i = 0;i < lastIndex; i++) {
                 let html = `
                     <div class="swiper-slide">
                       <div class="clips">
-                        <iframe class="clip-video"
-                                src="${clipsShortsData[i].embed_url}&parent=localhost&autoplay=false"
-                                height="500"
-                                width="1000"
-                                allowfullscreen="true">
-                        </iframe>
                       </div>
                     </div>
                 `;
+                if(i == 0) {
+                    html = `
+                    <div class="swiper-slide">
+                      <div class="clips">
+                            <iframe class="clip-video"
+                                    src="${clipsShortsData[i].embed_url}&parent=localhost&autoplay=true"
+                                    height="500"
+                                    width="1000"
+                                    allowfullscreen="true">
+                            </iframe>
+                      </div>
+                    </div>
+                    `
+                }
                 swiper.appendSlide(html);
             }
 
