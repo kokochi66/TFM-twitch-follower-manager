@@ -1,5 +1,6 @@
 package com.kokochi.samp.queryAPI;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class GetVideo {
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -72,7 +73,7 @@ public class GetVideo {
 		RestTemplate rt = new RestTemplate();
 		ArrayList<Video> res = new ArrayList<>();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -113,7 +114,7 @@ public class GetVideo {
 		RestTemplate rt = new RestTemplate();
 		ArrayList<VideoTwitchVO> res = new ArrayList<>();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 
 		try {
 //				System.out.println("GetVideo - userId =  " + c_user_id);
@@ -158,7 +159,7 @@ public class GetVideo {
 		RestTemplate rt = new RestTemplate();
 		ArrayList<Video> res = new ArrayList<>();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		
 		try {
 			for(int i=0;i<users.size();i++) {
@@ -208,7 +209,7 @@ public class GetVideo {
 		RestTemplate rt = new RestTemplate();
 		ArrayList<Video> res = new ArrayList<>();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(

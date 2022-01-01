@@ -1,5 +1,6 @@
 package com.kokochi.samp.queryAPI.domain;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.kokochi.samp.domain.ClipTwitchVO;
@@ -28,7 +29,7 @@ public class Clips {
 	private String language;
 	private String title;
 	private int view_count;
-	private Date created_at;
+	private LocalDateTime created_at;
 	private String thumbnail_url;
 	private float duration;
 	private String nextPage;

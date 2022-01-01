@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kokochi.samp.mapper.ClipTwitchShortsBanMapper">
+
+    <!-- 클립 밴 데이터 가져오기 -->
+    <select id="readClipTwitchShortsBan" resultType="ClipTwitchShortsBanVO" parameterType="String">
+        SELECT id, user_id, ban_clip
+        FROM clip_shorts_ban
+        WHERE id = #{id}
+    </select>
+
+    <!-- 클립 밴 데이터 리스트 가져오기 -->
+    <select id="readClipTwitchShortsBanList" resultType="ClipTwitchShortsBanVO" parameterType="ClipTwitchShortsBanVO">
+        SELECT id, user_id, ban_clip
+        FROM clip_shorts_ban
+        <where>
+            <if test="user_id    !=null">AND user_id = #{user_id}</if>
+            <if test="ban_clip    !=null">AND ban_clip = #{ban_clip}</if>
+        </where>
+    </select>
+
+    <!-- 클립 밴 데이터 생성하기 -->
+    <insert id="createClipTwitchShortsBan" parameterType="ClipTwitchShortsBanVO">
+        INSERT INTO clip_shorts_ban(id, user_id, ban_clip)
+        VALUES(#{id}, #{user_id}, #{ban_clip})
+    </insert>
+
+    <!-- 클립 밴 데이터 삭제하기 -->
+    <delete id="deleteClipTwitchShortsBanById" parameterType="String">
+        DELETE FROM clip_shorts_ban
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 사용자의 클립 밴 데이터 모두 삭제하기 -->
+    <delete id="deleteClipTwitchShortsBanByUserId" parameterType="String">
+        DELETE FROM clip_shorts_ban
+        WHERE user_id = #{user_id}
+    </delete>
+</mapper>

@@ -1,8 +1,11 @@
 package com.kokochi.samp.queryAPI;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -10,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import com.google.gson.*;
 import com.kokochi.samp.domain.ClipTwitchVO;
 import com.sun.deploy.net.HttpResponse;
 import org.json.simple.JSONArray;
@@ -23,8 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import sun.net.www.http.HttpClient;
 
 public class GetClips {
@@ -38,7 +40,7 @@ public class GetClips {
 
 		List<ClipTwitchVO> res = new ArrayList<>();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -83,7 +85,7 @@ public class GetClips {
 
 		List<ClipTwitchVO> res = new ArrayList<>();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -151,7 +153,7 @@ public class GetClips {
 		public void run() {
 			try {
 				RestTemplate rt = new RestTemplate();
-				Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+				Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 				JSONParser parser = new JSONParser();
 				ResponseEntity<String> response = rt.exchange(
 						"https://api.twitch.tv/helix/clips?" + query+"&broadcaster_id="+stream, HttpMethod.GET,
@@ -174,6 +176,5 @@ public class GetClips {
 			}
 		}
 	}
-
 
 }

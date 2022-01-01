@@ -4,14 +4,14 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import com.kokochi.samp.domain.ClipTwitchVO;
-import com.kokochi.samp.domain.UserFollowVO;
-import com.kokochi.samp.domain.UserTwitchVO;
+import com.kokochi.samp.domain.*;
 import com.kokochi.samp.queryAPI.GetClips;
 import com.kokochi.samp.queryAPI.GetVideo;
 import com.kokochi.samp.security.UserDetailService;
+import com.kokochi.samp.service.ClipTwitchClipShortsBanService;
 import com.kokochi.samp.service.UserService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.kokochi.samp.DTO.UserDTO;
-import com.kokochi.samp.domain.ManagedFollowVO;
 import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
@@ -47,6 +46,9 @@ public class MenuController {
 
 	@Autowired
 	private ManagedService managedService;
+
+	@Autowired
+	private ClipTwitchClipShortsBanService clipTwitchClipShortsBanService;
 
 	private final GetStream streamGetter = new GetStream();
 	private final GetFollow followGetter = new GetFollow();
@@ -155,7 +157,7 @@ public class MenuController {
 		log.info("/menu/replayvideo - ReplayVideo Mappin");
 	}
 
-	// /menu/clipShorts/next POST :: 트위치 클립 쇼츠 영상 가져오기
+	// /menu/clipShorts/get POST :: 트위치 클립 쇼츠 영상 가져오기
 	@RequestMapping(value="/request/clipShorts/get", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
 	@ResponseBody
 	public String nextClipShorts(@RequestBody String toUser) throws Exception {
@@ -177,16 +179,24 @@ public class MenuController {
 				// 사용자의 팔로우 목록 가져오기
 
 
-				List<ManagedFollowVO> managedFollowList = managedService.listFollow(user.getUser_id());
+				List<ManagedFollowVO> managedFollowList = managedService.listFollow(user.getId());
 				Set<String> managedSet = new HashSet<>();
 				for (ManagedFollowVO managedFollowVO : managedFollowList) {
 					managedSet.add(managedFollowVO.getTo_user());
 				}
 				// 사용자의 관심 스트리머 목록 가져오기
 
+				ClipTwitchShortsBanVO findClipBanVO = new ClipTwitchShortsBanVO();
+				findClipBanVO.setUser_id(user.getId());
+				List<ClipTwitchShortsBanVO> clipTwitchShortsBanVOS = clipTwitchClipShortsBanService.readClipTwitchShortsBanList(findClipBanVO);
+				Set<String> clipBanSet = new HashSet<>();
+				for (ClipTwitchShortsBanVO clipTwitchShortsBanVO : clipTwitchShortsBanVOS) {
+					clipBanSet.add(clipTwitchShortsBanVO.getBan_clip());
+				}
 				// 사용자의 이미 본 클립 목록 가져오기
 
 				List<ClipTwitchVO> clipList = new ArrayList<>();
+				List<ClipTwitchVO> resClipList = new ArrayList<>();
 				if(userFollowVOS != null) {
 					List<String> streamList = new ArrayList<>();
 					for (UserFollowVO followVO : userFollowVOS) {
@@ -194,25 +204,57 @@ public class MenuController {
 					}
 
 					clipList = clipGetter.getClipsStreams(client_id, app_access_token, streamList, "first=100&started_at=" + nowDateStr);
-					for (ClipTwitchVO clipTwitchVO : clipList) {
-						if (managedSet.contains(clipTwitchVO.getBroadcaster_id())) {
-							clipTwitchVO.setView_count((int) (clipTwitchVO.getView_count() * 1.5));
+					if(clipList != null) {
+						for (ClipTwitchVO clipTwitchVO : clipList) {
+//							log.info("clipTwitchVO :: " + clipTwitchVO);
+							if (managedSet.contains(clipTwitchVO.getBroadcaster_id())) {
+								clipTwitchVO.setView_count((int) (clipTwitchVO.getView_count() * 3));
+							}
+							if(!clipBanSet.contains(clipTwitchVO.getId())) resClipList.add(clipTwitchVO);
 						}
 					}
 				}
 				// 팔로우 목록에 따라 스트리머 최신 일주일 클립 가져오기
-
-				Collections.sort(clipList, (a,b) -> {
-					return b.getView_count() - a.getView_count();
+				Collections.sort(resClipList, (a,b) -> {
+					long aBet = ChronoUnit.DAYS.between(a.getCreated_at(), LocalDateTime.now());
+					aBet *= aBet;
+					aBet += 1;
+					long bBet = ChronoUnit.DAYS.between(b.getCreated_at(), LocalDateTime.now());
+					bBet *= bBet;
+					bBet += 1;
+					return (int)((b.getView_count()/bBet) - (a.getView_count()/aBet));
 				});
 				// viewCount/일자수^2 로 정렬하여 사용자에게 보여줌.
 
 				JSONArray resArr = new JSONArray();
-				for (ClipTwitchVO clip : clipList) {
+				for (ClipTwitchVO clip : resClipList) {
 					JSONObject jsonObject = clip.clipsToJSON();
 					resArr.add(jsonObject);
 				}
 				return resArr.toJSONString();
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+		return "error";
+	}
+
+	// /request/clipShorts/ban POST :: 트위치 클립 쇼츠 이미 본 영상 체크하기
+	@RequestMapping(value="/request/clipShorts/ban", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public String banClipShorts(@RequestBody String clipId) throws Exception {
+		log.info("/request/clipShorts/ban - 클립쇼츠 밴 " + clipId);
+		try {
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(!principal.toString().equals("anonymousUser")) {
+				UserDTO user = (UserDTO) principal;
+
+				ClipTwitchShortsBanVO clipTwitchShortsBanVO = new ClipTwitchShortsBanVO();
+				clipTwitchShortsBanVO.setUser_id(user.getId());
+				clipTwitchShortsBanVO.setBan_clip(clipId);
+				clipTwitchClipShortsBanService.createClipTwitchShortsBan(clipTwitchShortsBanVO);
+				return "success";
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

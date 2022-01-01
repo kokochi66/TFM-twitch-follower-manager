@@ -1,6 +1,8 @@
 package com.kokochi.samp.queryAPI.domain;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.json.simple.JSONArray;
@@ -23,8 +25,8 @@ public class Video {
 	private String user_name = "";
 	private String title = "";
 	private String description = "";
-	private Date created_at = new Date();
-	private Date published_at = new Date();
+	private LocalDateTime created_at = LocalDateTime.now();
+	private LocalDateTime published_at = LocalDateTime.now();
 	private String url = "";
 	private String thumbnail_url = "";
 	private String viewable = "";
@@ -48,8 +50,8 @@ public class Video {
 		res.put("user_name", this.user_name);
 		res.put("title", this.title);
 		res.put("description", this.description);
-		res.put("points", format.format(this.created_at));
-		res.put("created_at", formatStr.format(this.created_at));
+		res.put("points", this.created_at.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")));
+		res.put("created_at", this.created_at.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")));
 		res.put("url", this.url);
 		res.put("thumbnail_url", this.thumbnail_url);
 		res.put("view_count", this.view_count);
