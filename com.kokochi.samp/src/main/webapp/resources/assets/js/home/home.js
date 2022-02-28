@@ -113,7 +113,9 @@ document.addEventListener("DOMContentLoaded", function(){
 						<img alt="" src="${data[i].profile_image_url ? data[i].profile_image_url : default_img}" width="100%" height="100%">
 					  </div>
 					  <div class="title text">${data[i].title}</div>
-					  <div class="name text">${data[i].user_name}</div>
+					  <div class="name text">
+                        <a href="/detail?streams=${data[i].user_id}">${data[i].user_name}</a>
+                      </div>
 					  <div class="created_at text">${data[i].created_at}</div>
 					  <div class="user_id displayNone">${data[i].user_id}</div>
 					  <div class="next_page displayNone">${data[i].nextPage}</div>
