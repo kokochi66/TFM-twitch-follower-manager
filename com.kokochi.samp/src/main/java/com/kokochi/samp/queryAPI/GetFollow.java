@@ -1,5 +1,6 @@
 package com.kokochi.samp.queryAPI;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -61,7 +62,7 @@ public class GetFollow {
 		
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		
 		ArrayList<UserFollowVO> list = new ArrayList<>();
 		JSONParser parser = new JSONParser();
@@ -105,7 +106,7 @@ public class GetFollow {
 
 		ArrayList<UserFollowVO> list = new ArrayList<>();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		try {
 			JSONObject pagination = new JSONObject();
 			String nextPage = "";

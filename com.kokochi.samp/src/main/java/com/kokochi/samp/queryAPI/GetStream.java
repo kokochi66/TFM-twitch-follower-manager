@@ -1,5 +1,6 @@
 package com.kokochi.samp.queryAPI;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
@@ -28,7 +29,7 @@ public class GetStream {
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -64,7 +65,7 @@ public class GetStream {
 		
 		ArrayList<Stream> list = new ArrayList<>();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 //		System.out.print("getLiveStreams - 초기화 완료");
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -105,7 +106,7 @@ public class GetStream {
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(
@@ -138,7 +139,7 @@ public class GetStream {
 		HttpEntity entity = new HttpEntity(headers);
 		RestTemplate rt = new RestTemplate();
 		JSONParser parser = new JSONParser();
-		Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 		
 		try {
 			ResponseEntity<String> response = rt.exchange(

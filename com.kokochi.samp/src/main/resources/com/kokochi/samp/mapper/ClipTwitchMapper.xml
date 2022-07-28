@@ -50,6 +50,20 @@
         ORDER by points desc limit #{limit};
     </select>
 
+
+    <!-- 클립쇼츠 가져오기 -->
+    <select id="readClipShortsList" resultType="ClipTwitchVO" parameterType="ClipTwitchVO">
+        SELECT ct.id, ct.url, ct.embed_url, ct.broadcaster_id, ct.broadcaster_name, ct.creator_id, ct.creator_name, ct.video_id,
+        ct.game_id, ct.language, ct.title, ct.view_count, ct.created_at, ct.thumbnail_url, ct.duration, ut.profile_image_url profile_image_url,
+        (ct.view_count / ((dayofyear(now()) - dayofyear(ct.created_at) + ((year(now()) - year(ct.created_at)) * 365 )) * (dayofyear(now()) - dayofyear(ct.created_at) + ((year(now()) - year(ct.created_at)) * 365 )))  ) points
+        FROM managed_follow mf
+        LEFT JOIN user_twitch ut ON mf.to_user = ut.id
+        LEFT OUTER JOIN clip_twitch ct ON ct.broadcaster_id = ut.id
+        WHERE mf.user_id = #{user_id}
+        <if test="points    !=null">AND (ct.view_count /((dayofyear(now()) - dayofyear(ct.created_at) + ((year(now()) - year(ct.created_at)) * 365 )) * (dayofyear(now()) - dayofyear(ct.created_at) + ((year(now()) - year(ct.created_at)) * 365 )))  ) <![CDATA[<]]> #{points}</if>
+        ORDER by points desc limit #{limit};
+    </select>
+
     <!-- 클립 생성 -->
     <insert id="create" parameterType="ClipTwitchVO">
         INSERT INTO clip_twitch(id, url, embed_url, broadcaster_id, broadcaster_name, creator_id, creator_name, video_id, game_id, language, title, view_count, created_at, thumbnail_url, duration)
@@ -84,5 +98,28 @@
             FIND_IN_SET(broadcaster_id, #{ids})
         </where>
     </delete>
+
+    <update id="update" parameterType="UserTwitchVO">
+        UPDATE clip_twitch
+        <trim prefix="set" prefixOverrides=",">
+            <if test="url		!=null">, url = #{url}</if>
+            <if test="embed_url		        !=null">, embed_url = #{embed_url}</if>
+            <if test="broadcaster_id	!=null">, broadcaster_id = #{broadcaster_id}</if>
+            <if test="broadcaster_name	    !=null">, broadcaster_name = #{broadcaster_name}</if>
+            <if test="creator_id	!=null">, creator_id = #{creator_id}</if>
+            <if test="creator_name !=null">, creator_name = #{creator_name}</if>
+            <if test="video_id     	!=null">, video_id = #{video_id}</if>
+            <if test="game_id     	!=null">, game_id = #{game_id}</if>
+            <if test="language     	!=null">, language = #{language}</if>
+            <if test="title     	!=null">, title = #{title}</if>
+            <if test="view_count     	!=null">, view_count = #{view_count}</if>
+            <if test="created_at     	!=null">, created_at = #{created_at}</if>
+            <if test="thumbnail_url     	!=null">, thumbnail_url = #{thumbnail_url}</if>
+            <if test="duration     	!=null">, duration = #{duration}</if>
+        </trim>
+        <where>
+            <if test="id				!=null">AND id = #{id}</if>
+        </where>
+    </update>
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.kokochi.samp.controller;
 
 import com.kokochi.samp.domain.UserTwitchVO;
+import com.kokochi.samp.service.UserService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,9 @@ public class AuthController {
 	
 	@Autowired
 	private TwitchKeyService key;
+
+	@Autowired
+	private UserService userService;
 	
 	@Resource(name = "userDetailService")
 	private UserDetailService userDetailService;
@@ -149,8 +153,8 @@ public class AuthController {
 		memberVO.setTwitch_user_login(user.getLogin());
 //		log.info("회원가입 사용자 - " + memberVO.toString());
 		UserTwitchVO userTwitchVO = user.toUserTwitchVO();
-		userDetailService.addUserTwitch(userTwitchVO);
-		userDetailService.userRegister(memberVO);
+		userService.addUserTwitch(userTwitchVO);
+		userService.userRegister(memberVO);
 
 		return "redirect:/auth/login";
 	}

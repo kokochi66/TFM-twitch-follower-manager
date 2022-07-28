@@ -60,6 +60,6 @@ public class ClipTwitchServiceImpl implements ClipTwitchService {
 
     @Override
     public void update(ClipTwitchVO clipTwitchVO) throws Exception {
-
+        clipTwitchMapper.update(clipTwitchVO);
     }
 }

@@ -1,10 +1,20 @@
 package com.kokochi.samp.controller;
 
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
-import com.kokochi.samp.domain.UserTwitchVO;
+import com.kokochi.samp.domain.*;
+import com.kokochi.samp.queryAPI.GetClips;
+import com.kokochi.samp.queryAPI.GetVideo;
 import com.kokochi.samp.security.UserDetailService;
+import com.kokochi.samp.service.ClipTwitchClipShortsBanService;
+import com.kokochi.samp.service.UserService;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -12,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.kokochi.samp.DTO.UserDTO;
-import com.kokochi.samp.domain.ManagedFollowVO;
 import com.kokochi.samp.queryAPI.GetFollow;
 import com.kokochi.samp.queryAPI.GetStream;
 import com.kokochi.samp.queryAPI.innerProcess.PostQuery;
@@ -30,14 +39,21 @@ public class MenuController {
 	private TwitchKeyService key;
 
 	@Autowired
-	private UserDetailService userService;
+	private UserService userService;
 	
 	@Autowired
 	private ManagedService follow_service;
-	
-	private GetStream streamGenerator = new GetStream();
-	private GetFollow followGetter = new GetFollow();
-	private PostQuery postQuery = new PostQuery();
+
+	@Autowired
+	private ManagedService managedService;
+
+	@Autowired
+	private ClipTwitchClipShortsBanService clipTwitchClipShortsBanService;
+
+	private final GetStream streamGetter = new GetStream();
+	private final GetFollow followGetter = new GetFollow();
+	private final GetClips clipGetter = new GetClips();
+	private final GetVideo videoGetter = new GetVideo();
 
 	// /menu/setting GET :: 메뉴 설정 화면
 	@RequestMapping(value="/setting", method = RequestMethod.GET)
@@ -141,8 +157,8 @@ public class MenuController {
 		log.info("/menu/replayvideo - ReplayVideo Mappin");
 	}
 
-	// /menu/clipShorts/next POST :: 트위치 클립 쇼츠 영상 가져오기
-	@RequestMapping(value="/request/managedfollow/add", method = RequestMethod.POST)
+	// /menu/clipShorts/get POST :: 트위치 클립 쇼츠 영상 가져오기
+	@RequestMapping(value="/request/clipShorts/get", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
 	@ResponseBody
 	public String nextClipShorts(@RequestBody String toUser) throws Exception {
 		log.info("/managedfollow/add - 팔로우 관리목록 추가 " + toUser);
@@ -150,18 +166,94 @@ public class MenuController {
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			if(!principal.toString().equals("anonymousUser")) {
 				UserDTO user = (UserDTO) principal;
+				String client_id = key.read("client_id").getKeyValue();
+				String app_access_token = key.read("App_Access_Token").getKeyValue();
 
-				/*
-				1. 이미 본 클립은 가져오지 않음 (본 클립, 보지않은 클립 flag를 추가 - 테이블 추가)
-				2. 관리목록에 있는 스트리머 최우선 (점수가 높게 배정됨 -> 배수)
-				3. 팔로우 스트리머 차선 ( 그다음 추가 점수 배정)
-				4. 나머지 스트리머들 조회 (점수의 배수 없음)
-				5. 빠른 넘기기를 위해 무조건 데이터베이스에 있는 클립 데이터만 사용함 (새로고침, API 쿼리과정 일체 거치지 않음)
-				6. 한번 쿼리시에 영상 5개 추가, 일정 넘어갈때마다 추가로 5개가 계속 추가됨. (최초는 10개)
-				7. 클립넘기기/스트리머넘기기 플래그를 추가로 가짐. 해당 클립과 스트리머는 더이상 쇼츠에 나타나지 않음
-				* */
+				LocalDateTime nowDate = LocalDateTime.now();
+				nowDate = nowDate.minusDays(7);
+				String nowDateStr = nowDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+
+				UserFollowVO userFollowVO = new UserFollowVO();
+				userFollowVO.setFrom_id(user.getTwitch_user_id());
+				List<UserFollowVO> userFollowVOS = userService.readUserFollowList(userFollowVO);
+				// 사용자의 팔로우 목록 가져오기
 
 
+				List<ManagedFollowVO> managedFollowList = managedService.listFollow(user.getId());
+				Set<String> managedSet = new HashSet<>();
+				for (ManagedFollowVO managedFollowVO : managedFollowList) {
+					managedSet.add(managedFollowVO.getTo_user());
+				}
+				// 사용자의 관심 스트리머 목록 가져오기
+
+				ClipTwitchShortsBanVO findClipBanVO = new ClipTwitchShortsBanVO();
+				findClipBanVO.setUser_id(user.getId());
+				List<ClipTwitchShortsBanVO> clipTwitchShortsBanVOS = clipTwitchClipShortsBanService.readClipTwitchShortsBanList(findClipBanVO);
+				Set<String> clipBanSet = new HashSet<>();
+				for (ClipTwitchShortsBanVO clipTwitchShortsBanVO : clipTwitchShortsBanVOS) {
+					clipBanSet.add(clipTwitchShortsBanVO.getBan_clip());
+				}
+				// 사용자의 이미 본 클립 목록 가져오기
+
+				List<ClipTwitchVO> clipList = new ArrayList<>();
+				List<ClipTwitchVO> resClipList = new ArrayList<>();
+				if(userFollowVOS != null) {
+					List<String> streamList = new ArrayList<>();
+					for (UserFollowVO followVO : userFollowVOS) {
+						streamList.add(followVO.getTo_id());
+					}
+
+					clipList = clipGetter.getClipsStreams(client_id, app_access_token, streamList, "first=100&started_at=" + nowDateStr);
+					if(clipList != null) {
+						for (ClipTwitchVO clipTwitchVO : clipList) {
+//							log.info("clipTwitchVO :: " + clipTwitchVO);
+							if (managedSet.contains(clipTwitchVO.getBroadcaster_id())) {
+								clipTwitchVO.setView_count((int) (clipTwitchVO.getView_count() * 3));
+							}
+							if(!clipBanSet.contains(clipTwitchVO.getId())) resClipList.add(clipTwitchVO);
+						}
+					}
+				}
+				// 팔로우 목록에 따라 스트리머 최신 일주일 클립 가져오기
+				Collections.sort(resClipList, (a,b) -> {
+					long aBet = ChronoUnit.DAYS.between(a.getCreated_at(), LocalDateTime.now());
+					aBet *= aBet;
+					aBet += 1;
+					long bBet = ChronoUnit.DAYS.between(b.getCreated_at(), LocalDateTime.now());
+					bBet *= bBet;
+					bBet += 1;
+					return (int)((b.getView_count()/bBet) - (a.getView_count()/aBet));
+				});
+				// viewCount/일자수^2 로 정렬하여 사용자에게 보여줌.
+
+				JSONArray resArr = new JSONArray();
+				for (ClipTwitchVO clip : resClipList) {
+					JSONObject jsonObject = clip.clipsToJSON();
+					resArr.add(jsonObject);
+				}
+				return resArr.toJSONString();
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+		return "error";
+	}
+
+	// /request/clipShorts/ban POST :: 트위치 클립 쇼츠 이미 본 영상 체크하기
+	@RequestMapping(value="/request/clipShorts/ban", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public String banClipShorts(@RequestBody String clipId) throws Exception {
+		log.info("/request/clipShorts/ban - 클립쇼츠 밴 " + clipId);
+		try {
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(!principal.toString().equals("anonymousUser")) {
+				UserDTO user = (UserDTO) principal;
+
+				ClipTwitchShortsBanVO clipTwitchShortsBanVO = new ClipTwitchShortsBanVO();
+				clipTwitchShortsBanVO.setUser_id(user.getId());
+				clipTwitchShortsBanVO.setBan_clip(clipId);
+				clipTwitchClipShortsBanService.createClipTwitchShortsBan(clipTwitchShortsBanVO);
 				return "success";
 			}
 		} catch(Exception e) {

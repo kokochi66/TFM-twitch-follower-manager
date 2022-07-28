@@ -1,5 +1,7 @@
 package com.kokochi.samp.queryAPI.domain;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.json.simple.JSONObject;
@@ -25,7 +27,7 @@ public class Stream {
 	private String type;
 	private String title;
 	private int viewer_count;
-	private Date started_at;
+	private LocalDateTime started_at;
 	private String language;
 	private String thumbnail_url;
 	private String profile_image_url;
@@ -60,7 +62,7 @@ public class Stream {
 		j.put("type", this.type);
 		j.put("title", this.title);
 		j.put("viewer_count", this.viewer_count);
-		j.put("started_at", this.started_at.toString());
+		j.put("started_at", this.started_at.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")));
 		j.put("language", this.language);
 		j.put("thumbnail_url", this.thumbnail_url);
 		j.put("profile_image_url", this.profile_image_url);

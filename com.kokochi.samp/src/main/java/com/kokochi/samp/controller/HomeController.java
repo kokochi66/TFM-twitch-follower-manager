@@ -348,16 +348,16 @@ public class HomeController {
 						List<ClipTwitchVO> addClips = new ArrayList<>();
 						ClipTwitchVO findc = new ClipTwitchVO();
 						findc.setBroadcaster_id(userId);
-						findc.setPage(100);
+						findc.setPage(1000000);
 						findc.setIndex(0);
 						List<ClipTwitchVO> cos = clipTwitchService.readList(findc);
 						HashSet<String> cosSet = new HashSet<>();
 						for (ClipTwitchVO co : cos) {
 							cosSet.add(co.getId());
-
 						}
-						for (ClipTwitchVO co : cos) {
+						for (ClipTwitchVO co : clips) {
 							if(!cosSet.contains(co.getId())) addClips.add(co);
+							else clipTwitchService.update(co);
 						}
 						if(addClips.size() > 0) clipTwitchService.createList(addClips);
 					}

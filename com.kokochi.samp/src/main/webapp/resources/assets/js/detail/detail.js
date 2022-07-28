@@ -198,7 +198,9 @@ document.addEventListener("DOMContentLoaded", function(){
                         </a>
                     </div>
                     <div class="info">
-                        <div class="name">${data[i].display_name}</div>
+                        <div class="name">
+                            <a href="/detail?streams=${data[i].id}">${data[i].display_name}</a>
+                        </div>
                         <div class="desc">${data[i].description}</div>
                         <div class="user_id displayNone">${data[i].id}</div>
                         <div class="check">
