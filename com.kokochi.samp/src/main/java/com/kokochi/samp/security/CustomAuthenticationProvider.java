@@ -33,8 +33,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 	@Autowired
 	private TwitchKeyMapper twitchKeyMapper;
-	
-	@SneakyThrows
+
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException{
 		// TODO Auto-generated method stub
@@ -43,8 +42,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		String user_id = (String) authentication.getPrincipal();
 		String user_pwd = (String) authentication.getCredentials();
 		UsernamePasswordAuthenticationToken authToken = null;
-		String client_id = twitchKeyMapper.read("client_id").getKeyValue();
-		String client_secret = twitchKeyMapper.read("client_secret").getKeyValue();
+		String client_id = null;
+		try {
+			client_id = twitchKeyMapper.read("client_id").getKeyValue();
+			String client_secret = twitchKeyMapper.read("client_secret").getKeyValue();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 //		System.out.println("CustomAuthenticationProvider - authenticate :: " + user_id + " " + user_pwd);
 		
 		if(user_id.equals("OAuth2_authentication")) {
