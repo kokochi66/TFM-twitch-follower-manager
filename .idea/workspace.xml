@@ -41,6 +41,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunManager">
     <configuration name="Tomcat 9.0.58" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.58" ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="1.8" nameIsGenerated="true">
@@ -138,6 +139,7 @@
       <workItem from="1638244173615" duration="7000" />
       <workItem from="1646051295397" duration="1306000" />
       <workItem from="1646052624902" duration="369000" />
+      <workItem from="1691332073059" duration="100000" />
     </task>
     <servers />
   </component>

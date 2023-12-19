@@ -20,6 +20,19 @@ import com.google.gson.GsonBuilder;
 import com.kokochi.samp.queryAPI.domain.TwitchUser;
 
 public class GetFollow {
+
+	public void requestGet() {
+		String apiKey = "";
+
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity entity = new HttpEntity(headers);
+		RestTemplate rt = new RestTemplate();
+
+		headers.add("Authorization", apiKey);
+
+		ResponseEntity<String> response = rt.exchange("사이퍼즈사이트Url/cy/players?nickname=꼬꼬치꼬치", HttpMethod.GET, entity, String.class);
+		String body = response.getBody();
+	}
 	
 	public ArrayList<TwitchUser> getFollowedList(String client_id, String app_access_token, String user_id, String first) throws Exception {
 		HttpHeaders headers = new HttpHeaders();

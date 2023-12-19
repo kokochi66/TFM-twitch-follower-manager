@@ -24,12 +24,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import sun.net.www.http.HttpClient;
 
 public class GetClips {
+
 	public List<ClipTwitchVO> getClipsAll(String client_id, String Access_Token, String query) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", Access_Token);
@@ -88,9 +90,7 @@ public class GetClips {
 		Gson gsonParser = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
 
 		try {
-			ResponseEntity<String> response = rt.exchange(
-					"https://api.twitch.tv/helix/clips?"+query, HttpMethod.GET,
-					entity, String.class);
+			ResponseEntity<String> response = rt.exchange("https://api.twitch.tv/cy/players?"+query, HttpMethod.GET, entity, String.class);
 			JSONObject jsonfile = (JSONObject) parser.parse(response.getBody());
 			JSONArray data = (JSONArray) parser.parse(jsonfile.get("data").toString());
 			JSONObject pagination = (JSONObject) parser.parse(jsonfile.get("pagination").toString());
